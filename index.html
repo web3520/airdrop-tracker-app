@@ -1493,7 +1493,7 @@ body {
   </div>
 </div>
 
-<div class="toast" id="toast">✅ 应用外观已保存（仅本机）</div>
+<div class="toast" id="toast"></div>
 
 <script>
 const STORAGE_KEY = 'airdrop_tracker_v2';
@@ -3564,17 +3564,29 @@ async function autoSyncTick() {
   try {
     const snap = JSON.stringify(snapshotState());
     const localHash = cheapHash(snap);
-    // 先看云端元数据哈希（存在 Gist description 里），避免每轮都下载大文件
+    // 云端元数据哈希（存在 Gist description 里），用于快速判断是否有更新（不下载大文件）
     const remoteHash = await getRemoteMetaHash(token, gistId);
-    if (remoteHash && remoteHash !== lastSyncHash && remoteHash !== localHash) {
-      // 云端有另一端的更新 → 自动下载
+    const baseHash = lastSyncHash;
+    if (!remoteHash) {
+      // 读不到云端哈希：为安全起见本回合不覆盖云端（避免误上传旧数据把另一端的新改动冲掉），下轮再试
+      setSyncStatus('⏳ 自动同步：暂时读不到云端状态，本回合跳过');
+      return;
+    }
+    if (remoteHash === localHash) {
+      // 两端完全一致
+      lastSyncHash = localHash;
+      setSyncStatus('🔄 自动同步（双向·5 秒）· 已是最新');
+    } else if (localHash === baseHash && remoteHash !== baseHash) {
+      // 本地没改、云端有更新 → 下载（绝不覆盖云端）
       setSyncStatus('🔄 检测到云端更新，正在自动下载…');
       await doPullAuto();
-    } else if (localHash !== lastSyncHash) {
-      // 本地有变化 → 上传
+    } else if (remoteHash === baseHash && localHash !== baseHash) {
+      // 云端没改、本地有更新 → 上传
       await doUpload();
     } else {
-      setSyncStatus('🔄 自动同步（双向·5 秒）· 已是最新');
+      // 两端相对上次同步基准都改了（冲突）：以云端为准下载，避免上传旧数据覆盖对方改动
+      setSyncStatus('⚠️ 检测到双向修改，以云端为准合并下载…');
+      await doPullAuto();
     }
   } catch (e) { setSyncStatus('⏸ 自动同步错误：' + e.message); }
   finally { autoSyncRunning = false; }
