@@ -1272,7 +1272,7 @@ body {
 
     <div class="form-section" id="proj-wallet-section">
       <div class="form-section-title"><span>👤 我的 · 钱包（私钥/助记词加密保存）</span></div>
-      <div class="vault-banner warn" id="proj-vault-banner">🔐 正在初始化保险库…</div>
+      <div class="vault-banner ok" id="proj-vault-banner">🔓 保险库已解锁 · 私钥/助记词均以密文存储 <button class="vault-btn" onclick="changeVaultPassword()">🔑 改主密码</button> <button class="vault-btn danger" onclick="lockVault()">🔒 上锁</button></div>
       <div class="wallet-list-toolbar" id="proj-wallet-toolbar">
         <button class="btn btn-sm" type="button" onclick="copyProjectWallets()">📋 复制全部</button>
         <button class="btn btn-sm" type="button" onclick="downloadProjectWallets()">⬇️ 下载全部</button>
@@ -1345,9 +1345,7 @@ body {
       <h2>☁️ 云同步（GitHub Gist）</h2>
       <button class="modal-close" onclick="closeSyncModal()">×</button>
     </div>
-    <div class="vault-banner warn">
-      ⚠️ 上传内容会用你的保险库主密码「整体加密」后存到 GitHub 私有 Gist，GitHub 上只看到密文。Token 仅存本机浏览器。需先解锁保险库再同步。
-    </div>
+    <div class="vault-banner ok">🔓 保险库已解锁 · 私钥/助记词均以密文存储 <button class="vault-btn" onclick="changeVaultPassword()">🔑 改主密码</button> <button class="vault-btn danger" onclick="lockVault()">🔒 上锁</button></div>
     <div class="sync-row">
       <input type="password" id="gh-token" placeholder="GitHub Token（需 gist 权限，fine-grained 或 classic 均可）" autocomplete="off">
     </div>
@@ -1362,7 +1360,7 @@ body {
     <div class="sync-row auto-sync-row">
       <label class="auto-sync-label"><input type="checkbox" id="auto-sync" onchange="toggleAutoSync()"> 🔁 自动同步（每 5 秒检查，有变化自动上传下载）</label>
     </div>
-    <div class="sync-status" id="sync-status">⏸ 自动同步暂停：保险库未解锁</div>
+    <div class="sync-status" id="sync-status">🔄 自动同步（双向·5 秒）· 已是最新</div>
     <div class="current-url-box" id="current-url-box" style="display: none;">
       <div class="current-url-title">🔗 当前访问链接（手机打开 / 添加到主屏幕用的就是这个）</div>
       <div class="current-url-display">
@@ -1413,7 +1411,7 @@ body {
       <h2>🔐 操作保护设置</h2>
       <button class="modal-close" onclick="closeProtectModal()">×</button>
     </div>
-    <div class="vault-banner warn">编辑 / 删除 / 保存项目均受「独立操作密码」保护（与钱包保险库密码相互独立）。操作密码已解锁时无感操作；未解锁（或他人）操作时需先输入操作密码。</div>
+    <div class="vault-banner ok">🔓 保险库已解锁 · 私钥/助记词均以密文存储 <button class="vault-btn" onclick="changeVaultPassword()">🔑 改主密码</button> <button class="vault-btn danger" onclick="lockVault()">🔒 上锁</button></div>
     <div id="op-pwd-section">
       <div class="op-pwd-box" id="op-pwd-status-box">
         <div class="op-pwd-status-line">
@@ -1493,7 +1491,7 @@ body {
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast">☁️ 已同步到 GitHub</div>
 
 <script>
 const STORAGE_KEY = 'airdrop_tracker_v2';
