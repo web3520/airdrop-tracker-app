@@ -108,6 +108,7 @@ body {
 .btn-danger { color: var(--coral); border-color: rgba(239, 68, 68, 0.3); }
 .btn-danger:hover { background: var(--coral-bg); }
 .btn-sm { padding: 4px 10px; font-size: 12px; }
+.btn-xs { padding: 3px 8px; font-size: 11px; }
 .btn-icon {
   width: 28px;
   height: 28px;
@@ -480,6 +481,8 @@ body {
 }
 .tag-chain { background: var(--accent-bg); color: #c4b5fd; }
 .tag-active { background: var(--green-bg); color: var(--green); }
+.tag-preregister { background: rgba(167, 139, 250, 0.18); color: #c4b5fd; }
+.tag-notstarted { background: rgba(129, 140, 248, 0.14); color: #818cf8; }
 .tag-finished { background: var(--amber-bg); color: var(--amber); }
 .tag-launched { background: var(--blue-bg); color: var(--blue); }
 .tag-ended { background: rgba(156, 156, 182, 0.14); color: #a1a1b5; }
@@ -880,13 +883,14 @@ body {
 .proj-wallet-add input:focus, .proj-wallet-add select:focus { outline: none; border-color: var(--accent); }
 .proj-wallet-add input[type=text] { min-width: 160px; flex: 1; }
 .wallet-import-box { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
-.wallet-import-hint { font-size: 12px; color: var(--text-2); margin-bottom: 10px; }
+.wallet-import-hint { font-size: 12px; color: var(--text-2); margin-bottom: 10px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
 .wallet-import-hint input {
   background: transparent; border: none; border-bottom: 1px dashed var(--border);
   color: var(--accent); font-weight: 500; font-size: 12px; font-family: inherit;
   padding: 0 2px; margin: 0 2px; width: 170px; text-align: center;
 }
 .wallet-import-hint input:focus { outline: none; border-bottom-color: var(--accent); }
+.wallet-import-presets { display: inline-flex; gap: 6px; margin-left: auto; }
 .wallet-import-toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
 .wallet-import-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
 .wallet-import-check { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-2); margin-left: auto; cursor: pointer; }
@@ -895,6 +899,9 @@ body {
 .wallet-list-toolbar { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; flex-wrap: wrap; }
 .wallet-list-toolbar .wallet-list-count { margin-left: auto; font-size: 12px; color: var(--text-2); }
 .wallet-list-toolbar .wallet-list-hint { font-size: 11px; color: var(--text-3); margin-left: 8px; }
+.wallet-filter-select { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); padding: 4px 8px; font-size: 12px; outline: none; }
+.wallet-filter-select:focus { border-color: var(--accent); }
+#proj-single-add { margin-bottom: 10px; }
 .wallet-item-txt { display: flex; align-items: center; gap: 10px; padding: 8px 12px; }
 .wallet-txt-line { flex: 1; min-width: 0; font-family: monospace; font-size: 12px; color: var(--text); word-break: break-all; cursor: pointer; }
 .wallet-txt-line:hover { color: var(--accent); }
@@ -944,6 +951,12 @@ body {
 .form-field select:focus,
 .form-field textarea:focus { border-color: var(--accent); }
 .form-field textarea { resize: vertical; min-height: 60px; }
+.date-group { display: inline-flex; align-items: center; gap: 4px; }
+.date-seg { width: 66px; text-align: center; font-family: monospace; letter-spacing: 0.5px; }
+.date-seg.invalid { border-color: var(--coral); }
+.date-sep { color: var(--text-2); font-size: 16px; line-height: 1; }
+.date-seg::placeholder { color: var(--text-3); }
+@media (max-width: 480px) { .date-seg { width: 58px; } }
 
 .template-select {
   font-size: 11px;
@@ -1066,19 +1079,19 @@ body {
   <div class="stats-group">
     <div class="stat-card">
       <div class="stat-label">📦 跟踪项目</div>
-      <div class="stat-value" id="stat-projects">1</div>
+      <div class="stat-value" id="stat-projects">10</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">✅ 活跃任务</div>
-      <div class="stat-value" id="stat-active" style="color:var(--green)">0</div>
+      <div class="stat-value" id="stat-active" style="color:var(--green)">3</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">🎯 今日完成项目</div>
-      <div class="stat-value" id="stat-done">0/0</div>
+      <div class="stat-value" id="stat-done">4/6</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">💵 融资总额</div>
-      <div class="stat-value" id="stat-funding" style="color:var(--amber)">$5M</div>
+      <div class="stat-value" id="stat-funding" style="color:var(--amber)">$180M</div>
     </div>
   </div>
   <div class="chart-card">
@@ -1087,16 +1100,18 @@ body {
   </div>
 </div>
 
-<div class="info-bar" id="info-bar"><div class="info-bar-item"><span class="info-bar-label">💰 已发币</span><span class="info-bar-value" style="color:var(--blue)">0 个</span></div><div class="info-bar-item"><span class="info-bar-label">💸 总 Gas</span><span class="info-bar-value" style="color:var(--coral)">$0</span></div><div class="info-bar-item"><span class="info-bar-label">🎁 空投收益</span><span class="info-bar-value" style="color:var(--green)">$0</span></div><div class="info-bar-item"><span class="info-bar-label">📈 净收益</span><span class="info-bar-value" style="color:var(--green)">+$0</span></div></div>
+<div class="info-bar" id="info-bar"><div class="info-bar-item"><span class="info-bar-label">💰 已发币</span><span class="info-bar-value" style="color:var(--blue)">0 个</span></div><div class="info-bar-item"><span class="info-bar-label">💸 总 Gas</span><span class="info-bar-value" style="color:var(--coral)">$11</span></div><div class="info-bar-item"><span class="info-bar-label">🎁 空投收益</span><span class="info-bar-value" style="color:var(--green)">$0</span></div><div class="info-bar-item"><span class="info-bar-label">📈 净收益</span><span class="info-bar-value" style="color:var(--coral)">$11</span></div></div>
 
 <div class="toolbar">
   <div class="search-box">
     <input type="text" id="search-input" placeholder="搜索项目名、代币、投资机构..." oninput="handleSearch(this.value)">
   </div>
   <div class="filter-pills">
-    <button class="pill active" data-filter="all" onclick="setFilter('all')">📋 全部 <span class="pill-count" id="count-all">1</span></button>
-    <button class="pill" data-filter="active" onclick="setFilter('active')">🔥 进行中 <span class="pill-count" id="count-active">0</span></button>
-    <button class="pill" data-filter="finished" onclick="setFilter('finished')">⏳ 等待TGE <span class="pill-count" id="count-finished">1</span></button>
+    <button class="pill active" data-filter="all" onclick="setFilter('all')">📋 全部 <span class="pill-count" id="count-all">10</span></button>
+    <button class="pill" data-filter="active" onclick="setFilter('active')">🔥 进行中 <span class="pill-count" id="count-active">6</span></button>
+    <button class="pill" data-filter="preregister" onclick="setFilter('preregister')">📝 预注册 <span class="pill-count" id="count-preregister">1</span></button>
+    <button class="pill" data-filter="notstarted" onclick="setFilter('notstarted')">⏸️ 未开始 <span class="pill-count" id="count-notstarted">0</span></button>
+    <button class="pill" data-filter="finished" onclick="setFilter('finished')">⏳ 等待TGE <span class="pill-count" id="count-finished">3</span></button>
     <button class="pill" data-filter="launched" onclick="setFilter('launched')">💰 已发币 <span class="pill-count" id="count-launched">0</span></button>
     <button class="pill" data-filter="ended" onclick="setFilter('ended')">🔚 已结束 <span class="pill-count" id="count-ended">0</span></button>
     <button class="pill" data-filter="dropped" onclick="setFilter('dropped')">🚫 已放弃 <span class="pill-count" id="count-dropped">0</span></button>
@@ -1119,20 +1134,20 @@ body {
   <div class="todo-panel-header" onclick="toggleTodoPanel()">
     <div class="todo-panel-title">
       <span>📋 今日未完成任务</span>
-      <span class="todo-count-badge" id="todo-count">0</span>
+      <span class="todo-count-badge" id="todo-count">3</span>
     </div>
     <span class="todo-toggle"></span>
   </div>
-  <div class="todo-panel-body" id="todo-panel-body"><div class="todo-empty">今日所有每日任务已完成</div></div>
+  <div class="todo-panel-body" id="todo-panel-body"><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name">arcnova</span><span class="todo-group-count">1</span></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')"></div><span class="task-text">签到</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name">HertzFlow</span><span class="todo-group-count">2</span></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')"></div><span class="task-text">刷交易</span></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')"></div><span class="task-text">领水</span></div></div></div>
 </div>
 
-<div class="project-grid" id="project-grid"><div class="proj-card" data-id="id_mry0anh0_q0as00"><div class="card-header"><div class="card-title"><span class="priority-star p2" onclick="togglePriority('id_mry0anh0_q0as00')" title="点击切换优先级">★</span><span class="proj-name">out</span><span class="tag tag-chain">测试网</span><span class="tag tag-finished">⏳ 等待 TGE发币</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mry0anh0_q0as00')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mry0anh0_q0as00')" title="删除">🗑</button></div></div><div class="card-meta"><span>TGE 不知道</span><span title="我在「我的钱包」里关联的本项目地址数">💼 2293 个钱包</span></div><div class="card-date">起始 2026-01-03 · 已撸 202 天</div><div class="social-row"><a class="social-btn" href="https://x.com/outcomexyz" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><a class="social-btn" href="https://discord.com/invite/outcome" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://outcome.xyz/zh/all" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$5M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">2/2</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mry0anh0_q0as00','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_oo34rh')"></div><span class="task-text">测试网交付</span><span class="task-delete" onclick="deleteTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_oo34rh')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_z2yoal')"></div><span class="task-text">nft</span><span class="task-delete" onclick="deleteTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_z2yoal')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mry0anh0_q0as00','onetime')"></div></div></div></div>
+<div class="project-grid" id="project-grid"><div class="proj-card" data-id="id_mrysy3hb_qmj0xs"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrysy3hb_qmj0xs')" title="点击切换优先级">☆</span><span class="proj-name">Skew</span><span class="tag tag-chain">测试网</span><span class="tag tag-preregister">📝 预注册</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrysy3hb_qmj0xs')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrysy3hb_qmj0xs')" title="删除">🗑</button></div></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 2 个钱包<span style="margin:0 6px;color:var(--text-2)">·</span>📧 1000 个邮箱</span></div><div class="card-date">起始 2026-07-20 · 已撸 4 天</div><div class="social-row"><a class="social-btn" href="https://x.com/SkewTrade" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><span class="social-btn empty">🎮 DC</span><a class="social-btn" href="https://skew.trade/" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$33M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">1/1</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrysy3hb_qmj0xs','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrysy3hb_qmj0xs','onetime','id_mrysza21_ag9ajw')"></div><span class="task-text">测试网填邮箱</span><span class="task-delete" onclick="deleteTask('id_mrysy3hb_qmj0xs','onetime','id_mrysza21_ag9ajw')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrysy3hb_qmj0xs','onetime')"></div></div><div class="notes-section"><div class="notes-text">测试网邮箱填表没有开启 已填</div></div></div><div class="proj-card" data-id="id_mrysryzd_4avtyo"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrysryzd_4avtyo')" title="点击切换优先级">☆</span><span class="proj-name">TermMax</span><span class="tag tag-chain">测试网</span><span class="tag tag-finished">⏳ 等待 TGE发币</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrysryzd_4avtyo')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrysryzd_4avtyo')" title="删除">🗑</button></div></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 100 个钱包</span></div><div class="card-date">起始 2026-03-05 · 已撸 141 天</div><div class="social-row"><a class="social-btn" href="https://x.com/TermMaxFi" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/TermMaxFi" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/dhKjNtrTeJ/" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://app-v2.termmax.ts.finance/" target="_blank" rel="noopener">🌐 Web</a></div><div class="cost-row"><div class="cost-item"><span class="info-label">Gas 花费</span><span class="info-value" style="color:var(--coral)">$10</span></div></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">1/1</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrysryzd_4avtyo','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrysryzd_4avtyo','onetime','id_mrysryzd_64gbre')"></div><span class="task-text">钱包登录注册签到</span><span class="task-delete" onclick="deleteTask('id_mrysryzd_4avtyo','onetime','id_mrysryzd_64gbre')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrysryzd_4avtyo','onetime')"></div></div><div class="notes-section"><div class="notes-text">花10刀BNBgas签到  币安钱包也做了任务</div></div></div><div class="proj-card" data-id="id_mrysmk9w_hv6dvf"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrysmk9w_hv6dvf')" title="点击切换优先级">☆</span><span class="proj-name">plabs</span><span class="tag tag-chain">测试网</span><span class="tag tag-finished">⏳ 等待 TGE发币</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrysmk9w_hv6dvf')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrysmk9w_hv6dvf')" title="删除">🗑</button></div></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 1463 个钱包</span></div><div class="card-date">起始 2026-07-23 · 已撸 1 天</div><div class="social-row"><a class="social-btn" href="https://x.com/_PLabs" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><span class="social-btn empty">🎮 DC</span><a class="social-btn" href="https://app.plabs.online/#/eligibilitycheck" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">1/1</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrysmk9w_hv6dvf','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrysmk9w_hv6dvf','onetime','id_mrysmk9w_n9u5p1')"></div><span class="task-text">领取代币</span><span class="task-delete" onclick="deleteTask('id_mrysmk9w_hv6dvf','onetime','id_mrysmk9w_n9u5p1')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrysmk9w_hv6dvf','onetime')"></div></div><div class="notes-section"><div class="notes-text">国人项目 代币100多万等待发</div></div></div><div class="proj-card" data-id="id_mryshykp_xlvwx2"><div class="card-header"><div class="card-title"><span class="priority-star p3" onclick="togglePriority('id_mryshykp_xlvwx2')" title="点击切换优先级">★</span><span class="proj-name">GIWA</span><span class="tag tag-chain">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryshykp_xlvwx2')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryshykp_xlvwx2')" title="删除">🗑</button></div></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 979 个钱包</span></div><div class="card-date">起始 2026-07-22 · 已撸 2 天</div><div class="social-row"><a class="social-btn" href="https://x.com/GIWA_by_Upbit" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><span class="social-btn empty">🎮 DC</span><a class="social-btn" href="https://sepolia-playground.giwa.io/" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$142M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">2/2</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryshykp_xlvwx2','daily','id_mryshykp_r169c8')"></div><span class="task-text">领水 转账uid</span><span class="task-delete" onclick="deleteTask('id_mryshykp_xlvwx2','daily','id_mryshykp_r169c8')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryshykp_xlvwx2','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryshykp_xlvwx2','onetime','id_mryshykp_2m8as2')"></div><span class="task-text">opeth跨链 转账 领水</span><span class="task-delete" onclick="deleteTask('id_mryshykp_xlvwx2','onetime','id_mryshykp_2m8as2')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryshykp_xlvwx2','onetime')"></div></div><div class="notes-section"><div class="notes-text">韩国交易所测试网</div></div></div><div class="proj-card" data-id="id_mrys1igh_yhpexr"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrys1igh_yhpexr')" title="点击切换优先级">☆</span><span class="proj-name">HertzFlow</span><span class="tag tag-chain">测试网刷交易</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrys1igh_yhpexr')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrys1igh_yhpexr')" title="删除">🗑</button></div></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 500 个钱包</span></div><div class="card-date">起始 2026-06-25 · 已撸 29 天</div><div class="social-row"><a class="social-btn" href="https://x.com/Hertzflow_xyz" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/hertzflow_xyz" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/sBQqf2H7ts" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://testnet.hertzflow.xyz/zh-Hans/trade/WTI-USD" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--coral)">1/3</span></div><div class="progress-track"><div class="progress-fill" style="width:33.33333333333333%;background:var(--coral)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/2</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')"></div><span class="task-text">刷交易</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')">×</span></li><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')"></div><span class="task-text">领水</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrys1igh_yhpexr','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrys1igh_yhpexr','onetime','id_mrys1igh_zn6tc0')"></div><span class="task-text">登录注册</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','onetime','id_mrys1igh_zn6tc0')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrys1igh_yhpexr','onetime')"></div></div><div class="notes-section"><div class="notes-text">钱包登录 领水刷交易 国人项目金标</div></div></div><div class="proj-card" data-id="id_mryrwi2v_27rkcj"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryrwi2v_27rkcj')" title="点击切换优先级">☆</span><span class="proj-name">arcnova</span><span class="tag tag-chain">测试网社交类</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryrwi2v_27rkcj')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryrwi2v_27rkcj')" title="删除">🗑</button></div></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">📧 234 个邮箱</span></div><div class="card-date">起始 2026-05-08 · 已撸 77 天</div><div class="social-row"><a class="social-btn" href="https://x.com/arcnova_aci" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/ArcNova_AI" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/G2BXV5MWDa" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://arcnova.tv/en/tasks" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">2/3</span></div><div class="progress-track"><div class="progress-fill" style="width:66.66666666666666%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryrwi2v_27rkcj','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_u5u8ap')"></div><span class="task-text">网站钱包登录注册邀请</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_u5u8ap')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_dpn07c')"></div><span class="task-text">手机app邮箱登录取uid完成设计任务</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_dpn07c')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryrwi2v_27rkcj','onetime')"></div></div><div class="notes-section"><div class="notes-text">网站钱包登录邀请 app邮箱登录 社交类</div></div></div><div class="proj-card" data-id="id_mryrqvk5_i056fo"><div class="card-header"><div class="card-title"><span class="priority-star p1" onclick="togglePriority('id_mryrqvk5_i056fo')" title="点击切换优先级">★</span><span class="proj-name">holmesai</span><span class="tag tag-chain">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryrqvk5_i056fo')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryrqvk5_i056fo')" title="删除">🗑</button></div></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 174 个钱包</span></div><div class="card-date">起始 2026-06-05 · 已撸 49 天</div><div class="social-row"><a class="social-btn" href="https://x.com/HolmesAI_" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/HolmesAIOfficial" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/s5agSyVWRG" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://www.holmesai.xyz/" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">2/2</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrqvk5_i056fo','daily','id_mryrqvk5_6fknnk')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryrqvk5_i056fo','daily','id_mryrqvk5_6fknnk')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryrqvk5_i056fo','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrqvk5_i056fo','onetime','id_mryrqvk5_itp6zz')"></div><span class="task-text">钱包登录注册</span><span class="task-delete" onclick="deleteTask('id_mryrqvk5_i056fo','onetime','id_mryrqvk5_itp6zz')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryrqvk5_i056fo','onetime')"></div></div><div class="notes-section"><div class="notes-text">钱包登录注册</div></div></div><div class="proj-card" data-id="id_mryouhvx_526yd5"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryouhvx_526yd5')" title="点击切换优先级">☆</span><span class="proj-name">doma</span><span class="tag tag-chain">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryouhvx_526yd5')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryouhvx_526yd5')" title="删除">🗑</button></div></div><div class="card-date">已撸 0 天</div><div class="social-row"><a class="social-btn" href="https://x.com/domaprotocol" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><a class="social-btn" href="https://discord.com/invite/doma" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://app.doma.xyz/" target="_blank" rel="noopener">🌐 Web</a></div><div class="investors">没有查</div><div class="cost-row"><div class="cost-item"><span class="info-label">Gas 花费</span><span class="info-value" style="color:var(--coral)">$1</span></div></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">3/3</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryouhvx_526yd5','daily','id_mryouhvx_zsyqjt')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','daily','id_mryouhvx_zsyqjt')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryouhvx_526yd5','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_0muiq0')"></div><span class="task-text">刷交易</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_0muiq0')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_s90rjl')"></div><span class="task-text">买域名</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_s90rjl')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryouhvx_526yd5','onetime')"></div></div></div><div class="proj-card" data-id="id_mryoow4e_h3u872"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryoow4e_h3u872')" title="点击切换优先级">☆</span><span class="proj-name">DxSxT Network</span><span class="tag tag-chain">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryoow4e_h3u872')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryoow4e_h3u872')" title="删除">🗑</button></div></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">📧 87 个邮箱</span></div><div class="card-date">起始 2026-05-04 · 已撸 81 天</div><div class="social-row"><a class="social-btn" href="https://x.com/DxSxT_Network" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/dxsxtnetworkofficial" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/Y969k9FmDK" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://dxsxt.network/" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">2/2</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryoow4e_h3u872','daily','id_mryoow4e_fecwxl')"></div><span class="task-text">挖矿</span><span class="task-delete" onclick="deleteTask('id_mryoow4e_h3u872','daily','id_mryoow4e_fecwxl')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryoow4e_h3u872','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryoow4e_h3u872','onetime','id_mryoow4e_u2rg6o')"></div><span class="task-text">邮箱注册邀请</span><span class="task-delete" onclick="deleteTask('id_mryoow4e_h3u872','onetime','id_mryoow4e_u2rg6o')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryoow4e_h3u872','onetime')"></div></div><div class="notes-section"><div class="notes-text">手机挖矿</div></div></div><div class="proj-card" data-id="id_mry0anh0_q0as00"><div class="card-header"><div class="card-title"><span class="priority-star p2" onclick="togglePriority('id_mry0anh0_q0as00')" title="点击切换优先级">★</span><span class="proj-name">out</span><span class="tag tag-chain">测试网</span><span class="tag tag-finished">⏳ 等待 TGE发币</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mry0anh0_q0as00')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mry0anh0_q0as00')" title="删除">🗑</button></div></div><div class="card-meta"><span>TGE 不知道</span><span title="我在「我的钱包」里关联的本项目数量">💼 2293 个钱包</span></div><div class="card-date">起始 2026-01-03 · 已撸 202 天</div><div class="social-row"><a class="social-btn" href="https://x.com/outcomexyz" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><a class="social-btn" href="https://discord.com/invite/outcome" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://outcome.xyz/zh/all" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$5M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">2/2</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mry0anh0_q0as00','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_oo34rh')"></div><span class="task-text">测试网交付</span><span class="task-delete" onclick="deleteTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_oo34rh')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_z2yoal')"></div><span class="task-text">nft</span><span class="task-delete" onclick="deleteTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_z2yoal')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mry0anh0_q0as00','onetime')"></div></div></div></div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="modal-title">📝 新增项目</h2>
+      <h2 id="modal-title">📝 编辑项目</h2>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
 
@@ -1150,7 +1165,7 @@ body {
         <div class="form-field">
           <label>链类型</label>
           <div class="inline-field">
-            <select id="f-chainType"></select>
+            <select id="f-chainType"><option value="测试网">测试网</option><option value="测试网社交类">测试网社交类</option><option value="测试网刷交易">测试网刷交易</option></select>
             <button class="btn btn-sm" type="button" onclick="addChainType()" title="新增链类型">➕</button>
             <button class="btn btn-sm" type="button" onclick="deleteChainType()" title="删除当前链类型">🗑</button>
           </div>
@@ -1159,6 +1174,8 @@ body {
           <label>状态</label>
           <select id="f-status">
             <option value="active">🔥 进行中</option>
+            <option value="preregister">📝 预注册</option>
+            <option value="notstarted">⏸️ 项目未开始</option>
             <option value="finished">⏳ 等待 TGE发币</option>
             <option value="launched">💰 已发币</option>
             <option value="ended">🔚 已结束·未中</option>
@@ -1236,7 +1253,13 @@ body {
         </div>
         <div class="form-field">
           <label>项目起始时间（我开撸的日期）</label>
-          <input type="date" id="f-startDate">
+          <div class="date-group" id="f-startDate-group">
+            <input type="text" id="f-startDate-y" class="date-seg" placeholder="YYYY" maxlength="4" inputmode="numeric" autocomplete="off">
+            <span class="date-sep">/</span>
+            <input type="text" id="f-startDate-m" class="date-seg" placeholder="MM" maxlength="2" inputmode="numeric" autocomplete="off">
+            <span class="date-sep">/</span>
+            <input type="text" id="f-startDate-d" class="date-seg" placeholder="DD" maxlength="2" inputmode="numeric" autocomplete="off">
+          </div>
         </div>
       </div>
     </div>
@@ -1272,33 +1295,58 @@ body {
 
     <div class="form-section" id="proj-wallet-section">
       <div class="form-section-title"><span>👤 我的 · 钱包（私钥/助记词加密保存）</span></div>
-      <div class="vault-banner warn" id="proj-vault-banner">🔐 正在初始化保险库…</div>
+      <div class="vault-banner ok" id="proj-vault-banner">🔓 保险库已解锁 · 私钥/助记词均以密文存储 <button class="vault-btn" onclick="changeVaultPassword()">🔑 改主密码</button> <button class="vault-btn danger" onclick="lockVault()">🔒 上锁</button></div>
       <div class="wallet-list-toolbar" id="proj-wallet-toolbar">
-        <button class="btn btn-sm" type="button" onclick="copyProjectWallets()">📋 复制全部</button>
-        <button class="btn btn-sm" type="button" onclick="downloadProjectWallets()">⬇️ 下载全部</button>
-        <button class="btn btn-sm" type="button" id="proj-batch-delete-toggle" onclick="toggleBatchDelete()">🗑 批量选择删除</button>
-        <button class="btn btn-sm btn-danger" type="button" id="proj-batch-delete-confirm" style="display:none" onclick="deleteSelectedProjectWallets()">🗑 删除选中</button>
-        <button class="btn btn-sm" type="button" id="proj-batch-delete-cancel" style="display:none" onclick="toggleBatchDelete(false)">取消选择</button>
-        <span class="wallet-list-count" id="proj-wallet-count">0 个</span>
+        <button class="btn btn-sm" type="button" onclick="event.stopPropagation(); copyProjectWallets()">📋 复制</button>
+        <button class="btn btn-sm" type="button" onclick="event.stopPropagation(); downloadProjectWallets()">⬇️ 下载</button>
+        <button class="btn btn-sm" type="button" id="proj-batch-delete-toggle" onclick="event.stopPropagation(); toggleBatchDelete()">🗑 批量选择删除</button>
+        <button class="btn btn-sm btn-danger" type="button" id="proj-batch-delete-confirm" style="display:none" onclick="event.stopPropagation(); event.preventDefault(); deleteSelectedProjectWallets()">🗑 删除选中</button>
+        <button class="btn btn-sm" type="button" id="proj-batch-delete-cancel" style="display:none" onclick="event.stopPropagation(); toggleBatchDelete(false)">取消选择</button>
+        <select id="f-proj-wallet-filter" class="wallet-filter-select" onchange="setProjectWalletFilter(this.value)">
+          <option value="wallet" selected="">👛 钱包</option>
+          <option value="email">📧 邮箱</option>
+        </select>
+        <span class="wallet-list-count" id="proj-wallet-count">2 个钱包</span>
       </div>
-      <div id="proj-wallet-list" class="proj-wallet-list"></div>
-      <details class="wallet-add-details" id="proj-wallet-add-details">
+      <div id="proj-wallet-list" class="proj-wallet-list"><div class="wallet-item wallet-item-txt"><span class="wallet-batch-index">1</span><span class="wallet-txt-line" onclick="event.stopPropagation(); copyText('0xDe66c001Bc46303eEf2D5c0Fca6C38a407091710----3c78da223f3bd06d2c1f35d52ba78326b9544da971ab2c0bec4c0282bdfc7037----','钱包信息')" title="点击复制整行">0xDe66c001Bc46303eEf2D5c0Fca6C38a407091710----3c78da223f3bd06d2c1f35d52ba78326b9544da971ab2c0bec4c0282bdfc7037----</span><button class="btn btn-icon btn-icon-danger" onclick="event.stopPropagation(); event.preventDefault(); deleteProjectWallet('id_mrytz3c9_tgl9vs')" title="删除">🗑</button></div><div class="wallet-item wallet-item-txt"><span class="wallet-batch-index">2</span><span class="wallet-txt-line" onclick="event.stopPropagation(); copyText('0x5A92DD3b908F852D41a6c803367bf401B9041aD1----f055b6fc21a3d6f5c18de7113c052b95790cb174e1696da2fc91d0ff07debaf5----','钱包信息')" title="点击复制整行">0x5A92DD3b908F852D41a6c803367bf401B9041aD1----f055b6fc21a3d6f5c18de7113c052b95790cb174e1696da2fc91d0ff07debaf5----</span><button class="btn btn-icon btn-icon-danger" onclick="event.stopPropagation(); event.preventDefault(); deleteProjectWallet('id_mrytz3c9_w8x99s')" title="删除">🗑</button></div></div>
+      <details class="wallet-add-details" id="proj-wallet-bulk-details">
         <summary>➕ 批量导入钱包</summary>
         <div class="wallet-import-box">
-          <div class="wallet-import-hint">格式 <input type="text" id="f-proj-bulk-format" value="地址----私钥----助记词" oninput="updateFormatHint()">（每行一条）</div>
+          <div class="wallet-import-hint">格式：<b>地址----私钥----助记词</b>（每行一条，私钥/助记词可选）</div>
           <div class="wallet-import-toolbar">
             <button class="btn btn-sm" type="button" onclick="importProjectWalletsFromFile()">📁 从文件导入</button>
             <button class="btn btn-sm" type="button" onclick="pasteProjectWallets()">📋 粘贴</button>
             <button class="btn btn-sm" type="button" onclick="clearProjectWalletBulk()">🗑 清空</button>
-            <label class="wallet-import-check"><input type="checkbox" id="f-proj-dedup" checked=""> 自动去重</label>
+            <label class="wallet-import-check"><input type="checkbox" id="f-proj-dedup-wallet" checked=""> 自动去重</label>
           </div>
-          <textarea id="f-proj-bulk" placeholder="地址----私钥----助记词
+          <textarea id="f-proj-bulk-wallet" placeholder="地址----私钥----助记词
 0xabc...----0x私钥----word1 word2 word3
 0xdef...----0x私钥----word1 word2 word3"></textarea>
-          <input type="file" id="f-proj-file" style="display:none" accept=".txt,.csv,.tsv,.json" onchange="handleProjectWalletFile(event)">
+          <input type="file" id="f-proj-file-wallet" style="display:none" accept=".txt,.csv,.tsv,.json" onchange="handleProjectWalletFile(event)">
           <div class="wallet-import-footer">
             <button class="btn btn-sm" type="button" onclick="closeProjectWalletAdd()">取消</button>
             <button class="btn btn-primary" type="button" onclick="bulkAddProjectWallets()">确认导入</button>
+          </div>
+        </div>
+      </details>
+
+      <details class="wallet-add-details" id="proj-email-bulk-details">
+        <summary>➕ 批量导入邮箱</summary>
+        <div class="wallet-import-box">
+          <div class="wallet-import-hint">格式：<b>邮箱----密码</b>（每行一条，密码可选）</div>
+          <div class="wallet-import-toolbar">
+            <button class="btn btn-sm" type="button" onclick="importProjectEmailsFromFile()">📁 从文件导入</button>
+            <button class="btn btn-sm" type="button" onclick="pasteProjectEmails()">📋 粘贴</button>
+            <button class="btn btn-sm" type="button" onclick="clearProjectEmailBulk()">🗑 清空</button>
+            <label class="wallet-import-check"><input type="checkbox" id="f-proj-dedup-email" checked=""> 自动去重</label>
+          </div>
+          <textarea id="f-proj-bulk-email" placeholder="邮箱----密码
+user1@example.com----mypassword123
+user2@example.com----anotherpass"></textarea>
+          <input type="file" id="f-proj-file-email" style="display:none" accept=".txt,.csv,.tsv,.json" onchange="handleProjectEmailFile(event)">
+          <div class="wallet-import-footer">
+            <button class="btn btn-sm" type="button" onclick="closeProjectEmailAdd()">取消</button>
+            <button class="btn btn-primary" type="button" onclick="bulkAddProjectEmails()">确认导入</button>
           </div>
         </div>
       </details>
@@ -1308,13 +1356,11 @@ body {
       <div class="form-section-title">
         <span>每日任务 (每天自动重置)</span>
         <div class="template-bar">
-          <select class="template-select" id="tpl-select-daily" onchange="applyTemplate(this.value, 'daily'); this.value=''">
-            <option value="">套用模板...</option>
-          </select>
+          <select class="template-select" id="tpl-select-daily" onchange="applyTemplate(this.value, 'daily'); this.value=''"><option value="">套用模板...</option><option value="dex">DEX 交互</option><option value="lending">借贷协议</option><option value="testnet">测试网</option><option value="bridge">跨链桥</option><option value="nft">NFT 项目</option></select>
           <button class="btn btn-sm" type="button" onclick="openTemplateModal()" title="管理任务模板">✎ 管理</button>
         </div>
       </div>
-      <div class="task-editor" id="daily-tasks-editor"></div>
+      <div class="task-editor" id="daily-tasks-editor"><div class="task-editor-row"><input type="text" placeholder="任务描述..." value=""><button class="btn btn-icon" onclick="this.parentElement.remove()">×</button></div></div>
       <button class="btn btn-sm" style="margin-top:6px" onclick="addTaskEditorRow('daily')">➕ 添加任务</button>
     </div>
 
@@ -1322,13 +1368,11 @@ body {
       <div class="form-section-title">
         <span>一次性任务</span>
         <div class="template-bar">
-          <select class="template-select" id="tpl-select-onetime" onchange="applyTemplate(this.value, 'onetime'); this.value=''">
-            <option value="">套用模板...</option>
-          </select>
+          <select class="template-select" id="tpl-select-onetime" onchange="applyTemplate(this.value, 'onetime'); this.value=''"><option value="">套用模板...</option><option value="dex">DEX 交互</option><option value="lending">借贷协议</option><option value="testnet">测试网</option><option value="bridge">跨链桥</option><option value="nft">NFT 项目</option></select>
           <button class="btn btn-sm" type="button" onclick="openTemplateModal()" title="管理任务模板">✎ 管理</button>
         </div>
       </div>
-      <div class="task-editor" id="onetime-tasks-editor"></div>
+      <div class="task-editor" id="onetime-tasks-editor"><div class="task-editor-row"><input type="text" placeholder="任务描述..." value="测试网填邮箱"><button class="btn btn-icon" onclick="this.parentElement.remove()">×</button></div></div>
       <button class="btn btn-sm" style="margin-top:6px" onclick="addTaskEditorRow('onetime')">➕ 添加任务</button>
     </div>
 
@@ -1345,9 +1389,7 @@ body {
       <h2>☁️ 云同步（GitHub Gist）</h2>
       <button class="modal-close" onclick="closeSyncModal()">×</button>
     </div>
-    <div class="vault-banner warn">
-      ⚠️ 上传内容会用你的保险库主密码「整体加密」后存到 GitHub 私有 Gist，GitHub 上只看到密文。Token 仅存本机浏览器。需先解锁保险库再同步。
-    </div>
+    <div class="vault-banner ok">🔓 保险库已解锁 · 私钥/助记词均以密文存储 <button class="vault-btn" onclick="changeVaultPassword()">🔑 改主密码</button> <button class="vault-btn danger" onclick="lockVault()">🔒 上锁</button></div>
     <div class="sync-row">
       <input type="password" id="gh-token" placeholder="GitHub Token（需 gist 权限，fine-grained 或 classic 均可）" autocomplete="off">
     </div>
@@ -1362,7 +1404,7 @@ body {
     <div class="sync-row auto-sync-row">
       <label class="auto-sync-label"><input type="checkbox" id="auto-sync" onchange="toggleAutoSync()"> 🔁 自动同步（每 5 秒检查，有变化自动上传下载）</label>
     </div>
-    <div class="sync-status" id="sync-status">⏸ 自动同步暂停：保险库未解锁</div>
+    <div class="sync-status" id="sync-status">🔄 自动同步（双向·5 秒）· 已是最新</div>
     <div class="icon-setting">
       <div class="icon-setting-title">📱 手机App图标和名字（添加到主屏幕时显示）</div>
       <div class="icon-preview-row">
@@ -1389,7 +1431,7 @@ body {
         <button class="btn btn-sm btn-primary" onclick="generatePagesLink()">🚀 生成手机链接</button>
       </div>
       <div class="pages-link-status" id="pages-link-status">⏳ 正在部署当前 App（index.html）…</div>
-      <div class="pages-link-display" id="pages-link-display"><input type="text" id="pages-url-input" readonly="" value="https://web3520.github.io/airdrop-tracker-app/"><button class="btn btn-sm" onclick="copyPagesUrl()">📋 复制</button></div>
+      <div class="pages-link-display" id="pages-link-display"><input type="text" id="pages-url-input" readonly="" value="https://web3520.github.io/airdrop-tracker-app/"><button class="btn btn-sm" type="button" onclick="event.stopPropagation(); copyPagesUrl()">📋 复制</button></div>
       <div class="pages-link-starturl">
         <label>首页启动链接 start_url（从主屏打开 App 时进入的页面，留 . 则打开当前页）</label>
         <input type="text" id="pages-starturl-input" placeholder="." onchange="onPagesStartUrlChange()">
@@ -1400,7 +1442,7 @@ body {
       <div class="current-url-title">🔗 当前访问链接（手机打开 / 添加到主屏幕用的就是这个）</div>
       <div class="current-url-display">
         <input type="text" id="current-url" readonly="">
-        <button class="btn btn-sm" onclick="copyCurrentUrl()">📋 复制</button>
+        <button class="btn btn-sm" type="button" onclick="event.stopPropagation(); copyCurrentUrl()">📋 复制</button>
       </div>
       <div class="current-url-hint" id="current-url-hint"></div>
     </div>
@@ -1413,7 +1455,7 @@ body {
       <h2>🔐 操作保护设置</h2>
       <button class="modal-close" onclick="closeProtectModal()">×</button>
     </div>
-    <div class="vault-banner warn">编辑 / 删除 / 保存项目均受「独立操作密码」保护（与钱包保险库密码相互独立）。操作密码已解锁时无感操作；未解锁（或他人）操作时需先输入操作密码。</div>
+    <div class="vault-banner ok">🔓 保险库已解锁 · 私钥/助记词均以密文存储 <button class="vault-btn" onclick="changeVaultPassword()">🔑 改主密码</button> <button class="vault-btn danger" onclick="lockVault()">🔒 上锁</button></div>
     <div id="op-pwd-section">
       <div class="op-pwd-box" id="op-pwd-status-box">
         <div class="op-pwd-status-line">
@@ -1475,7 +1517,7 @@ body {
       <button class="modal-close" onclick="closeTemplateModal()">×</button>
     </div>
     <div class="modal-body">
-      <div id="template-list"></div>
+      <div id="template-list"><div class="tpl-item"><div><div class="tpl-item-name">DEX 交互</div><div class="tpl-item-meta">每日 3 · 一次性 3</div></div><div class="tpl-item-actions"><button class="btn btn-sm" onclick="showTemplateEditor('dex')">✏️ 编辑</button><button class="btn btn-icon btn-icon-danger" onclick="deleteTemplate('dex')" title="删除">🗑</button></div></div><div class="tpl-item"><div><div class="tpl-item-name">借贷协议</div><div class="tpl-item-meta">每日 3 · 一次性 3</div></div><div class="tpl-item-actions"><button class="btn btn-sm" onclick="showTemplateEditor('lending')">✏️ 编辑</button><button class="btn btn-icon btn-icon-danger" onclick="deleteTemplate('lending')" title="删除">🗑</button></div></div><div class="tpl-item"><div><div class="tpl-item-name">测试网</div><div class="tpl-item-meta">每日 3 · 一次性 3</div></div><div class="tpl-item-actions"><button class="btn btn-sm" onclick="showTemplateEditor('testnet')">✏️ 编辑</button><button class="btn btn-icon btn-icon-danger" onclick="deleteTemplate('testnet')" title="删除">🗑</button></div></div><div class="tpl-item"><div><div class="tpl-item-name">跨链桥</div><div class="tpl-item-meta">每日 1 · 一次性 2</div></div><div class="tpl-item-actions"><button class="btn btn-sm" onclick="showTemplateEditor('bridge')">✏️ 编辑</button><button class="btn btn-icon btn-icon-danger" onclick="deleteTemplate('bridge')" title="删除">🗑</button></div></div><div class="tpl-item"><div><div class="tpl-item-name">NFT 项目</div><div class="tpl-item-meta">每日 2 · 一次性 3</div></div><div class="tpl-item-actions"><button class="btn btn-sm" onclick="showTemplateEditor('nft')">✏️ 编辑</button><button class="btn btn-icon btn-icon-danger" onclick="deleteTemplate('nft')" title="删除">🗑</button></div></div></div>
       <button class="btn btn-primary" style="margin-top:12px" onclick="showTemplateEditor()">➕ 新建模板</button>
     </div>
     <div class="modal-body" id="template-edit-body" style="display:none">
@@ -1493,7 +1535,7 @@ body {
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast">项目已更新</div>
 
 <script>
 const STORAGE_KEY = 'airdrop_tracker_v2';
@@ -1529,7 +1571,8 @@ let ui = {
   sortBy: 'created',
   editingId: null,
   todoExpanded: true,
-  projectWalletBatchDelete: false
+  projectWalletBatchDelete: false,
+  projectWalletFilter: 'wallet'
 };
 
 /* ========== Storage ========== */
@@ -1576,7 +1619,7 @@ function load() {
 }
 
 function migrateProjects() {
-  const VALID = ['active', 'finished', 'launched', 'ended', 'dropped'];
+  const VALID = ['active', 'preregister', 'notstarted', 'finished', 'launched', 'ended', 'dropped'];
   state.projects.forEach(p => {
     if (p.priority === undefined) p.priority = 0;
     if (p.gasCost === undefined) p.gasCost = 0;
@@ -1586,6 +1629,8 @@ function migrateProjects() {
     if (p.startDate === undefined) p.startDate = '';
     if (!p.status || !VALID.includes(p.status)) p.status = 'active';
   });
+  // 恢复上次同步基准哈希，避免刷新页面后误判「冲突」把本地未上传的改动下载覆盖
+  try { lastSyncHash = localStorage.getItem('gh_lastSyncHash') || ''; } catch (e) {}
 }
 
 function save() {
@@ -2036,6 +2081,8 @@ function parseWalletFormat(format) {
     if (/地址|address|addr|钱包/.test(p)) map.address = i;
     else if (/私钥|private|pk/.test(p)) map.pk = i;
     else if (/助记词|seed|mnemonic/.test(p)) map.seed = i;
+    else if (/邮箱|email|e-mail/.test(p)) map.email = i;
+    else if (/密码|password|pwd|pass|passwd|密文/.test(p)) map.emailPassword = i;
     else if (/备注|note/.test(p)) map.note = i;
   });
   return { delim: delim, map: map };
@@ -2050,9 +2097,9 @@ function parseWalletLine(line, format) {
     delim = line.indexOf('|') > -1 ? '|' : (line.indexOf('\t') > -1 ? '\t' : null);
     parts = delim ? line.split(delim).map(function (s) { return s.trim(); }) : [line.trim()];
   }
-  if (fmt && fmt.map.address !== undefined) {
+  if (fmt && (fmt.map.address !== undefined || fmt.map.email !== undefined)) {
     const get = function (k) { return (fmt.map[k] !== undefined && fmt.map[k] < parts.length) ? parts[fmt.map[k]] : ''; };
-    return { address: get('address'), pk: get('pk'), seed: get('seed'), note: get('note') };
+    return { address: get('address'), pk: get('pk'), seed: get('seed'), email: get('email'), emailPassword: get('emailPassword'), note: get('note') };
   }
   if (parts.length === 1) return { address: parts[0] };
   if (parts.length === 2) return { address: parts[0], note: parts[1] };
@@ -2067,11 +2114,20 @@ function renderProjectWallets() {
   if (!ui.editingId) { el.innerHTML = ''; return; }
   const p = state.projects.find(function (x) { return x.id === ui.editingId; });
   const name = p ? p.name : '';
-  const list = (state.wallets || []).filter(function (w) { return w.project === name; });
+  const allList = (state.wallets || []).filter(function (w) { return w.project === name; });
+  const filter = ui.projectWalletFilter || 'wallet';
+  let list = allList.filter(function (w) {
+    const isEmail = w.type === 'email' || (w.address && w.address.indexOf('@') > -1);
+    return filter === 'email' ? isEmail : !isEmail;
+  });
   const countEl = document.getElementById('proj-wallet-count');
-  if (countEl) countEl.textContent = list.length + ' 个';
+  if (countEl) countEl.textContent = list.length + ' 个' + (filter === 'email' ? '邮箱' : '钱包');
+
   if (list.length === 0) {
-    el.innerHTML = '<div class="wallet-empty">这个项目还没有添加钱包</div>';
+    const emptyMsg = allList.length === 0
+      ? '这个项目还没有添加钱包'
+      : (filter === 'email' ? '当前筛选没有邮箱' : '当前筛选没有钱包');
+    el.innerHTML = '<div class="wallet-empty">' + emptyMsg + '</div>';
     return;
   }
 
@@ -2081,7 +2137,7 @@ function renderProjectWallets() {
     return;
   }
 
-  // 已解锁时，自动把所有加密钱包解密到内存，实现"查全部"
+  // 已解锁时，把当前筛选的加密钱包解密到内存
   const need = list.filter(function (w) { return w.enc && !w._dec; });
   if (need.length > 0) {
     Promise.all(need.map(function (w) {
@@ -2095,28 +2151,40 @@ function renderProjectWallets() {
   el.innerHTML = list.map(function (w, idx) {
     const indexHtml = '<span class="wallet-batch-index">' + (idx + 1) + '</span>';
     const checkboxHtml = batchMode ? '<input type="checkbox" class="wallet-batch-checkbox" data-id="' + w.id + '" onchange="updateBatchDeleteCount()">' : '';
-    // 解锁后像 txt 文本一样单行显示：地址----私钥----助记词
+    const isEmail = w.type === 'email' || (w.address && w.address.indexOf('@') > -1);
+    // 解锁后像 txt 文本一样单行显示：地址----私钥----助记词 或 邮箱----密码
     if (isVaultUnlocked() && w._dec) {
-      const pk = w._dec.pk || '';
-      const seed = w._dec.seed || '';
-      const line = escapeHtml(w.address) + '----' + escapeHtml(pk) + '----' + escapeHtml(seed);
+      let line, copyValue, copyLabel;
+      if (isEmail) {
+        const pwd = w._dec.emailPassword || '';
+        line = escapeHtml(w.address) + '----' + escapeHtml(pwd);
+        copyValue = w.address + '----' + pwd;
+        copyLabel = '邮箱账号';
+      } else {
+        const pk = w._dec.pk || '';
+        const seed = w._dec.seed || '';
+        line = escapeHtml(w.address) + '----' + escapeHtml(pk) + '----' + escapeHtml(seed);
+        copyValue = w.address + '----' + pk + '----' + seed;
+        copyLabel = '钱包信息';
+      }
       return '<div class="wallet-item wallet-item-txt">' +
         checkboxHtml + indexHtml +
-        '<span class="wallet-txt-line" onclick="copyText(\'' + escapeHtml(w.address + '----' + pk + '----' + seed) + '\',\'钱包信息\')" title="点击复制整行">' + line + '</span>' +
-        '<button class="btn btn-icon btn-icon-danger" onclick="deleteProjectWallet(\'' + w.id + '\')" title="删除">🗑</button>' +
+        '<span class="wallet-txt-line" onclick="event.stopPropagation(); copyText(\'' + escapeHtml(copyValue) + '\',\'' + copyLabel + '\')" title="点击复制整行">' + line + '</span>' +
+        '<button class="btn btn-icon btn-icon-danger" onclick="event.stopPropagation(); event.preventDefault(); deleteProjectWallet(\'' + w.id + '\')" title="删除">🗑</button>' +
       '</div>';
     }
-    // 锁定状态只显示地址
+    // 锁定状态只显示地址/邮箱
     return '<div class="wallet-item">' +
       checkboxHtml + indexHtml +
       '<div class="wallet-item-main">' +
         '<div class="wallet-addr-line">' +
           (w.chain ? '<span class="wallet-chain-badge">' + escapeHtml(w.chain) + '</span>' : '') +
-          '<span class="wallet-addr" onclick="copyText(\'' + escapeHtml(w.address) + '\',\'地址\')" title="点击复制地址">' + escapeHtml(w.address) + '</span>' +
+          (isEmail ? '<span class="wallet-chain-badge">📧 邮箱</span>' : '') +
+          '<span class="wallet-addr" onclick="event.stopPropagation(); copyText(\'' + escapeHtml(w.address) + '\',\'' + (isEmail ? '邮箱账号' : '地址') + '\')" title="点击复制' + (isEmail ? '邮箱' : '地址') + '">' + escapeHtml(w.address) + '</span>' +
         '</div>' +
         (w.note ? '<div class="wallet-item-sub"><span class="wallet-note">' + escapeHtml(w.note) + '</span></div>' : '') +
       '</div>' +
-      '<button class="btn btn-icon btn-icon-danger" onclick="deleteProjectWallet(\'' + w.id + '\')" title="删除">🗑</button>' +
+      '<button class="btn btn-icon btn-icon-danger" onclick="event.stopPropagation(); event.preventDefault(); deleteProjectWallet(\'' + w.id + '\')" title="删除">🗑</button>' +
     '</div>';
   }).join('');
 
@@ -2166,31 +2234,49 @@ function deleteSelectedProjectWallets() {
 }
 function buildProjectWalletExportText() {
   const project = getCurrentProjectName();
-  const list = (state.wallets || []).filter(function (w) { return w.project === project; });
+  let list = (state.wallets || []).filter(function (w) { return w.project === project; });
+  const filter = ui.projectWalletFilter || 'all';
+  if (filter !== 'all') {
+    list = list.filter(function (w) {
+      const isEmail = w.type === 'email' || (w.address && w.address.indexOf('@') > -1);
+      return filter === 'email' ? isEmail : !isEmail;
+    });
+  }
   if (!list.length) return '';
   const locked = list.some(function (w) { return w.enc && !w._dec; });
   if (locked) throw new Error('请先解锁保险库');
   return list.map(function (w) {
+    const isEmail = w.type === 'email' || (w.address && w.address.indexOf('@') > -1);
+    if (isEmail) {
+      return [w.address, (w._dec && w._dec.emailPassword) || ''].join('----');
+    }
     return [w.address, (w._dec && w._dec.pk) || '', (w._dec && w._dec.seed) || ''].join('----');
   }).join('\n');
+}
+function setProjectWalletFilter(value) {
+  ui.projectWalletFilter = value || 'wallet';
+  const sel = document.getElementById('f-proj-wallet-filter');
+  if (sel && sel.value !== ui.projectWalletFilter) sel.value = ui.projectWalletFilter;
+  renderProjectWallets();
 }
 function copyProjectWallets() {
   try {
     const text = buildProjectWalletExportText();
-    if (!text) { showToast('这个项目没有钱包可复制'); return; }
-    copyText(text, '全部钱包');
+    if (!text) { showToast('当前视图没有可复制的记录'); return; }
+    copyText(text, ui.projectWalletFilter === 'email' ? '全部邮箱' : '全部钱包');
   } catch (e) { showToast('❌ ' + e.message); }
 }
 function downloadProjectWallets() {
   try {
     const text = buildProjectWalletExportText();
-    if (!text) { showToast('这个项目没有钱包可下载'); return; }
+    if (!text) { showToast('当前视图没有可下载的记录'); return; }
     const project = getCurrentProjectName() || 'wallets';
+    const suffix = ui.projectWalletFilter === 'email' ? '_emails' : '_wallets';
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = project + '_wallets.txt';
+    a.download = project + suffix + '.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -2205,59 +2291,83 @@ function getCurrentProjectName() {
   const p = state.projects.find(function (x) { return x.id === ui.editingId; });
   return p ? p.name : '';
 }
-function updateFormatHint() {
-  const input = document.getElementById('f-proj-bulk-format');
-  if (!input) return;
-  input.title = input.value;
-}
 async function bulkAddProjectWallets() {
   const project = getCurrentProjectName();
   if (!project) { showToast('请先保存项目'); return; }
-  await bulkAddFromTextarea('f-proj-bulk', project, function () { renderProjectWallets(); });
+  await bulkAddFromTextarea('f-proj-bulk-wallet', 'wallet', project, function () { renderProjectWallets(); });
 }
-async function bulkAddFromTextarea(textareaId, project, onDone) {
+async function bulkAddProjectEmails() {
+  const project = getCurrentProjectName();
+  if (!project) { showToast('请先保存项目'); return; }
+  await bulkAddFromTextarea('f-proj-bulk-email', 'email', project, function () { renderProjectWallets(); });
+}
+async function bulkAddFromTextarea(textareaId, type, project, onDone) {
   const ta = document.getElementById(textareaId);
   const lines = ta.value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
   if (lines.length === 0) { showToast('请粘贴数据'); return; }
-  const formatInput = document.getElementById('f-proj-bulk-format');
-  const format = formatInput ? formatInput.value : '地址----私钥----助记词';
-  const dedup = document.getElementById('f-proj-dedup') ? document.getElementById('f-proj-dedup').checked : false;
+  const isEmail = type === 'email';
+  const format = isEmail ? '邮箱----密码' : '地址----私钥----助记词';
+  const dedupId = isEmail ? 'f-proj-dedup-email' : 'f-proj-dedup-wallet';
+  const dedup = document.getElementById(dedupId) ? document.getElementById(dedupId).checked : false;
   const parsed = lines.map(function (l) { return parseWalletLine(l, format); });
-  const hasSecret = parsed.some(function (p) { return p.pk || p.seed; });
+  const hasSecret = parsed.some(function (p) { return p.pk || p.seed || p.emailPassword; });
   if (hasSecret) {
-    if (!vaultAvailable()) { showToast('⚠️ 当前环境不支持加密，无法保存私钥/助记词'); return; }
+    if (!vaultAvailable()) { showToast('⚠️ 当前环境不支持加密，无法保存私钥/助记词/密码'); return; }
     if (!isVaultUnlocked()) {
-      promptUnlock(function () { bulkAddFromTextarea(textareaId, project, onDone); });
+      promptUnlock(function () { bulkAddFromTextarea(textareaId, type, project, onDone); });
       return;
     }
   }
   const existingAddresses = new Set(((state.wallets || []).filter(function (w) { return w.project === project; })).map(function (w) { return w.address; }));
   let added = 0, skipped = 0;
   for (const p of parsed) {
-    if (!p.address) continue;
-    if (dedup && existingAddresses.has(p.address)) { skipped++; continue; }
+    const addr = isEmail ? p.email : p.address;
+    if (!addr) continue;
+    if (dedup && existingAddresses.has(addr)) { skipped++; continue; }
     let enc = null;
-    if (p.pk || p.seed) enc = await vaultEncrypt(JSON.stringify({ pk: p.pk, seed: p.seed }));
-    state.wallets.push({ id: uid(), address: p.address, project: project, note: p.note, enc: enc });
-    existingAddresses.add(p.address);
+    const secrets = {};
+    if (p.pk) secrets.pk = p.pk;
+    if (p.seed) secrets.seed = p.seed;
+    if (p.emailPassword) secrets.emailPassword = p.emailPassword;
+    if (Object.keys(secrets).length > 0) enc = await vaultEncrypt(JSON.stringify(secrets));
+    state.wallets.push({ id: uid(), address: addr, project: project, note: p.note, enc: enc, type: isEmail ? 'email' : 'wallet' });
+    existingAddresses.add(addr);
     added++;
   }
-  if (added === 0 && skipped > 0) { showToast('已跳过 ' + skipped + ' 个重复地址'); return; }
+  if (added === 0 && skipped > 0) { showToast('已跳过 ' + skipped + ' 个重复'); return; }
   save();
   ta.value = '';
   onDone();
   render();
-  showToast('已导入 ' + added + ' 个钱包' + (skipped > 0 ? '（跳过 ' + skipped + ' 个重复）' : ''));
+  showToast('已导入 ' + added + ' 个' + (isEmail ? '邮箱' : '钱包') + (skipped > 0 ? '（跳过 ' + skipped + ' 个重复）' : ''));
 }
 function importProjectWalletsFromFile() {
-  document.getElementById('f-proj-file').click();
+  document.getElementById('f-proj-file-wallet').click();
+}
+function importProjectEmailsFromFile() {
+  document.getElementById('f-proj-file-email').click();
 }
 function handleProjectWalletFile(event) {
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function (e) {
-    const ta = document.getElementById('f-proj-bulk');
+    const ta = document.getElementById('f-proj-bulk-wallet');
+    const text = e.target.result || '';
+    ta.value = text;
+    const lines = text.split('\n').filter(function (x) { return x.trim(); }).length;
+    showToast('文件已读取，共 ' + lines + ' 行');
+  };
+  reader.onerror = function () { showToast('读取文件失败'); };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+function handleProjectEmailFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const ta = document.getElementById('f-proj-bulk-email');
     const text = e.target.result || '';
     ta.value = text;
     const lines = text.split('\n').filter(function (x) { return x.trim(); }).length;
@@ -2274,7 +2384,21 @@ async function pasteProjectWallets() {
   try {
     const text = await navigator.clipboard.readText();
     if (!text) { showToast('剪贴板为空'); return; }
-    const ta = document.getElementById('f-proj-bulk');
+    const ta = document.getElementById('f-proj-bulk-wallet');
+    ta.value = (ta.value ? ta.value + '\n' : '') + text;
+    showToast('已粘贴到输入框');
+  } catch (e) {
+    showToast('无法读取剪贴板，请手动粘贴（浏览器需要剪贴板权限）');
+  }
+}
+async function pasteProjectEmails() {
+  if (!navigator.clipboard || !navigator.clipboard.readText) {
+    showToast('当前浏览器不支持读取剪贴板，请手动粘贴'); return;
+  }
+  try {
+    const text = await navigator.clipboard.readText();
+    if (!text) { showToast('剪贴板为空'); return; }
+    const ta = document.getElementById('f-proj-bulk-email');
     ta.value = (ta.value ? ta.value + '\n' : '') + text;
     showToast('已粘贴到输入框');
   } catch (e) {
@@ -2282,10 +2406,17 @@ async function pasteProjectWallets() {
   }
 }
 function clearProjectWalletBulk() {
-  document.getElementById('f-proj-bulk').value = '';
+  document.getElementById('f-proj-bulk-wallet').value = '';
+}
+function clearProjectEmailBulk() {
+  document.getElementById('f-proj-bulk-email').value = '';
 }
 function closeProjectWalletAdd() {
-  const details = document.getElementById('proj-wallet-add-details');
+  const details = document.getElementById('proj-wallet-bulk-details');
+  if (details) details.open = false;
+}
+function closeProjectEmailAdd() {
+  const details = document.getElementById('proj-email-bulk-details');
   if (details) details.open = false;
 }
 function copyText(text, label) {
@@ -2393,7 +2524,7 @@ function render() {
 }
 
 function updateFilterCounts() {
-  const counts = { all: state.projects.length, active: 0, finished: 0, launched: 0, ended: 0, dropped: 0 };
+  const counts = { all: state.projects.length, active: 0, preregister: 0, notstarted: 0, finished: 0, launched: 0, ended: 0, dropped: 0 };
   state.projects.forEach(p => {
     if (counts[p.status] !== undefined) counts[p.status]++;
     else counts.active++;
@@ -2552,6 +2683,8 @@ function renderProjects() {
 function statusLabel(s) {
   return {
     active: '🔥 进行中',
+    preregister: '📝 预注册',
+    notstarted: '⏸️ 项目未开始',
     finished: '⏳ 等待 TGE发币',
     launched: '💰 已发币',
     ended: '🔚 已结束·未中',
@@ -2604,8 +2737,17 @@ function renderCard(p) {
     costHtml += '</div>';
   }
 
-  const myWallets = (state.wallets || []).filter(w => w.project === p.name).length;
-  if (myWallets > 0) metaItems.push('<span title="我在「我的钱包」里关联的本项目地址数">💼 ' + myWallets + ' 个钱包</span>');
+  const myWallets = (state.wallets || []).filter(w => w.project === p.name);
+  const myWalletCount = myWallets.filter(w => w.type !== 'email' && !(w.address && w.address.indexOf('@') > -1)).length;
+  const myEmailCount = myWallets.filter(w => w.type === 'email' || (w.address && w.address.indexOf('@') > -1)).length;
+  if (myWalletCount > 0 || myEmailCount > 0) {
+    let badge = '<span title="我在「我的钱包」里关联的本项目数量">';
+    if (myWalletCount > 0) badge += '💼 ' + myWalletCount + ' 个钱包';
+    if (myWalletCount > 0 && myEmailCount > 0) badge += '<span style="margin:0 6px;color:var(--text-2)">·</span>';
+    if (myEmailCount > 0) badge += '📧 ' + myEmailCount + ' 个邮箱';
+    badge += '</span>';
+    metaItems.push(badge);
+  }
 
   let walletHtml = '';
   if (p.contractAddress) {
@@ -2942,7 +3084,16 @@ function openModalInner(projectId) {
     setFieldValue('f-tokenSymbol', p.tokenSymbol);
     setFieldValue('f-priority', String(p.priority || 0));
     setFieldValue('f-tgeDate', p.tgeDate);
-    setFieldValue('f-startDate', p.startDate);
+    if (p.startDate && /^\d{4}-\d{2}-\d{2}$/.test(p.startDate)) {
+      const dp = p.startDate.split('-');
+      setFieldValue('f-startDate-y', dp[0]);
+      setFieldValue('f-startDate-m', dp[1]);
+      setFieldValue('f-startDate-d', dp[2]);
+    } else {
+      setFieldValue('f-startDate-y', '');
+      setFieldValue('f-startDate-m', '');
+      setFieldValue('f-startDate-d', '');
+    }
     setFieldValue('f-twitter', p.twitter);
     setFieldValue('f-telegram', p.telegram);
     setFieldValue('f-discord', p.discord);
@@ -2959,7 +3110,7 @@ function openModalInner(projectId) {
     (p.oneTimeTasks || []).forEach(t => addTaskEditorRow('onetime', t.text));
   } else {
     title.textContent = '📝 新增项目';
-    ['f-name','f-website','f-tokenSymbol','f-tgeDate','f-startDate','f-twitter','f-telegram','f-discord',
+    ['f-name','f-website','f-tokenSymbol','f-tgeDate','f-startDate-y','f-startDate-m','f-startDate-d','f-twitter','f-telegram','f-discord',
      'f-fundingRound','f-fundingAmount','f-investors','f-contractAddress',
      'f-gasCost','f-airdropToken','f-airdropAmount','f-airdropValue','f-notes'].forEach(id => setFieldValue(id, ''));
     document.getElementById('f-status').value = 'active';
@@ -2972,10 +3123,17 @@ function openModalInner(projectId) {
 
   const pwSec = document.getElementById('proj-wallet-section');
   if (pwSec) pwSec.style.display = projectId ? '' : 'none';
-  const bulkTa = document.getElementById('f-proj-bulk');
-  if (bulkTa) bulkTa.value = '';
+  ['f-proj-bulk-wallet', 'f-proj-bulk-email'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
   renderVaultBanner();
   renderProjectWallets();
+  bindDateInputFormatting();
+
+  // 初始化钱包视图筛选
+  const filterSel = document.getElementById('f-proj-wallet-filter');
+  if (filterSel) filterSel.value = ui.projectWalletFilter || 'wallet';
 
   modal.classList.add('active');
 }
@@ -2983,6 +3141,62 @@ function openModalInner(projectId) {
 function setFieldValue(id, val) {
   const el = document.getElementById(id);
   if (el) el.value = val || '';
+}
+function getDateSeg(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  return el.value.replace(/\D/g, '');
+}
+function validateDateSeg(id, raw) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  // 全角数字转半角，避免中文输入法输入２０２６时被当成非数字清空
+  let v = raw.replace(/[０-９]/g, function (ch) { return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0); });
+  v = v.replace(/\D/g, '');
+  v = id === 'f-startDate-y' ? v.slice(0, 4) : v.slice(0, 2);
+  if (el.value !== v) el.value = v;
+  let valid = true;
+  if (id === 'f-startDate-m') {
+    const mm = parseInt(v, 10);
+    valid = v.length === 0 || (mm >= 1 && mm <= 12);
+  } else if (id === 'f-startDate-d') {
+    const dd = parseInt(v, 10);
+    valid = v.length === 0 || (dd >= 1 && dd <= 31);
+  }
+  if (valid) el.classList.remove('invalid');
+  else el.classList.add('invalid');
+  return v;
+}
+function bindDateInputFormatting() {
+  const y = document.getElementById('f-startDate-y');
+  const m = document.getElementById('f-startDate-m');
+  const d = document.getElementById('f-startDate-d');
+  if (!y || y._dateBound) return;
+  function jump(cur, next, len) {
+    const v = validateDateSeg(cur.id, cur.value);
+    if (next && v.length >= len) {
+      if (cur.id === 'f-startDate-y' && v.length === 4) next.focus();
+      else if (cur.id === 'f-startDate-m' && v.length === 2) {
+        const mm = parseInt(v, 10);
+        if (mm >= 1 && mm <= 12) next.focus();
+      }
+    }
+  }
+  y.addEventListener('input', function () { jump(y, m, 4); });
+  m.addEventListener('input', function () { jump(m, d, 2); });
+  d.addEventListener('input', function () { validateDateSeg('f-startDate-d', d.value); });
+  m.addEventListener('keydown', function (e) { if (e.key === 'Backspace' && m.value === '') { e.preventDefault(); y.focus(); } });
+  d.addEventListener('keydown', function (e) { if (e.key === 'Backspace' && d.value === '') { e.preventDefault(); m.focus(); } });
+  y._dateBound = true;
+}
+function combineStartDate() {
+  const y = getDateSeg('f-startDate-y');
+  const m = getDateSeg('f-startDate-m');
+  const d = getDateSeg('f-startDate-d');
+  if (!y && !m && !d) return '';
+  if (y && m && d) return y + '-' + m + '-' + d;
+  if (y && m) return y + '-' + m;
+  return y || '';
 }
 
 function getFieldValue(id) {
@@ -3052,7 +3266,7 @@ function doSaveProject() {
     tokenSymbol: getFieldValue('f-tokenSymbol'),
     priority: parseInt(getFieldValue('f-priority')) || 0,
     tgeDate: getFieldValue('f-tgeDate'),
-    startDate: getFieldValue('f-startDate'),
+    startDate: combineStartDate(),
     twitter: getFieldValue('f-twitter'),
     telegram: getFieldValue('f-telegram'),
     discord: getFieldValue('f-discord'),
@@ -3273,7 +3487,7 @@ function renderPagesLink() {
   if (!box) return;
   if (state.pagesUrl) {
     box.innerHTML = '<input type="text" id="pages-url-input" readonly value="' +
-      escapeHtml(state.pagesUrl) + '"><button class="btn btn-sm" onclick="copyPagesUrl()">📋 复制</button>';
+      escapeHtml(state.pagesUrl) + '"><button class="btn btn-sm" type="button" onclick="event.stopPropagation(); copyPagesUrl()">📋 复制</button>';
   } else {
     box.innerHTML = '';
   }
@@ -3478,6 +3692,13 @@ async function doUpload() {
   const token = localStorage.getItem('gh_token');
   if (!token) { setSyncStatus('❌ 请先填写并保存 GitHub Token'); throw new Error('no token'); }
   setSyncStatus('🔐 正在用主密码整体加密并上传…');
+  // 旧版图标可能未压缩，先处理避免撑爆 Gist
+  if (state.appIcon && state.appIcon.length > 120 * 1024) {
+    setSyncStatus('🖼 图标较大，正在压缩…');
+    state.appIcon = await compressDataUrl(state.appIcon, 192, 100 * 1024, 0.85);
+    save();
+    applyAppIcon();
+  }
   const snap = JSON.stringify(snapshotState());
   // 包内附带 vault 元数据（salt + verifier，均为明文/密文校验值，公开无损安全），
   // 用于跨设备下载时「密码 + 包内 salt」派生 key 解密，不依赖本机 vault。
@@ -3492,7 +3713,6 @@ async function doUpload() {
       gzipped = true;
     } catch (e) { setSyncStatus('⚠️ gzip 压缩失败，将尝试原样上传：' + e.message); }
   }
-  if (payload.length > 900 * 1024) throw new Error('数据包超过 900 KB，请减小图标大小或减少项目/钱包数量');
   const fileContent = JSON.stringify({ v: 2, alg: 'AES-GCM-PBKDF2', gzip: gzipped, blob: payload });
   const metaHash = cheapHash(snap);
   let gistId = localStorage.getItem('gh_gist');
@@ -3508,31 +3728,58 @@ async function doUpload() {
     } catch (_) {}
     throw new Error('HTTP ' + r.status + (detail ? ' ' + detail : ''));
   }
+  // 分片上传：把加密包切到多个 Gist 文件，突破单文件 ~1MB 限制
+  const MAX_CHUNK = 800 * 1024;
+  const files = {};
+  let n = 0;
+  for (let i = 0; i < fileContent.length; i += MAX_CHUNK) {
+    files['airdrop-vault.enc.' + n] = { content: fileContent.slice(i, i + MAX_CHUNK) };
+    n++;
+  }
+  files['airdrop-vault.idx'] = { content: JSON.stringify({ ver: 2, n: n }) };
   if (gistId) {
+    // 先取现有文件，把多余的旧分片 / 旧单文件删掉（保留 idx，避免触发「删除最后文件」422）
+    let existing = {};
+    try {
+      const gg = await fetch('https://api.github.com/gists/' + gistId, { headers: { Authorization: 'Bearer ' + token } });
+      if (gg.ok) existing = (await gg.json()).files || {};
+    } catch (e) {}
+    for (const name of Object.keys(existing)) {
+      if (name === 'airdrop-vault.idx') continue;
+      if (name === 'airdrop-vault.enc') { files[name] = null; continue; }
+      if (name.indexOf('airdrop-vault.enc.') === 0) {
+        const ci = parseInt(name.slice('airdrop-vault.enc.'.length), 10);
+        if (isNaN(ci) || ci >= n) files[name] = null;
+      }
+    }
     const r = await fetch('https://api.github.com/gists/' + gistId, {
       method: 'PATCH',
       headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ description: 'Airdrop Vault ::' + metaHash, files: { 'airdrop-vault.enc': { content: fileContent } } })
+      body: JSON.stringify({ description: 'Airdrop Vault ::' + metaHash, files })
     });
     if (!r.ok) await ghThrow(r);
   } else {
     const r = await fetch('https://api.github.com/gists', {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ description: 'Airdrop Vault ::' + metaHash, public: false, files: { 'airdrop-vault.enc': { content: fileContent } } })
+      body: JSON.stringify({ description: 'Airdrop Vault ::' + metaHash, public: false, files })
     });
     if (!r.ok) await ghThrow(r);
     const j = await r.json();
     gistId = j.id; localStorage.setItem('gh_gist', gistId);
   }
-  setSyncStatus('✅ 已上传（Gist: ' + gistId + '）。GitHub 上仅见密文。');
+  setSyncStatus('✅ 已上传（Gist: ' + gistId + (n > 1 ? '，分 ' + n + ' 片' : '') + '）。GitHub 上仅见密文。');
   showToast('☁️ 已同步到 GitHub');
-  lastSyncHash = cheapHash(snap);
+  setLastSyncHash(cheapHash(snap));
 }
 // ---------- 自动同步（每 5 秒检查，有变化才上传） ----------
 let autoSyncTimer = null;
 let autoSyncRunning = false;
 let lastSyncHash = '';
+function setLastSyncHash(h) {
+  lastSyncHash = h;
+  try { localStorage.setItem('gh_lastSyncHash', h); } catch (e) {}
+}
 function cheapHash(s) {
   let h = 5381;
   for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
@@ -3566,27 +3813,25 @@ async function autoSyncTick() {
     const localHash = cheapHash(snap);
     // 云端元数据哈希（存在 Gist description 里），用于快速判断是否有更新（不下载大文件）
     const remoteHash = await getRemoteMetaHash(token, gistId);
-    const baseHash = lastSyncHash;
     if (!remoteHash) {
-      // 读不到云端哈希：为安全起见本回合不覆盖云端（避免误上传旧数据把另一端的新改动冲掉），下轮再试
       setSyncStatus('⏳ 自动同步：暂时读不到云端状态，本回合跳过');
       return;
     }
-    if (remoteHash === localHash) {
-      // 两端完全一致
-      lastSyncHash = localHash;
-      setSyncStatus('🔄 自动同步（双向·5 秒）· 已是最新');
-    } else if (localHash === baseHash && remoteHash !== baseHash) {
-      // 本地没改、云端有更新 → 下载（绝不覆盖云端）
-      setSyncStatus('🔄 检测到云端更新，正在自动下载…');
-      await doPullAuto();
-    } else if (remoteHash === baseHash && localHash !== baseHash) {
-      // 云端没改、本地有更新 → 上传
-      await doUpload();
+    // 核心规则（单人错峰编辑安全，且优先保护本地工作）：
+    //  - 本地自上次同步基准以来没改过 → 云端有更新就下载（不会丢东西，本地本来没动）
+    //  - 本地有改动 → 一律上传，绝不被云端下载覆盖
+    // 无已知基准时以云端当前状态为基准，避免首轮误判冲突
+    const baseHash = lastSyncHash || remoteHash;
+    if (localHash === baseHash) {
+      if (remoteHash !== baseHash) {
+        setSyncStatus('🔄 检测到云端更新，正在自动下载…');
+        await doPullAuto();
+      } else {
+        setSyncStatus('🔄 自动同步（双向·5 秒）· 已是最新');
+      }
     } else {
-      // 两端相对上次同步基准都改了（冲突）：以云端为准下载，避免上传旧数据覆盖对方改动
-      setSyncStatus('⚠️ 检测到双向修改，以云端为准合并下载…');
-      await doPullAuto();
+      setSyncStatus('🔄 检测到本地改动，正在自动上传…');
+      await doUpload();
     }
   } catch (e) { setSyncStatus('⏸ 自动同步错误：' + e.message); }
   finally { autoSyncRunning = false; }
@@ -3607,15 +3852,37 @@ async function downloadAndDecrypt(token, gistId) {
   const r = await fetch('https://api.github.com/gists/' + gistId, { headers: { Authorization: 'Bearer ' + token } });
   if (!r.ok) throw new Error('HTTP ' + r.status);
   const j = await r.json();
-  const file = j.files && j.files['airdrop-vault.enc'];
-  if (!file) throw new Error('Gist 中无加密数据');
-  let content = file.content;
-  if (file.truncated && file.raw_url) {
-    // gzip 后通常不会被截断；万一被截断，仍尝试 raw_url（可能受 CORS 限制）
-    setSyncStatus('📥 文件较大，正在下载完整内容…');
-    const rawR = await fetch(file.raw_url, { headers: { Authorization: 'Bearer ' + token } });
-    if (!rawR.ok) throw new Error('下载大文件失败 HTTP ' + rawR.status);
-    content = await rawR.text();
+  let content = null;
+  if (j.files && j.files['airdrop-vault.idx']) {
+    // 新分片格式：按索引拼回完整加密包
+    let idx;
+    try { idx = JSON.parse(j.files['airdrop-vault.idx'].content); } catch (e) { idx = null; }
+    if (!idx || !idx.n) throw new Error('Gist 分片索引损坏');
+    const parts = [];
+    for (let i = 0; i < idx.n; i++) {
+      const f = j.files['airdrop-vault.enc.' + i];
+      if (!f) throw new Error('Gist 缺少第 ' + i + ' 分片');
+      let c = f.content;
+      if (f.truncated && f.raw_url) {
+        setSyncStatus('📥 分片 ' + (i + 1) + '/' + idx.n + ' 较大，正在下载完整内容…');
+        const rawR = await fetch(f.raw_url, { headers: { Authorization: 'Bearer ' + token } });
+        if (!rawR.ok) throw new Error('下载大文件失败 HTTP ' + rawR.status);
+        c = await rawR.text();
+      }
+      parts.push(c);
+    }
+    content = parts.join('');
+  } else {
+    // 旧单文件格式（兼容）
+    const file = j.files && j.files['airdrop-vault.enc'];
+    if (!file) throw new Error('Gist 中无加密数据');
+    content = file.content;
+    if (file.truncated && file.raw_url) {
+      setSyncStatus('📥 文件较大，正在下载完整内容…');
+      const rawR = await fetch(file.raw_url, { headers: { Authorization: 'Bearer ' + token } });
+      if (!rawR.ok) throw new Error('下载大文件失败 HTTP ' + rawR.status);
+      content = await rawR.text();
+    }
   }
   if (!content) throw new Error('Gist 中无加密数据');
   const outer = JSON.parse(content);
@@ -3660,7 +3927,7 @@ async function syncPull() {
     if (confirm('从 GitHub 下载将覆盖当前本地数据，确定继续吗？')) {
       applySyncedState(JSON.parse(plain));
       save();
-      lastSyncHash = cheapHash(plain);
+      setLastSyncHash(cheapHash(plain));
       setSyncStatus('✅ 已从 GitHub 同步（' + (state.wallets || []).length + ' 个钱包）');
       showToast('☁️ 已从 GitHub 同步');
       render(); renderVaultBanner(); renderAllWalletLists();
@@ -3677,7 +3944,7 @@ async function doPullAuto() {
     if (!plain) return;
     applySyncedState(JSON.parse(plain));
     save();
-    lastSyncHash = cheapHash(plain);
+    setLastSyncHash(cheapHash(plain));
     setSyncStatus('✅ 已自动同步云端数据（' + (state.wallets || []).length + ' 个钱包）');
     render(); renderVaultBanner(); renderAllWalletLists();
   } catch (e) { setSyncStatus('⏸ 自动下载失败：' + e.message); }
@@ -3807,6 +4074,31 @@ function compressImageToDataURL(file, maxDim = 192, maxBytes = 100 * 1024, quali
     };
     img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('图片加载失败')); };
     img.src = url;
+  });
+}
+// 对已有的 data URL（如旧版 localStorage 里的大图标）做同样压缩
+function compressDataUrl(dataUrl, maxDim = 192, maxBytes = 100 * 1024, quality = 0.85) {
+  return new Promise((resolve) => {
+    if (!dataUrl || !dataUrl.startsWith('data:image/')) { resolve(dataUrl); return; }
+    const img = new Image();
+    img.onload = function () {
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > maxDim) { h = Math.round(h * maxDim / w); w = maxDim; } }
+      else { if (h > maxDim) { w = Math.round(w * maxDim / h); h = maxDim; } }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#0c0c16';
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      let out = canvas.toDataURL('image/jpeg', quality);
+      if (out.length > maxBytes * 4 / 3 && quality > 0.55) {
+        out = canvas.toDataURL('image/jpeg', 0.55);
+      }
+      resolve(out);
+    };
+    img.onerror = function () { resolve(dataUrl); };
+    img.src = dataUrl;
   });
 }
 async function onIconUpload(e) {
