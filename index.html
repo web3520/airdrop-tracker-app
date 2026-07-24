@@ -1295,7 +1295,7 @@ body {
 
     <div class="form-section" id="proj-wallet-section">
       <div class="form-section-title"><span>👤 我的 · 钱包（私钥/助记词加密保存）</span></div>
-      <div class="vault-banner ok" id="proj-vault-banner">🔓 保险库已解锁 · 私钥/助记词均以密文存储 <button class="vault-btn" onclick="changeVaultPassword()">🔑 改主密码</button> <button class="vault-btn danger" onclick="lockVault()">🔒 上锁</button></div>
+      <div class="vault-banner warn" id="proj-vault-banner">🔒 保险库已锁定 · <button class="vault-btn" onclick="promptUnlock()">🔓 解锁以查看/添加私钥</button></div>
       <div class="wallet-list-toolbar" id="proj-wallet-toolbar">
         <button class="btn btn-sm" type="button" onclick="event.stopPropagation(); copyProjectWallets()">📋 复制</button>
         <button class="btn btn-sm" type="button" onclick="event.stopPropagation(); downloadProjectWallets()">⬇️ 下载</button>
@@ -1393,7 +1393,7 @@ user2@example.com----anotherpass"></textarea>
       <h2>☁️ 云同步（GitHub Gist）</h2>
       <button class="modal-close" onclick="closeSyncModal()">×</button>
     </div>
-    <div class="vault-banner ok">🔓 保险库已解锁 · 私钥/助记词均以密文存储 <button class="vault-btn" onclick="changeVaultPassword()">🔑 改主密码</button> <button class="vault-btn danger" onclick="lockVault()">🔒 上锁</button></div>
+    <div class="vault-banner warn">🔒 保险库已锁定 · <button class="vault-btn" onclick="promptUnlock()">🔓 解锁以查看/添加私钥</button></div>
     <div class="sync-row">
       <input type="password" id="gh-token" placeholder="GitHub Token（需 gist 权限，fine-grained 或 classic 均可）" autocomplete="off">
     </div>
@@ -1408,7 +1408,7 @@ user2@example.com----anotherpass"></textarea>
     <div class="sync-row auto-sync-row">
       <label class="auto-sync-label"><input type="checkbox" id="auto-sync" onchange="toggleAutoSync()"> 🔁 自动同步（每 5 秒检查，有变化自动上传下载）</label>
     </div>
-    <div class="sync-status" id="sync-status">✅ 已从 GitHub 同步（6832 个钱包）</div>
+    <div class="sync-status" id="sync-status">🔐 正在用主密码整体加密并上传…</div>
     <div class="icon-setting">
       <div class="icon-setting-title">📱 手机App图标和名字（添加到主屏幕时显示）</div>
       <div class="icon-preview-row">
@@ -1459,7 +1459,7 @@ user2@example.com----anotherpass"></textarea>
       <h2>🔐 操作保护设置</h2>
       <button class="modal-close" onclick="closeProtectModal()">×</button>
     </div>
-    <div class="vault-banner ok">🔓 保险库已解锁 · 私钥/助记词均以密文存储 <button class="vault-btn" onclick="changeVaultPassword()">🔑 改主密码</button> <button class="vault-btn danger" onclick="lockVault()">🔒 上锁</button></div>
+    <div class="vault-banner warn">🔒 保险库已锁定 · <button class="vault-btn" onclick="promptUnlock()">🔓 解锁以查看/添加私钥</button></div>
     <div id="op-pwd-section">
       <div class="op-pwd-box" id="op-pwd-status-box">
         <div class="op-pwd-status-line">
@@ -3912,13 +3912,25 @@ async function autoSyncTick() {
       setSyncStatus('⏳ 自动同步：暂时读不到云端状态，本回合跳过');
       return;
     }
-    // 核心规则（单人错峰编辑安全，且优先保护本地工作）：
+    // 新设备 / 首次同步（本地没有同步基准 lastSyncHash）：
+    // 绝不能直接上传，否则空/旧数据会覆盖云端最新数据（这就是之前新手机登录把云端覆盖掉的 bug）。
+    // 正确做法：云端有数据就先下载建立基准，云端也为空才把本地作为首次数据上传。
+    if (!lastSyncHash) {
+      if (remoteHash) {
+        setSyncStatus('🔄 新设备首次同步：先下载云端数据建立基准（不会覆盖）…');
+        showToast('📥 新设备已自动从云端恢复数据');
+        await doPullAuto();
+      } else {
+        setSyncStatus('🔄 云端暂无数据：将本地作为首次数据上传…');
+        await doUpload();
+      }
+      return;
+    }
+    // 已有基准：优先保护本地工作
     //  - 本地自上次同步基准以来没改过 → 云端有更新就下载（不会丢东西，本地本来没动）
     //  - 本地有改动 → 一律上传，绝不被云端下载覆盖
-    // 无已知基准时以云端当前状态为基准，避免首轮误判冲突
-    const baseHash = lastSyncHash || remoteHash;
-    if (localHash === baseHash) {
-      if (remoteHash !== baseHash) {
+    if (localHash === lastSyncHash) {
+      if (remoteHash !== lastSyncHash) {
         setSyncStatus('🔄 检测到云端更新，正在自动下载…');
         await doPullAuto();
       } else {
