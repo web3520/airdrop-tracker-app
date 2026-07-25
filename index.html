@@ -119,7 +119,8 @@ body {
 
 /* ========== Stats Row ========== */
 .stats-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px 300px;
   gap: 12px;
   margin-bottom: 12px;
   align-items: stretch;
@@ -127,6 +128,7 @@ body {
 .stats-group {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto 1fr;
   gap: 12px;
   flex: 1;
 }
@@ -171,9 +173,10 @@ body {
 .chart-card {
   background: var(--surface);
   border-radius: var(--radius);
-  padding: 14px 16px;
-  width: 280px;
-  flex-shrink: 0;
+  padding: 10px 12px;
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
 }
 .chart-title {
   font-size: 11px;
@@ -186,7 +189,8 @@ body {
   display: flex;
   gap: 6px;
   align-items: flex-end;
-  height: 56px;
+  flex: 1;
+  min-height: 44px;
 }
 .chart-bar {
   flex: 1;
@@ -407,6 +411,16 @@ body {
   background: rgba(139, 92, 246, 0.3);
   color: #c4b5fd;
 }
+.pill-drag {
+  cursor: grab;
+  color: var(--text-3);
+  font-size: 11px;
+  line-height: 1;
+  padding: 0 4px 0 0;
+  user-select: none;
+  touch-action: none;
+}
+.pill-drag:active { cursor: grabbing; }
 
 .sort-select {
   padding: 6px 12px;
@@ -841,6 +855,41 @@ body {
 .btn-ghost:hover { border-color: var(--accent); color: var(--text); }
 .wallet-secret-line { display: flex; align-items: center; gap: 6px; width: 100%; }
 .wallet-secret-line .lbl { font-size: 11px; color: var(--text-3); min-width: 56px; }
+/* ========== 工具箱 ========== */
+.tools-bar { margin-bottom: 10px; }
+.tool-search { width:100%; padding:8px 12px; border-radius:6px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:13px; }
+.tool-cat-pills { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+.tool-cat-pill { padding:3px 10px; border-radius:12px; font-size:12px; cursor:pointer; background:var(--surface); border:1px solid var(--border); color:var(--text-2); }
+.tool-cat-pill.active { background:var(--accent-bg); border-color:rgba(139,92,246,.4); color:#a78bfa; }
+.tools-stat { font-size:12px; color:var(--text-3); margin-bottom:10px; }
+.tools-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px; max-height:340px; overflow-y:auto; }
+.tool-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px; }
+.tool-card-head { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+.tool-card-name { font-size:13px; font-weight:500; color:var(--text); }
+.tool-card-cat { font-size:10px; padding:2px 7px; border-radius:10px; background:var(--green-bg); color:var(--green); white-space:nowrap; }
+.tool-card-url { font-size:11px; color:var(--blue); margin:6px 0 4px; word-break:break-all; }
+.tool-card-note { font-size:11px; color:var(--text-3); margin-bottom:8px; }
+.tool-card-tags { font-size:11px; color:var(--text-3); margin-bottom:8px; }
+.tool-card-actions { display:flex; gap:6px; flex-wrap:wrap; }
+.tool-empty { grid-column:1/-1; text-align:center; color:var(--text-3); font-size:13px; padding:30px 0; }
+.tool-form { background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--radius); padding:12px; }
+.tool-form-title { font-size:13px; color:#a78bfa; margin-bottom:8px; }
+.tool-form-grid { display:flex; gap:8px; margin-bottom:8px; }
+.tool-form-grid > * { flex:1; min-width:0; }
+.tool-form input, .tool-form select { padding:7px 10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:12px; width:100%; }
+.tool-form-actions { display:flex; gap:8px; }
+.tools-bar-actions { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+.tool-cat-manager { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:10px; margin-bottom:10px; }
+.tool-cat-manager-row { display:flex; gap:8px; margin-bottom:8px; }
+.tool-cat-manager-row .tool-search { margin:0; flex:1; }
+.tool-cat-manager-list { display:flex; gap:6px; flex-wrap:wrap; }
+.tool-cat-item { display:inline-flex; align-items:center; gap:6px; padding:3px 8px; border-radius:12px; font-size:12px; background:var(--bg); border:1px solid var(--border); color:var(--text-2); }
+.tool-cat-item .del { cursor:pointer; color:var(--red); font-weight:700; padding:0 2px; }
+.tool-cat-item.locked { opacity:.8; }
+.tool-star { cursor:pointer; background:none; border:none; font-size:15px; line-height:1; padding:2px; color:var(--text-3); }
+.tool-star.on { color:#f5c518; }
+.tool-card-count { font-size:10px; color:var(--text-3); margin-left:auto; white-space:nowrap; }
+
 /* GitHub 云同步 */
 .sync-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
 .sync-row input { flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); padding: 8px 10px; font-size: 13px; font-family: inherit; }
@@ -1042,17 +1091,262 @@ body {
 /* ========== Responsive ========== */
 @media (max-width: 768px) {
   body { padding: 16px; }
-  .stats-row { flex-direction: column; }
+  .stats-row { grid-template-columns: 1fr; }
   .chart-card { width: 100%; }
   .stats-group { grid-template-columns: repeat(2, 1fr); }
+  .dist-card { flex: 0 0 auto; width: 100%; }
   .project-grid { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .toolbar { flex-direction: column; align-items: stretch; }
   .filter-pills { overflow-x: auto; }
   .info-bar { flex-wrap: wrap; gap: 12px; }
 }
+@media (max-width: 980px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .dist-card, .reminder-panel { width: 100%; flex: 0 0 auto; }
+}
+
+/* ========== 项目标签 ========== */
+.tag-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 14px;
+}
+.tag-filter-label {
+  font-size: 12px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.tag-pills { flex: 1; flex-wrap: wrap; }
+.pill-add {
+  border-style: dashed;
+  border-color: rgba(139, 92, 246, 0.5);
+  color: #a78bfa;
+}
+.pill-add:hover { background: rgba(139, 92, 246, 0.12); }
+.pill-manage {
+  border-color: var(--border);
+  color: var(--text-2);
+}
+.pill-manage:hover { background: var(--surface); }
+.pill-clear {
+  border-color: var(--coral);
+  color: var(--coral);
+}
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin: 10px 2px 0;
+}
+.ptag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  padding: 2px 9px;
+  border-radius: 6px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.tag-add-btn {
+  font-size: 11px;
+  color: #a78bfa;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px dashed rgba(139, 92, 246, 0.5);
+  border-radius: 6px;
+  padding: 2px 9px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.tag-add-btn:hover { background: rgba(139, 92, 246, 0.22); }
+.tag-picker {
+  position: fixed;
+  z-index: 2000;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  width: 240px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+.tag-picker-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+.tag-picker-close {
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--text-2);
+}
+.tag-picker-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.tag-picker-empty {
+  font-size: 12px;
+  color: var(--text-2);
+  padding: 4px 0;
+}
+.tag-chip {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.tag-picker-add {
+  width: 100%;
+  margin-top: 8px;
+  font-size: 12px;
+  padding: 6px;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px dashed rgba(139, 92, 246, 0.5);
+  border-radius: 8px;
+  color: #a78bfa;
+  cursor: pointer;
+  font-family: inherit;
+}
+.tag-picker-add:hover { background: rgba(139, 92, 246, 0.22); }
+.tag-editor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  min-height: 30px;
+  flex: 1;
+}
+.tag-editor-empty { font-size: 12px; color: var(--text-2); }
+.tag-manager-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.tag-manager-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tag-color-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.tag-manager-label {
+  flex: 1;
+  font-size: 13px;
+}
+.modal-sm { max-width: 380px; }
+.modal-hint {
+  font-size: 12px;
+  color: var(--text-2);
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+.btn-block { width: 100%; }
+.btn-accent {
+  background: var(--accent-bg);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #a78bfa;
+}
+.btn-accent:hover { background: rgba(139, 92, 246, 0.22); }
+
+/* ========== 统计分布增强 ========== */
+.dist-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius-lg);
+  padding: 10px 12px;
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+}
+.dist-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.dist-title { font-size: 13px; font-weight: 500; color: var(--text); }
+.dist-launched { font-size: 12px; color: var(--text-2); }
+.dist-launched b { font-weight: 500; }
+.dist-pie-wrap { flex: 1; display: flex; align-items: center; justify-content: center; margin: 4px 0; min-height: 0; }
+.dist-pie-wrap svg { display: block; max-width: 180px; width: 100%; }
+.dist-chain-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 11px; color: var(--text-2); margin-top: 8px; max-height: 46px; min-height: 0; overflow-y: auto; padding-right: 2px; }
+.dist-chain-dot { width: 7px; height: 7px; border-radius: 50%; }
+.dist-chain-name { display: inline-flex; align-items: center; gap: 4px; color: var(--text); }
+.dist-chain-num { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; font-size: 11px; font-weight: 600; color: var(--text); }
+
+/* ========== 近期提醒 ========== */
+.reminder-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius-lg);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.reminder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+.reminder-title { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text); }
+.reminder-count-badge {
+  min-width: 18px; height: 18px; padding: 0 5px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(248,113,113,0.18); color: #fca5a5;
+  border-radius: 9px; font-size: 11px; font-weight: 700;
+}
+.reminder-select {
+  font-family: inherit; font-size: 12px;
+  background: var(--bg); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px; padding: 4px 6px;
+  width: 58px; text-align: center;
+}
+.reminder-body { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; overflow-y: auto; padding-right: 2px; }
+.reminder-empty { font-size: 12px; color: var(--text-2); padding: 4px 0; }
+.reminder-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px;
+  background: var(--bg); border: 1px solid var(--border);
+  cursor: pointer;
+}
+.reminder-item:hover { border-color: rgba(139,92,246,0.5); }
+.reminder-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.reminder-name { font-size: 13px; flex: 1; min-width: 0; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.reminder-when { font-size: 12px; flex-shrink: 0; white-space: nowrap; }
+
+/* ========== 卡片临近 TGE 高亮 ========== */
+.card-near {
+  border: 2px solid #ef4444;
+}
+.near-badge {
+  display: inline-flex; align-items: center;
+  font-size: 11px; padding: 1px 8px; border-radius: 6px;
+  background: rgba(248,113,113,0.16); color: #fca5a5;
+  border: 1px solid rgba(248,113,113,0.5);
+}
 </style>
-</head>
+<style id="status-styles">.tag-active { background: rgba(52,211,153,0.16); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.5); }.tag-preregister { background: rgba(167,139,250,0.18); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.5); }.tag-notstarted { background: rgba(96,165,250,0.16); color: #93c5fd; border: 1px solid rgba(96,165,250,0.5); }.tag-finished { background: rgba(251,191,36,0.16); color: #fcd34d; border: 1px solid rgba(251,191,36,0.5); }.tag-launched { background: rgba(96,165,250,0.16); color: #93c5fd; border: 1px solid rgba(96,165,250,0.5); }.tag-ended { background: rgba(148,163,184,0.16); color: #cbd5e1; border: 1px solid rgba(148,163,184,0.5); }.tag-dropped { background: rgba(248,113,113,0.16); color: #fca5a5; border: 1px solid rgba(248,113,113,0.5); }</style><style id="tag-styles">.ptag-witch { background: rgba(248,113,113,0.16); color: #fca5a5; border: 1px solid rgba(248,113,113,0.5); }.ptag-heavy { background: rgba(251,191,36,0.16); color: #fcd34d; border: 1px solid rgba(251,191,36,0.5); }.ptag-interacting { background: rgba(96,165,250,0.16); color: #93c5fd; border: 1px solid rgba(96,165,250,0.5); }.ptag-high_return { background: rgba(52,211,153,0.16); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.5); }.ptag-potential { background: rgba(167,139,250,0.18); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.5); }</style></head>
 <body>
 
 <div class="header">
@@ -1070,6 +1364,7 @@ body {
       <input type="file" accept=".txt,.json" style="display:none" onchange="importData(event)">
     </label>
     <button class="btn btn-sm" onclick="openSyncModal()">☁️ 云同步</button>
+    <button class="btn btn-sm" onclick="openToolsModal()">🧰 工具箱</button>
     <button class="btn btn-sm" onclick="openProtectModal()">🔐 操作保护</button>
     <button class="btn btn-primary" onclick="openModal()">➕ 新增项目</button>
   </div>
@@ -1079,25 +1374,38 @@ body {
   <div class="stats-group">
     <div class="stat-card">
       <div class="stat-label">📦 跟踪项目</div>
-      <div class="stat-value" id="stat-projects">11</div>
+      <div class="stat-value" id="stat-projects">10</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">✅ 活跃任务</div>
-      <div class="stat-value" id="stat-active" style="color:var(--green)">3</div>
+      <div class="stat-value" id="stat-active" style="color:var(--green)">7</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">🎯 今日完成项目</div>
-      <div class="stat-value" id="stat-done">4/6</div>
+      <div class="stat-value" id="stat-done">0/6</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">💵 融资总额</div>
       <div class="stat-value" id="stat-funding" style="color:var(--amber)">$180M</div>
     </div>
+    <div class="chart-card">
+      <div class="chart-title">📊 近15日完成趋势</div>
+      <div class="chart-bars" id="chart-bars"><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/11</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/12</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/13</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/14</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/15</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/16</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/17</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/18</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/19</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/20</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/21</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/22</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/23</div></div><div class="chart-bar"><div class="chart-fill" style="height:100%"></div><div class="chart-label">7/24</div></div><div class="chart-bar"><div class="chart-fill today" style="height:5.555555555555555%"></div><div class="chart-label">7/25</div></div></div>
+    </div>
   </div>
-  <div class="chart-card">
-    <div class="chart-title">📊 近7日完成趋势</div>
-    <div class="chart-bars" id="chart-bars"><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/18</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/19</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/20</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/21</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/22</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/23</div></div><div class="chart-bar"><div class="chart-fill today" style="height:100%"></div><div class="chart-label">7/24</div></div></div>
+  <div class="reminder-panel" id="reminder-panel">
+    <div class="reminder-header">
+      <div class="reminder-title">
+        <span>⏰ 近期提醒</span>
+        <span class="reminder-count-badge" id="reminder-count">1</span>
+      </div>
+      <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-2);white-space:nowrap">
+        <input type="number" class="reminder-select" min="1" value="14" oninput="setReminderDays(this.value)"> 天内
+      </span>
+    </div>
+    <div class="reminder-body" id="reminder-body"><div class="reminder-item" onclick="openModal('id_mrysmk9w_hv6dvf')"><span class="reminder-dot" style="background:#fcd34d"></span><span class="reminder-name">plabs</span><span class="reminder-when" style="color:#fcd34d">TGE 2026-7-30 · 剩 5 天</span></div></div>
   </div>
+  <div class="dist-card" id="dist-card"><div class="dist-head"><span class="dist-title">分布</span><span class="dist-launched">已发币总价值 <b style="color:var(--green)">$0</b></span></div><div class="dist-pie-wrap"><svg viewBox="0 0 180 180"><path d="M90,90 L22.0,90.0 A68,68 0 1,1 69.0,154.7 Z" fill="#f9a8d4" stroke="#0b0b12" stroke-width="1.5"></path><text x="125.8" y="68.0" fill="#ffffff" font-size="12" font-weight="500" text-anchor="middle">80%</text><path d="M90,90 L69.0,154.7 A68,68 0 0,1 35.0,130.0 Z" fill="#fbbf24" stroke="#0b0b12" stroke-width="1.5"></path><text x="68.0" y="124.3" fill="#1f2937" font-size="10" font-weight="500" text-anchor="middle">10%</text><path d="M90,90 L35.0,130.0 A68,68 0 0,1 22.0,90.0 Z" fill="#2dd4bf" stroke="#0b0b12" stroke-width="1.5"></path><text x="54.4" y="105.6" fill="#ffffff" font-size="10" font-weight="500" text-anchor="middle">10%</text></svg></div><div class="dist-chain-line"><span class="dist-chain-name" style="color:#f9a8d4">测试网</span><span class="dist-chain-name" style="color:#fbbf24">测试网社交类</span><span class="dist-chain-name" style="color:#2dd4bf">测试网刷交易</span></div></div>
 </div>
 
 <div class="info-bar" id="info-bar"><div class="info-bar-item"><span class="info-bar-label">💰 已发币</span><span class="info-bar-value" style="color:var(--blue)">0 个</span></div><div class="info-bar-item"><span class="info-bar-label">💸 总 Gas</span><span class="info-bar-value" style="color:var(--coral)">$11</span></div><div class="info-bar-item"><span class="info-bar-label">🎁 空投收益</span><span class="info-bar-value" style="color:var(--green)">$0</span></div><div class="info-bar-item"><span class="info-bar-label">📈 净收益</span><span class="info-bar-value" style="color:var(--coral)">$11</span></div></div>
@@ -1106,16 +1414,7 @@ body {
   <div class="search-box">
     <input type="text" id="search-input" placeholder="搜索项目名、代币、投资机构..." oninput="handleSearch(this.value)">
   </div>
-  <div class="filter-pills">
-    <button class="pill" data-filter="all" onclick="setFilter('all')">📋 全部 <span class="pill-count" id="count-all">11</span></button>
-    <button class="pill" data-filter="active" onclick="setFilter('active')">🔥 进行中 <span class="pill-count" id="count-active">7</span></button>
-    <button class="pill active" data-filter="preregister" onclick="setFilter('preregister')">📝 预注册 <span class="pill-count" id="count-preregister">1</span></button>
-    <button class="pill" data-filter="notstarted" onclick="setFilter('notstarted')">⏸️ 未开始 <span class="pill-count" id="count-notstarted">0</span></button>
-    <button class="pill" data-filter="finished" onclick="setFilter('finished')">⏳ 等待TGE <span class="pill-count" id="count-finished">3</span></button>
-    <button class="pill" data-filter="launched" onclick="setFilter('launched')">💰 已发币 <span class="pill-count" id="count-launched">0</span></button>
-    <button class="pill" data-filter="ended" onclick="setFilter('ended')">🔚 已结束 <span class="pill-count" id="count-ended">0</span></button>
-    <button class="pill" data-filter="dropped" onclick="setFilter('dropped')">🚫 已放弃 <span class="pill-count" id="count-dropped">0</span></button>
-  </div>
+  <div class="filter-pills" id="filter-pills"><button class="pill active" data-filter="all" onclick="setFilter('all')">📋 全部 <span class="pill-count" id="count-all" style="background: rgba(6, 182, 212, 0.16); color: rgb(6, 182, 212); border: 1px solid rgba(6, 182, 212, 0.35);">10</span></button><button class="pill" data-filter="active" onclick="setFilter('active')" style="background:rgba(52,211,153,0.16);color:#6ee7b7;border:1px solid rgba(52,211,153,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'active')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'active')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>🔥 进行中 <span class="pill-count" id="count-active" style="background: rgba(59, 130, 246, 0.16); color: rgb(59, 130, 246); border: 1px solid rgba(59, 130, 246, 0.35);">6</span></button><button class="pill" data-filter="preregister" onclick="setFilter('preregister')" style="background:rgba(167,139,250,0.18);color:#c4b5fd;border:1px solid rgba(167,139,250,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'preregister')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'preregister')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>📝 预注册 <span class="pill-count" id="count-preregister" style="background: rgba(239, 68, 68, 0.16); color: rgb(239, 68, 68); border: 1px solid rgba(239, 68, 68, 0.35);">1</span></button><button class="pill" data-filter="notstarted" onclick="setFilter('notstarted')" style="background:rgba(96,165,250,0.16);color:#93c5fd;border:1px solid rgba(96,165,250,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'notstarted')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'notstarted')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>⏸️ 项目未开始 <span class="pill-count" id="count-notstarted" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button><button class="pill" data-filter="finished" onclick="setFilter('finished')" style="background:rgba(251,191,36,0.16);color:#fcd34d;border:1px solid rgba(251,191,36,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'finished')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'finished')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>⏳ 等待 TGE发币 <span class="pill-count" id="count-finished" style="background: rgba(245, 158, 11, 0.16); color: rgb(245, 158, 11); border: 1px solid rgba(245, 158, 11, 0.35);">3</span></button><button class="pill" data-filter="launched" onclick="setFilter('launched')" style="background:rgba(96,165,250,0.16);color:#93c5fd;border:1px solid rgba(96,165,250,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'launched')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'launched')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>💰 已发币 <span class="pill-count" id="count-launched" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button><button class="pill" data-filter="ended" onclick="setFilter('ended')" style="background:rgba(148,163,184,0.16);color:#cbd5e1;border:1px solid rgba(148,163,184,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'ended')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'ended')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>🔚 已结束·未中 <span class="pill-count" id="count-ended" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button><button class="pill" data-filter="dropped" onclick="setFilter('dropped')" style="background:rgba(248,113,113,0.16);color:#fca5a5;border:1px solid rgba(248,113,113,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'dropped')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'dropped')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>🚫 已放弃 <span class="pill-count" id="count-dropped" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button></div>
   <select class="sort-select" onchange="setSort(this.value)">
     <option value="created">按添加时间</option>
     <option value="start">按起始时间</option>
@@ -1130,24 +1429,29 @@ body {
   </div>
 </div>
 
+<div class="tag-filter-bar">
+  <span class="tag-filter-label">按标签筛选</span>
+  <div class="filter-pills tag-pills" id="tag-filter-pills"><button class="pill" data-tagfilter="witch" onclick="setTagFilter('witch')" style="background:rgba(248,113,113,0.16);color:#fca5a5;border:1px solid rgba(248,113,113,0.5)">女巫风险</button><button class="pill" data-tagfilter="heavy" onclick="setTagFilter('heavy')" style="background:rgba(251,191,36,0.16);color:#fcd34d;border:1px solid rgba(251,191,36,0.5)">重仓</button><button class="pill" data-tagfilter="interacting" onclick="setTagFilter('interacting')" style="background:rgba(96,165,250,0.16);color:#93c5fd;border:1px solid rgba(96,165,250,0.5)">交互中</button><button class="pill" data-tagfilter="high_return" onclick="setTagFilter('high_return')" style="background:rgba(52,211,153,0.16);color:#6ee7b7;border:1px solid rgba(52,211,153,0.5)">高回报</button><button class="pill" data-tagfilter="potential" onclick="setTagFilter('potential')" style="background:rgba(167,139,250,0.18);color:#c4b5fd;border:1px solid rgba(167,139,250,0.5)">潜在空投</button><button class="pill pill-add" type="button" onclick="addTag()" title="新增标签">+ 新标签</button><button class="pill pill-manage" type="button" onclick="openTagManager()" title="管理标签（增删/改名/换色）">⚙ 管理</button></div>
+</div>
+
 <div class="todo-panel expanded" id="todo-panel">
   <div class="todo-panel-header" onclick="toggleTodoPanel()">
     <div class="todo-panel-title">
       <span>📋 今日未完成任务</span>
-      <span class="todo-count-badge" id="todo-count">3</span>
+      <span class="todo-count-badge" id="todo-count">7</span>
     </div>
     <span class="todo-toggle"></span>
   </div>
-  <div class="todo-panel-body" id="todo-panel-body"><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name">arcnova</span><span class="todo-group-count">1</span></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')"></div><span class="task-text">签到</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name">HertzFlow</span><span class="todo-group-count">2</span></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')"></div><span class="task-text">刷交易</span></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')"></div><span class="task-text">领水</span></div></div></div>
+  <div class="todo-panel-body" id="todo-panel-body"><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">DxSxT Network</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryoow4e_h3u872')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryoow4e_h3u872','daily','id_mryoow4e_fecwxl')"></div><span class="task-text">挖矿</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">doma</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryouhvx_526yd5')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryouhvx_526yd5','daily','id_mryouhvx_zsyqjt')"></div><span class="task-text">签到</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">holmesai</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryrqvk5_i056fo')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryrqvk5_i056fo','daily','id_mryrqvk5_6fknnk')"></div><span class="task-text">签到</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#fbbf24">arcnova</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryrwi2v_27rkcj')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')"></div><span class="task-text">签到</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#2dd4bf">HertzFlow</span><span class="todo-group-count" style="background:rgba(249,115,22,0.16);color:#f97316;border:1px solid rgba(249,115,22,0.35)">2</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mrys1igh_yhpexr')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')"></div><span class="task-text">刷交易</span></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')"></div><span class="task-text">领水</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">GIWA</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryshykp_xlvwx2')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryshykp_xlvwx2','daily','id_mryshykp_r169c8')"></div><span class="task-text">领水 转账uid</span></div></div></div>
 </div>
 
-<div class="project-grid" id="project-grid"><div class="proj-card" data-id="id_mrysy3hb_qmj0xs"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrysy3hb_qmj0xs')" title="点击切换优先级">☆</span><span class="proj-name">Skew</span><span class="tag tag-chain">测试网</span><span class="tag tag-preregister">📝 预注册</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrysy3hb_qmj0xs')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrysy3hb_qmj0xs')" title="删除">🗑</button></div></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">📧 1000 个邮箱</span></div><div class="card-date">起始 2026-07-20 · 已撸 4 天</div><div class="social-row"><a class="social-btn" href="https://x.com/SkewTrade" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><span class="social-btn empty">🎮 DC</span><a class="social-btn" href="https://skew.trade/" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$33M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">1/1</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrysy3hb_qmj0xs','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrysy3hb_qmj0xs','onetime','id_mrysza21_ag9ajw')"></div><span class="task-text">测试网填邮箱</span><span class="task-delete" onclick="deleteTask('id_mrysy3hb_qmj0xs','onetime','id_mrysza21_ag9ajw')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrysy3hb_qmj0xs','onetime')"></div></div><div class="notes-section"><div class="notes-text">测试网邮箱填表没有开启 已填</div></div></div></div>
+<div class="project-grid" id="project-grid"><div class="proj-card" data-id="id_mrysy3hb_qmj0xs"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrysy3hb_qmj0xs')" title="点击切换优先级">☆</span><span class="proj-name">Skew</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-preregister">📝 预注册</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrysy3hb_qmj0xs')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrysy3hb_qmj0xs')" title="删除">🗑</button></div></div><div class="card-tags"><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mrysy3hb_qmj0xs', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">📧 1000 个邮箱</span></div><div class="card-date">起始 2026-07-20 · 已撸 5 天</div><div class="social-row"><a class="social-btn" href="https://x.com/SkewTrade" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><span class="social-btn empty">🎮 DC</span><a class="social-btn" href="https://skew.trade/" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$33M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">1/1</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrysy3hb_qmj0xs','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrysy3hb_qmj0xs','onetime','id_mrysza21_ag9ajw')"></div><span class="task-text">测试网填邮箱</span><span class="task-delete" onclick="deleteTask('id_mrysy3hb_qmj0xs','onetime','id_mrysza21_ag9ajw')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrysy3hb_qmj0xs','onetime')"></div></div><div class="notes-section"><div class="notes-text">测试网邮箱填表没有开启 已填</div></div></div><div class="proj-card" data-id="id_mrysryzd_4avtyo"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrysryzd_4avtyo')" title="点击切换优先级">☆</span><span class="proj-name">TermMax</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-finished">⏳ 等待 TGE发币</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrysryzd_4avtyo')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrysryzd_4avtyo')" title="删除">🗑</button></div></div><div class="card-tags"><span class="ptag ptag-potential">潜在空投</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mrysryzd_4avtyo', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 100 个钱包</span></div><div class="card-date">起始 2026-03-05 · 已撸 142 天</div><div class="social-row"><a class="social-btn" href="https://x.com/TermMaxFi" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/TermMaxFi" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/dhKjNtrTeJ/" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://app-v2.termmax.ts.finance/" target="_blank" rel="noopener">🌐 Web</a></div><div class="cost-row"><div class="cost-item"><span class="info-label">Gas 花费</span><span class="info-value" style="color:var(--coral)">$10</span></div></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">1/1</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrysryzd_4avtyo','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrysryzd_4avtyo','onetime','id_mrysryzd_64gbre')"></div><span class="task-text">钱包登录注册签到</span><span class="task-delete" onclick="deleteTask('id_mrysryzd_4avtyo','onetime','id_mrysryzd_64gbre')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrysryzd_4avtyo','onetime')"></div></div><div class="notes-section"><div class="notes-text">花10刀BNBgas签到  币安钱包也做了任务</div></div></div><div class="proj-card card-near" data-id="id_mrysmk9w_hv6dvf"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrysmk9w_hv6dvf')" title="点击切换优先级">☆</span><span class="proj-name">plabs</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-finished">⏳ 等待 TGE发币</span><span class="near-badge">剩 5 天 TGE</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrysmk9w_hv6dvf')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrysmk9w_hv6dvf')" title="删除">🗑</button></div></div><div class="card-tags"><span class="ptag ptag-witch">女巫风险</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mrysmk9w_hv6dvf', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span>TGE 2026-7-30</span><span title="我在「我的钱包」里关联的本项目数量">💼 1463 个钱包</span></div><div class="card-date">起始 2026-07-23 · 已撸 2 天</div><div class="social-row"><a class="social-btn" href="https://x.com/_PLabs" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><span class="social-btn empty">🎮 DC</span><a class="social-btn" href="https://app.plabs.online/#/eligibilitycheck" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">1/1</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrysmk9w_hv6dvf','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrysmk9w_hv6dvf','onetime','id_mrysmk9w_n9u5p1')"></div><span class="task-text">领取代币</span><span class="task-delete" onclick="deleteTask('id_mrysmk9w_hv6dvf','onetime','id_mrysmk9w_n9u5p1')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrysmk9w_hv6dvf','onetime')"></div></div><div class="notes-section"><div class="notes-text">国人项目 代币100多万等待发</div></div></div><div class="proj-card" data-id="id_mryshykp_xlvwx2"><div class="card-header"><div class="card-title"><span class="priority-star p3" onclick="togglePriority('id_mryshykp_xlvwx2')" title="点击切换优先级">★</span><span class="proj-name">GIWA</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryshykp_xlvwx2')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryshykp_xlvwx2')" title="删除">🗑</button></div></div><div class="card-tags"><span class="ptag ptag-high_return">高回报</span><span class="ptag ptag-interacting">交互中</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryshykp_xlvwx2', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 979 个钱包</span></div><div class="card-date">起始 2026-07-22 · 已撸 3 天</div><div class="social-row"><a class="social-btn" href="https://x.com/GIWA_by_Upbit" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><span class="social-btn empty">🎮 DC</span><a class="social-btn" href="https://sepolia-playground.giwa.io/" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$142M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">1/2</span></div><div class="progress-track"><div class="progress-fill" style="width:50%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryshykp_xlvwx2','daily','id_mryshykp_r169c8')"></div><span class="task-text">领水 转账uid</span><span class="task-delete" onclick="deleteTask('id_mryshykp_xlvwx2','daily','id_mryshykp_r169c8')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryshykp_xlvwx2','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryshykp_xlvwx2','onetime','id_mryshykp_2m8as2')"></div><span class="task-text">opeth跨链 转账 领水</span><span class="task-delete" onclick="deleteTask('id_mryshykp_xlvwx2','onetime','id_mryshykp_2m8as2')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryshykp_xlvwx2','onetime')"></div></div><div class="notes-section"><div class="notes-text">韩国交易所测试网</div></div></div><div class="proj-card" data-id="id_mrys1igh_yhpexr"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrys1igh_yhpexr')" title="点击切换优先级">☆</span><span class="proj-name">HertzFlow</span><span class="tag tag-chain" style="background:rgba(45,212,191,0.16);color:#2dd4bf">测试网刷交易</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrys1igh_yhpexr')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrys1igh_yhpexr')" title="删除">🗑</button></div></div><div class="card-tags"><span class="ptag ptag-potential">潜在空投</span><span class="ptag ptag-interacting">交互中</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mrys1igh_yhpexr', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 500 个钱包</span></div><div class="card-date">起始 2026-06-25 · 已撸 30 天</div><div class="social-row"><a class="social-btn" href="https://x.com/Hertzflow_xyz" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/hertzflow_xyz" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/sBQqf2H7ts" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://testnet.hertzflow.xyz/zh-Hans/trade/WTI-USD" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--coral)">1/3</span></div><div class="progress-track"><div class="progress-fill" style="width:33.33333333333333%;background:var(--coral)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/2</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')"></div><span class="task-text">刷交易</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')">×</span></li><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')"></div><span class="task-text">领水</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrys1igh_yhpexr','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrys1igh_yhpexr','onetime','id_mrys1igh_zn6tc0')"></div><span class="task-text">登录注册</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','onetime','id_mrys1igh_zn6tc0')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrys1igh_yhpexr','onetime')"></div></div><div class="notes-section"><div class="notes-text">钱包登录 领水刷交易 国人项目金标</div></div></div><div class="proj-card" data-id="id_mryrwi2v_27rkcj"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryrwi2v_27rkcj')" title="点击切换优先级">☆</span><span class="proj-name">arcnova</span><span class="tag tag-chain" style="background:rgba(251,191,36,0.16);color:#fbbf24">测试网社交类</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryrwi2v_27rkcj')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryrwi2v_27rkcj')" title="删除">🗑</button></div></div><div class="card-tags"><span class="ptag ptag-potential">潜在空投</span><span class="ptag ptag-interacting">交互中</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryrwi2v_27rkcj', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">📧 234 个邮箱</span></div><div class="card-date">起始 2026-05-08 · 已撸 78 天</div><div class="social-row"><a class="social-btn" href="https://x.com/arcnova_aci" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/ArcNova_AI" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/G2BXV5MWDa" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://arcnova.tv/en/tasks" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">2/3</span></div><div class="progress-track"><div class="progress-fill" style="width:66.66666666666666%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryrwi2v_27rkcj','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_u5u8ap')"></div><span class="task-text">网站钱包登录注册邀请</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_u5u8ap')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_dpn07c')"></div><span class="task-text">手机app邮箱登录取uid完成设计任务</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_dpn07c')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryrwi2v_27rkcj','onetime')"></div></div><div class="notes-section"><div class="notes-text">网站钱包登录邀请 app邮箱登录 社交类</div></div></div><div class="proj-card" data-id="id_mryrqvk5_i056fo"><div class="card-header"><div class="card-title"><span class="priority-star p1" onclick="togglePriority('id_mryrqvk5_i056fo')" title="点击切换优先级">★</span><span class="proj-name">holmesai</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryrqvk5_i056fo')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryrqvk5_i056fo')" title="删除">🗑</button></div></div><div class="card-tags"><span class="ptag ptag-potential">潜在空投</span><span class="ptag ptag-interacting">交互中</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryrqvk5_i056fo', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 174 个钱包</span></div><div class="card-date">起始 2026-06-05 · 已撸 50 天</div><div class="social-row"><a class="social-btn" href="https://x.com/HolmesAI_" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/HolmesAIOfficial" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/s5agSyVWRG" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://www.holmesai.xyz/" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">1/2</span></div><div class="progress-track"><div class="progress-fill" style="width:50%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryrqvk5_i056fo','daily','id_mryrqvk5_6fknnk')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryrqvk5_i056fo','daily','id_mryrqvk5_6fknnk')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryrqvk5_i056fo','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrqvk5_i056fo','onetime','id_mryrqvk5_itp6zz')"></div><span class="task-text">钱包登录注册</span><span class="task-delete" onclick="deleteTask('id_mryrqvk5_i056fo','onetime','id_mryrqvk5_itp6zz')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryrqvk5_i056fo','onetime')"></div></div><div class="notes-section"><div class="notes-text">钱包登录注册</div></div></div><div class="proj-card" data-id="id_mryouhvx_526yd5"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryouhvx_526yd5')" title="点击切换优先级">☆</span><span class="proj-name">doma</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryouhvx_526yd5')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryouhvx_526yd5')" title="删除">🗑</button></div></div><div class="card-tags"><span class="ptag ptag-interacting">交互中</span><span class="ptag ptag-potential">潜在空投</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryouhvx_526yd5', this)" title="添加标签">+ 标签</button></div><div class="card-date">起始 2026-05-24 · 已撸 62 天</div><div class="social-row"><a class="social-btn" href="https://x.com/domaprotocol" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><a class="social-btn" href="https://discord.com/invite/doma" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://app.doma.xyz/" target="_blank" rel="noopener">🌐 Web</a></div><div class="investors">没有查</div><div class="cost-row"><div class="cost-item"><span class="info-label">Gas 花费</span><span class="info-value" style="color:var(--coral)">$1</span></div></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">2/3</span></div><div class="progress-track"><div class="progress-fill" style="width:66.66666666666666%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryouhvx_526yd5','daily','id_mryouhvx_zsyqjt')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','daily','id_mryouhvx_zsyqjt')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryouhvx_526yd5','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_0muiq0')"></div><span class="task-text">刷交易</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_0muiq0')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_s90rjl')"></div><span class="task-text">买域名</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_s90rjl')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryouhvx_526yd5','onetime')"></div></div></div><div class="proj-card" data-id="id_mryoow4e_h3u872"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryoow4e_h3u872')" title="点击切换优先级">☆</span><span class="proj-name">DxSxT Network</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryoow4e_h3u872')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryoow4e_h3u872')" title="删除">🗑</button></div></div><div class="card-tags"><span class="ptag ptag-interacting">交互中</span><span class="ptag ptag-potential">潜在空投</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryoow4e_h3u872', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">📧 87 个邮箱</span></div><div class="card-date">起始 2026-05-04 · 已撸 82 天</div><div class="social-row"><a class="social-btn" href="https://x.com/DxSxT_Network" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/dxsxtnetworkofficial" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/Y969k9FmDK" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://dxsxt.network/" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">1/2</span></div><div class="progress-track"><div class="progress-fill" style="width:50%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryoow4e_h3u872','daily','id_mryoow4e_fecwxl')"></div><span class="task-text">挖矿</span><span class="task-delete" onclick="deleteTask('id_mryoow4e_h3u872','daily','id_mryoow4e_fecwxl')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryoow4e_h3u872','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryoow4e_h3u872','onetime','id_mryoow4e_u2rg6o')"></div><span class="task-text">邮箱注册邀请</span><span class="task-delete" onclick="deleteTask('id_mryoow4e_h3u872','onetime','id_mryoow4e_u2rg6o')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryoow4e_h3u872','onetime')"></div></div><div class="notes-section"><div class="notes-text">手机挖矿</div></div></div><div class="proj-card" data-id="id_mry0anh0_q0as00"><div class="card-header"><div class="card-title"><span class="priority-star p2" onclick="togglePriority('id_mry0anh0_q0as00')" title="点击切换优先级">★</span><span class="proj-name">out</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-finished">⏳ 等待 TGE发币</span></div><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mry0anh0_q0as00')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mry0anh0_q0as00')" title="删除">🗑</button></div></div><div class="card-tags"><span class="ptag ptag-high_return">高回报</span><span class="ptag ptag-potential">潜在空投</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mry0anh0_q0as00', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span>TGE 不知道</span><span title="我在「我的钱包」里关联的本项目数量">💼 2293 个钱包</span></div><div class="card-date">起始 2026-01-03 · 已撸 203 天</div><div class="social-row"><a class="social-btn" href="https://x.com/outcomexyz" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><a class="social-btn" href="https://discord.com/invite/outcome" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://outcome.xyz/zh/all" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$5M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">2/2</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mry0anh0_q0as00','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_oo34rh')"></div><span class="task-text">测试网交付</span><span class="task-delete" onclick="deleteTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_oo34rh')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_z2yoal')"></div><span class="task-text">nft</span><span class="task-delete" onclick="deleteTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_z2yoal')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mry0anh0_q0as00','onetime')"></div></div></div></div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="modal-title">📝 编辑项目</h2>
+      <h2 id="modal-title">📝 新增项目</h2>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
 
@@ -1165,22 +1469,30 @@ body {
         <div class="form-field">
           <label>链类型</label>
           <div class="inline-field">
-            <select id="f-chainType"><option value="测试网">测试网</option><option value="测试网社交类">测试网社交类</option><option value="测试网刷交易">测试网刷交易</option></select>
+            <select id="f-chainType" onchange="this.style.color=chainColor(this.value)"></select>
             <button class="btn btn-sm" type="button" onclick="addChainType()" title="新增链类型">➕</button>
             <button class="btn btn-sm" type="button" onclick="deleteChainType()" title="删除当前链类型">🗑</button>
+            <button class="btn btn-sm" type="button" onclick="openChainTypeManager()" title="管理链类型（换色/改名/删除）">⚙</button>
           </div>
         </div>
         <div class="form-field">
           <label>状态</label>
-          <select id="f-status">
-            <option value="active">🔥 进行中</option>
-            <option value="preregister">📝 预注册</option>
-            <option value="notstarted">⏸️ 项目未开始</option>
-            <option value="finished">⏳ 等待 TGE发币</option>
-            <option value="launched">💰 已发币</option>
-            <option value="ended">🔚 已结束·未中</option>
-            <option value="dropped">已放弃</option>
-          </select>
+          <div class="inline-field">
+            <select id="f-status"></select>
+            <button class="btn btn-sm" type="button" onclick="addStatus()" title="新增状态">➕</button>
+            <button class="btn btn-sm" type="button" onclick="editStatus()" title="修改当前状态名称">✏️</button>
+            <button class="btn btn-sm" type="button" onclick="deleteStatus()" title="删除当前状态">🗑</button>
+            <button class="btn btn-sm" type="button" onclick="moveStatusUp()" title="上移">⬆</button>
+            <button class="btn btn-sm" type="button" onclick="moveStatusDown()" title="下移">⬇</button>
+            <button class="btn btn-sm" type="button" onclick="openStatusManager()" title="管理状态（换色/排序）">⚙</button>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>标签</label>
+          <div class="inline-field">
+            <div id="f-tags" class="tag-editor"></div>
+            <button class="btn btn-sm" type="button" onclick="openTagManager()" title="管理标签">⚙</button>
+          </div>
         </div>
         <div class="form-field">
           <label>代币符号</label>
@@ -1295,7 +1607,7 @@ body {
 
     <div class="form-section" id="proj-wallet-section">
       <div class="form-section-title"><span>👤 我的 · 钱包（私钥/助记词加密保存）</span></div>
-      <div class="vault-banner ok" id="proj-vault-banner">🔓 保险库已解锁 · 私钥/助记词均以密文存储 <button class="vault-btn" onclick="changeVaultPassword()">🔑 改主密码</button> <button class="vault-btn danger" onclick="lockVault()">🔒 上锁</button></div>
+      <div class="vault-banner warn" id="proj-vault-banner">🔐 正在初始化保险库…</div>
       <div class="wallet-list-toolbar" id="proj-wallet-toolbar">
         <button class="btn btn-sm" type="button" onclick="event.stopPropagation(); copyProjectWallets()">📋 复制</button>
         <button class="btn btn-sm" type="button" onclick="event.stopPropagation(); downloadProjectWallets()">⬇️ 下载</button>
@@ -1306,9 +1618,9 @@ body {
           <option value="wallet" selected="">👛 钱包</option>
           <option value="email">📧 邮箱</option>
         </select>
-        <span class="wallet-list-count" id="proj-wallet-count">0 个钱包</span>
+        <span class="wallet-list-count" id="proj-wallet-count">0 个</span>
       </div>
-      <div id="proj-wallet-list" class="proj-wallet-list"><div class="wallet-empty">当前筛选没有钱包</div></div>
+      <div id="proj-wallet-list" class="proj-wallet-list"></div>
       <details class="wallet-add-details" id="proj-wallet-bulk-details">
         <summary>➕ 批量导入钱包</summary>
         <div class="wallet-import-box">
@@ -1356,11 +1668,13 @@ user2@example.com----anotherpass"></textarea>
       <div class="form-section-title">
         <span>每日任务 (每天自动重置)</span>
         <div class="template-bar">
-          <select class="template-select" id="tpl-select-daily" onchange="applyTemplate(this.value, 'daily'); this.value=''"><option value="">套用模板...</option><option value="dex">DEX 交互</option><option value="lending">借贷协议</option><option value="testnet">测试网</option><option value="bridge">跨链桥</option><option value="nft">NFT 项目</option></select>
+          <select class="template-select" id="tpl-select-daily" onchange="applyTemplate(this.value, 'daily'); this.value=''">
+            <option value="">套用模板...</option>
+          </select>
           <button class="btn btn-sm" type="button" onclick="openTemplateModal()" title="管理任务模板">✎ 管理</button>
         </div>
       </div>
-      <div class="task-editor" id="daily-tasks-editor"><div class="task-editor-row"><input type="text" placeholder="任务描述..." value=""><button class="btn btn-icon" onclick="this.parentElement.remove()">×</button></div></div>
+      <div class="task-editor" id="daily-tasks-editor"></div>
       <button class="btn btn-sm" style="margin-top:6px" onclick="addTaskEditorRow('daily')">➕ 添加任务</button>
     </div>
 
@@ -1368,12 +1682,24 @@ user2@example.com----anotherpass"></textarea>
       <div class="form-section-title">
         <span>一次性任务</span>
         <div class="template-bar">
-          <select class="template-select" id="tpl-select-onetime" onchange="applyTemplate(this.value, 'onetime'); this.value=''"><option value="">套用模板...</option><option value="dex">DEX 交互</option><option value="lending">借贷协议</option><option value="testnet">测试网</option><option value="bridge">跨链桥</option><option value="nft">NFT 项目</option></select>
+          <select class="template-select" id="tpl-select-onetime" onchange="applyTemplate(this.value, 'onetime'); this.value=''">
+            <option value="">套用模板...</option>
+          </select>
           <button class="btn btn-sm" type="button" onclick="openTemplateModal()" title="管理任务模板">✎ 管理</button>
         </div>
       </div>
-      <div class="task-editor" id="onetime-tasks-editor"><div class="task-editor-row"><input type="text" placeholder="任务描述..." value="测试网填邮箱"><button class="btn btn-icon" onclick="this.parentElement.remove()">×</button></div></div>
+      <div class="task-editor" id="onetime-tasks-editor"></div>
       <button class="btn btn-sm" style="margin-top:6px" onclick="addTaskEditorRow('onetime')">➕ 添加任务</button>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title"><span>📂 脚本文件夹</span></div>
+      <div class="form-grid">
+        <div class="form-field full">
+          <label>脚本文件夹（绝对路径，点今日任务 header 按钮可打开/复制）</label>
+          <input type="text" id="f-scriptDir" placeholder="C:\scripts\dex">
+        </div>
+      </div>
     </div>
 
     <div class="modal-footer">
@@ -1403,10 +1729,7 @@ user2@example.com----anotherpass"></textarea>
       <button class="btn btn-primary" onclick="syncPush()">🔄 上传到 GitHub</button>
       <button class="btn btn-sm" onclick="syncPull()">📥 从 GitHub 下载</button>
     </div>
-    <div class="sync-row auto-sync-row">
-      <label class="auto-sync-label"><input type="checkbox" id="auto-sync" onchange="toggleAutoSync()"> 🔁 自动同步（每 5 秒检查，有变化自动上传下载）</label>
-    </div>
-    <div class="sync-status" id="sync-status">✅ 已上传（Gist: e95da104c46fd38eebc89b6308d8763e，分 5 片）。GitHub 上仅见密文。</div>
+    <div class="sync-status" id="sync-status"></div>
     <div class="icon-setting">
       <div class="icon-setting-title">📱 手机App图标和名字（添加到主屏幕时显示）</div>
       <div class="icon-preview-row">
@@ -1451,13 +1774,57 @@ user2@example.com----anotherpass"></textarea>
   </div>
 </div>
 
+<div class="modal-overlay" id="tools-overlay" onclick="if(event.target===this)closeToolsModal()">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-header">
+      <h2>🧰 工具箱</h2>
+      <button class="modal-close" onclick="closeToolsModal()">×</button>
+    </div>
+    <div class="tools-bar">
+      <input type="text" id="tool-search" class="tool-search" placeholder="搜索名称 / 标签 / 网址…" oninput="onToolSearch(event)">
+      <div class="tools-bar-actions">
+        <button class="btn btn-sm" onclick="batchOpenCategory()" title="在新标签打开当前分类下全部链接">🔗 批量打开</button>
+        <button class="btn btn-sm" onclick="importBookmarks()" title="从浏览器导出的书签 HTML 批量导入">📥 导入书签</button>
+        <button class="btn btn-sm" onclick="toggleCatManager()" title="自定义分类">⚙ 分类</button>
+      </div>
+    </div>
+    <div class="tool-cat-manager" id="tool-cat-manager" style="display:none">
+      <div class="tool-cat-manager-row">
+        <input type="text" id="new-cat-input" class="tool-search" placeholder="新分类名称" onkeydown="if(event.key==='Enter')addCategory()">
+        <button class="btn btn-sm btn-primary" onclick="addCategory()">添加</button>
+      </div>
+      <div class="tool-cat-manager-list" id="cat-manager-list"></div>
+    </div>
+    <div class="tool-cat-pills" id="tool-cat-pills"></div>
+    <div class="tools-stat" id="tools-stat"></div>
+    <div class="tools-grid" id="tools-grid"></div>
+    <div class="tool-form">
+      <div class="tool-form-title" id="tool-form-title">+ 添加工具</div>
+      <div class="tool-form-grid">
+        <input type="text" id="tool-name" placeholder="名称（如 Crunchbase）">
+        <input type="text" id="tool-url" placeholder="网址 URL（如 crunchbase.com）">
+      </div>
+      <div class="tool-form-grid">
+        <select id="tool-category"></select>
+        <input type="text" id="tool-tags" placeholder="标签，逗号分隔（可选）">
+      </div>
+      <input type="text" id="tool-note" placeholder="备注（可选）" style="width:100%;padding:7px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;margin-bottom:8px;">
+      <div class="tool-form-actions">
+        <button class="btn btn-primary btn-sm" onclick="saveTool()">💾 保存</button>
+        <button class="btn btn-sm" onclick="resetToolForm()">清空</button>
+      </div>
+    </div>
+    <input type="file" id="bookmark-file" accept=".html,.htm" style="display:none" onchange="handleBookmarkFile(event)">
+  </div>
+</div>
+
 <div class="modal-overlay" id="protect-overlay" onclick="if(event.target===this)closeProtectModal()">
   <div class="modal" style="max-width:480px">
     <div class="modal-header">
       <h2>🔐 操作保护设置</h2>
       <button class="modal-close" onclick="closeProtectModal()">×</button>
     </div>
-    <div class="vault-banner ok">🔓 保险库已解锁 · 私钥/助记词均以密文存储 <button class="vault-btn" onclick="changeVaultPassword()">🔑 改主密码</button> <button class="vault-btn danger" onclick="lockVault()">🔒 上锁</button></div>
+    <div class="vault-banner warn">编辑 / 删除 / 保存项目均受「独立操作密码」保护（与钱包保险库密码相互独立）。操作密码已解锁时无感操作；未解锁（或他人）操作时需先输入操作密码。</div>
     <div id="op-pwd-section">
       <div class="op-pwd-box" id="op-pwd-status-box">
         <div class="op-pwd-status-line">
@@ -1537,7 +1904,7 @@ user2@example.com----anotherpass"></textarea>
   </div>
 </div>
 
-<div class="toast show" id="toast">☁️ 已同步到 GitHub</div>
+<div class="toast" id="toast"></div>
 
 <script>
 const STORAGE_KEY = 'airdrop_tracker_v2';
@@ -1551,6 +1918,41 @@ const DEFAULT_TEMPLATES = [
   { key: 'nft', name: 'NFT 项目', daily: ['查看 mint 状态', '社交互动'], onetime: ['mint NFT', '挂单交易', '社区活动'] }
 ];
 
+const DEFAULT_STATUSES = [
+  { key: 'active', label: '🔥 进行中', done: false, launched: false },
+  { key: 'preregister', label: '📝 预注册', done: false, launched: false },
+  { key: 'notstarted', label: '⏸️ 项目未开始', done: false, launched: false },
+  { key: 'finished', label: '⏳ 等待 TGE发币', done: false, launched: false },
+  { key: 'launched', label: '💰 已发币', done: false, launched: true },
+  { key: 'ended', label: '🔚 已结束·未中', done: true, launched: false },
+  { key: 'dropped', label: '🚫 已放弃', done: true, launched: false }
+];
+
+// 项目标签调色板：每个标签可指定一种颜色（多维度归类，如 女巫风险 / 重仓）
+const TAG_COLORS = {
+  purple: { bg: 'rgba(167,139,250,0.18)', fg: '#c4b5fd', bd: 'rgba(167,139,250,0.5)' },
+  blue:   { bg: 'rgba(96,165,250,0.16)',  fg: '#93c5fd', bd: 'rgba(96,165,250,0.5)' },
+  teal:   { bg: 'rgba(45,212,191,0.16)',  fg: '#5eead4', bd: 'rgba(45,212,191,0.5)' },
+  green:  { bg: 'rgba(52,211,153,0.16)',  fg: '#6ee7b7', bd: 'rgba(52,211,153,0.5)' },
+  amber:  { bg: 'rgba(251,191,36,0.16)',  fg: '#fcd34d', bd: 'rgba(251,191,36,0.5)' },
+  coral:  { bg: 'rgba(248,113,113,0.16)', fg: '#fca5a5', bd: 'rgba(248,113,113,0.5)' },
+  pink:   { bg: 'rgba(244,114,182,0.16)', fg: '#f9a8d4', bd: 'rgba(244,114,182,0.5)' },
+  gray:   { bg: 'rgba(148,163,184,0.16)', fg: '#cbd5e1', bd: 'rgba(148,163,184,0.5)' }
+};
+const TAG_COLOR_KEYS = Object.keys(TAG_COLORS);
+const DEFAULT_TAGS = [
+  { key: 'witch',       label: '女巫风险',   color: 'coral' },
+  { key: 'heavy',       label: '重仓',       color: 'amber' },
+  { key: 'interacting', label: '交互中',     color: 'blue' },
+  { key: 'layer2',      label: 'Layer2',     color: 'teal' },
+  { key: 'high_return', label: '高回报',     color: 'green' },
+  { key: 'potential',   label: '潜在空投',   color: 'purple' }
+];
+const STATUS_DEFAULT_COLOR = {
+  active: 'green', preregister: 'purple', notstarted: 'blue',
+  finished: 'amber', launched: 'blue', ended: 'gray', dropped: 'coral'
+};
+
 let state = {
   projects: [],
   wallets: [],
@@ -1558,13 +1960,19 @@ let state = {
   completionHistory: {},
   lastDailyReset: null,
   chainTypes: DEFAULT_CHAIN_TYPES.slice(),
+  chainColors: {},
+  launchedTotal: 0,
   templates: DEFAULT_TEMPLATES.map(t => ({ key: t.key, name: t.name, daily: t.daily.slice(), onetime: t.onetime.slice() })),
   opVault: null,
   appIcon: null,
   appName: null,
   appStartUrl: null,
   autoSync: false,
-  pagesUrl: null
+  pagesUrl: null,
+  tools: [],
+  toolCategories: ['融资查询', '跨链桥', '空投查询', '数据分析', 'Gas监控', '钱包工具', 'NFT', '社交', '其他'],
+  statuses: DEFAULT_STATUSES.map(s => ({ ...s })),
+  tags: DEFAULT_TAGS.map(t => ({ ...t }))
 };
 
 let ui = {
@@ -1574,7 +1982,9 @@ let ui = {
   editingId: null,
   todoExpanded: true,
   projectWalletBatchDelete: false,
-  projectWalletFilter: 'wallet'
+  projectWalletFilter: 'wallet',
+  tagFilters: [],
+  reminderDays: 14
 };
 
 /* ========== Storage ========== */
@@ -1589,6 +1999,8 @@ function load() {
       state.wallets = data.wallets || [];
       state.vault = data.vault || null;
       state.chainTypes = (data.chainTypes && data.chainTypes.length) ? data.chainTypes : DEFAULT_CHAIN_TYPES.slice();
+      state.chainColors = data.chainColors || {};
+      state.launchedTotal = data.launchedTotal || 0;
       state.templates = (data.templates && data.templates.length) ? data.templates : DEFAULT_TEMPLATES.map(t => ({ key: t.key, name: t.name, daily: t.daily.slice(), onetime: t.onetime.slice() }));
       state.opVault = data.opVault || null;
       state.appIcon = data.appIcon || null;
@@ -1596,7 +2008,13 @@ function load() {
       state.appStartUrl = data.appStartUrl || null;
       state.autoSync = !!data.autoSync;
       state.pagesUrl = data.pagesUrl || null;
+      state.tools = Array.isArray(data.tools) ? data.tools : [];
+      state.toolCategories = (data.toolCategories && data.toolCategories.length) ? data.toolCategories : ['融资查询', '跨链桥', '空投查询', '数据分析', 'Gas监控', '钱包工具', 'NFT', '社交', '其他'];
+      state.statuses = (data.statuses && data.statuses.length) ? data.statuses : DEFAULT_STATUSES.map(s => ({ ...s }));
+      state.tags = (data.tags && data.tags.length) ? data.tags : DEFAULT_TAGS.map(t => ({ ...t }));
+      migrateStatuses();
       migrateProjects();
+      migrateTags();
     } else {
       const old = localStorage.getItem('airdrop_tracker_v1');
       if (old) {
@@ -1607,6 +2025,8 @@ function load() {
         state.wallets = data.wallets || [];
         state.vault = data.vault || null;
         state.chainTypes = (data.chainTypes && data.chainTypes.length) ? data.chainTypes : DEFAULT_CHAIN_TYPES.slice();
+        state.chainColors = data.chainColors || {};
+        state.launchedTotal = data.launchedTotal || 0;
         state.templates = (data.templates && data.templates.length) ? data.templates : DEFAULT_TEMPLATES.map(t => ({ key: t.key, name: t.name, daily: t.daily.slice(), onetime: t.onetime.slice() }));
         migrateProjects();
         save();
@@ -1618,10 +2038,33 @@ function load() {
     console.error('Failed to load data:', e);
     seedSampleData();
   }
+  if (ensureSeedTools()) save();
+}
+
+function migrateStatuses() {
+  if (!state.statuses || !state.statuses.length) state.statuses = DEFAULT_STATUSES.map(s => ({ ...s }));
+  state.statuses.forEach((s, i) => {
+    if (s.done === undefined) s.done = false;
+    if (s.launched === undefined) s.launched = false;
+    if (!s.color || !TAG_COLORS[s.color]) s.color = STATUS_DEFAULT_COLOR[s.key] || TAG_COLOR_KEYS[i % TAG_COLOR_KEYS.length];
+  });
+}
+
+function migrateTags() {
+  if (!state.tags || !state.tags.length) state.tags = DEFAULT_TAGS.map(t => ({ ...t }));
+  state.tags.forEach(t => {
+    if (!t.key) t.key = ('t' + Date.now() + Math.random().toString(36).slice(2, 6));
+    if (!t.label) t.label = t.key;
+    if (!t.color || !TAG_COLORS[t.color]) t.color = TAG_COLOR_KEYS[state.tags.indexOf(t) % TAG_COLOR_KEYS.length];
+  });
+  // 去除重复 key
+  const seen = {};
+  state.tags = state.tags.filter(t => { if (seen[t.key]) return false; seen[t.key] = true; return true; });
 }
 
 function migrateProjects() {
-  const VALID = ['active', 'preregister', 'notstarted', 'finished', 'launched', 'ended', 'dropped'];
+  const validKeys = state.statuses.map(s => s.key);
+  const defaultStatus = validKeys[0] || 'active';
   state.projects.forEach(p => {
     if (p.priority === undefined) p.priority = 0;
     if (p.gasCost === undefined) p.gasCost = 0;
@@ -1629,7 +2072,9 @@ function migrateProjects() {
     if (p.airdropAmount === undefined) p.airdropAmount = 0;
     if (p.airdropValue === undefined) p.airdropValue = 0;
     if (p.startDate === undefined) p.startDate = '';
-    if (!p.status || !VALID.includes(p.status)) p.status = 'active';
+    if (!p.status || !validKeys.includes(p.status)) p.status = defaultStatus;
+    if (!Array.isArray(p.tags)) p.tags = [];
+    if (p.scriptDir === undefined) p.scriptDir = '';
   });
   // 恢复上次同步基准哈希，避免刷新页面后误判「冲突」把本地未上传的改动下载覆盖
   try { lastSyncHash = localStorage.getItem('gh_lastSyncHash') || ''; } catch (e) {}
@@ -1656,6 +2101,7 @@ function seedSampleData() {
       walletAddress: '0x1234abcd5678ef90', contractAddress: '0xabcd1234efgh5678', walletCount: 3,
       gasCost: 45, airdropToken: '', airdropAmount: 0, airdropValue: 0,
       notes: 'PoL共识，重点交互BEX/Bend/Honey三个协议',
+      tags: ['heavy', 'interacting'],
       dailyTasks: [
         { id: uid(), text: 'BEX 每日 swap', done: true },
         { id: uid(), text: 'Bend 供款', done: true },
@@ -1675,6 +2121,7 @@ function seedSampleData() {
       walletAddress: '0xabcd1234efgh5678', contractAddress: '', walletCount: 5,
       gasCost: 12, airdropToken: '', airdropAmount: 0, airdropValue: 0,
       notes: '并行EVM，10k TPS。测试网阶段，保持每日交互',
+      tags: ['potential', 'interacting'],
       dailyTasks: [
         { id: uid(), text: '领取测试币', done: true },
         { id: uid(), text: '跨链桥转账', done: false },
@@ -1711,6 +2158,8 @@ function escapeHtml(str) {
   if (!str) return '';
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+// 用于把字符串安全嵌入 onclick="fn('...')" 这类 JS 单引号字符串（防分类名含 ' \ 换行）
+function jsStr(s) { return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, ' ').replace(/\r/g, ' '); }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -2470,7 +2919,7 @@ function recordCompletion(delta) {
 
 function getChartData() {
   const days = [];
-  for (let i = 6; i >= 0; i--) {
+  for (let i = 14; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -2496,7 +2945,8 @@ function calcStats() {
     if (p.fundingAmount) totalFunding += parseFloat(p.fundingAmount) || 0;
     if (p.gasCost) totalGas += parseFloat(p.gasCost) || 0;
     if (p.airdropValue) totalAirdrop += parseFloat(p.airdropValue) || 0;
-    if (p.status === 'launched') launchedCount++;
+    const st = statusByKey(p.status);
+    if (st && st.launched) launchedCount++;
     if (p.dailyTasks.length > 0) {
       projectsWithDaily++;
       if (p.dailyTasks.every(t => t.done)) projectsDoneToday++;
@@ -2517,23 +2967,34 @@ function calcStats() {
 
 /* ========== Rendering ========== */
 function render() {
+  renderStatusStyles();
+  renderTagStyles();
+  renderFilterPills();
+  renderTagFilterPills();
   renderStats();
+  renderDistributions();
   renderInfoBar();
   renderChart();
   renderTodoPanel();
+  renderReminders();
   renderProjects();
   updateFilterCounts();
 }
 
 function updateFilterCounts() {
-  const counts = { all: state.projects.length, active: 0, preregister: 0, notstarted: 0, finished: 0, launched: 0, ended: 0, dropped: 0 };
+  const counts = { all: state.projects.length };
+  (state.statuses || []).forEach(s => counts[s.key] = 0);
   state.projects.forEach(p => {
     if (counts[p.status] !== undefined) counts[p.status]++;
-    else counts.active++;
+    else counts.all++;
   });
   Object.keys(counts).forEach(k => {
     const el = document.getElementById('count-' + k);
-    if (el) el.textContent = counts[k];
+    if (el) {
+      el.textContent = counts[k];
+      const c = countColor(counts[k]);
+      el.style.cssText = 'background:' + hexToRgba(c, 0.16) + ';color:' + c + ';border:1px solid ' + hexToRgba(c, 0.35);
+    }
   });
 }
 
@@ -2543,6 +3004,100 @@ function renderStats() {
   document.getElementById('stat-active').textContent = s.active;
   document.getElementById('stat-done').textContent = s.done;
   document.getElementById('stat-funding').textContent = formatFunding(s.funding);
+}
+
+const PIE_STATUS_COLORS = {
+  green: '#22c55e', blue: '#3b82f6', purple: '#a855f7',
+  amber: '#f59e0b', coral: '#ef4444', teal: '#14b8a6',
+  pink: '#ec4899', gray: '#6b7280'
+};
+function renderPie(items, cx, cy, r) {
+  const total = items.reduce((s, it) => s + it.n, 0);
+  if (total <= 0) {
+    return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#1f2937" stroke-width="1"/>';
+  }
+  let acc = 0;
+  let svg = '';
+  items.forEach(it => {
+    const start = -90 + (acc / total) * 360;
+    const end = -90 + ((acc + it.n) / total) * 360;
+    acc += it.n;
+    const large = (end - start) > 180 ? 1 : 0;
+    const t1 = start * Math.PI / 180;
+    const t2 = end * Math.PI / 180;
+    const x1 = cx + r * Math.sin(t1);
+    const y1 = cy - r * Math.cos(t1);
+    const x2 = cx + r * Math.sin(t2);
+    const y2 = cy - r * Math.cos(t2);
+    svg += '<path d="M' + cx + ',' + cy + ' L' + x1.toFixed(1) + ',' + y1.toFixed(1) + ' A' + r + ',' + r + ' 0 ' + large + ',1 ' + x2.toFixed(1) + ',' + y2.toFixed(1) + ' Z" fill="' + it.color + '" stroke="#0b0b12" stroke-width="1.5"/>';
+    const mid = (start + end) / 2;
+    const radMid = mid * Math.PI / 180;
+    const ratio = it.n / total;
+    const rr = ratio < 0.12 ? r * 0.55 : r * 0.65;
+    const lx = cx + rr * Math.sin(radMid);
+    const ly = cy - rr * Math.cos(radMid);
+    const isAmber = it.color === '#f59e0b' || it.color === '#fbbf24';
+    const pct = Math.round(ratio * 100) + '%';
+    if (ratio >= 0.05) {
+      svg += '<text x="' + lx.toFixed(1) + '" y="' + (ly + 4).toFixed(1) + '" fill="' + (isAmber ? '#1f2937' : '#ffffff') + '" font-size="' + (ratio < 0.12 ? 10 : 12) + '" font-weight="500" text-anchor="middle">' + escapeHtml(pct) + '</text>';
+    }
+  });
+  return svg;
+}
+function hexToRgba(hex, a) {
+  const h = (hex || '#888').replace('#', '');
+  const r = parseInt(h.substring(0, 2), 16), g = parseInt(h.substring(2, 4), 16), b = parseInt(h.substring(4, 6), 16);
+  return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+}
+const CHAIN_PALETTE = ['#a855f7', '#2dd4bf', '#fbbf24', '#60a5fa', '#f87171', '#34d399', '#f9a8d4', '#94a3b8'];
+function chainColorHash(name) {
+  let h = 0;
+  const s = String(name || '');
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h) + s.charCodeAt(i);
+  return CHAIN_PALETTE[Math.abs(h) % CHAIN_PALETTE.length];
+}
+function chainColor(name) {
+  return (state.chainColors && state.chainColors[name]) ? state.chainColors[name] : chainColorHash(name);
+}
+const COUNT_PALETTE = ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e', '#3b82f6', '#8b5cf6', '#d946ef', '#f43f5e', '#06b6d4', '#eab308', '#14b8a6'];
+function countColor(n) {
+  if (!n || n <= 0) return '#94a3b8';
+  return COUNT_PALETTE[(n - 1) % COUNT_PALETTE.length];
+}
+function launchContribution(p) {
+  if (!p) return 0;
+  const st = statusByKey(p.status);
+  if (st && st.launched && p.airdropValue) return parseFloat(p.airdropValue) || 0;
+  return 0;
+}
+function renderDistributions() {
+  const el = document.getElementById('dist-card');
+  if (!el) return;
+  const byChain = {};
+  let launchedValue = 0;
+  state.projects.forEach(p => {
+    if (p.chainType) byChain[p.chainType] = (byChain[p.chainType] || 0) + 1;
+    const st = statusByKey(p.status);
+    if (st && st.launched && p.airdropValue) launchedValue += parseFloat(p.airdropValue) || 0;
+  });
+  const chainKeys = Object.keys(byChain);
+  const chainItems = chainKeys.map(k => ({ label: k, n: byChain[k], color: chainColor(k) }));
+  const size = 180;
+  const cx = size / 2;
+  const cy = size / 2;
+  const r = 68;
+  const launchedTotal = (state.launchedTotal || 0) + launchedValue;
+  let html = '<div class="dist-head"><span class="dist-title">分布</span>' +
+    '<span class="dist-launched">已发币总价值 <b style="color:var(--green)">' + formatUSD(launchedTotal) + '</b></span></div>';
+  html += '<div class="dist-pie-wrap"><svg viewBox="0 0 ' + size + ' ' + size + '">' +
+    renderPie(chainItems, cx, cy, r) +
+    '</svg></div>';
+  if (chainItems.length) {
+    html += '<div class="dist-chain-line">' +
+      chainItems.map(it => '<span class="dist-chain-name" style="color:' + it.color + '">' + escapeHtml(it.label) + '</span>').join('') +
+      '</div>';
+  }
+  el.innerHTML = html;
 }
 
 function renderInfoBar() {
@@ -2572,6 +3127,10 @@ function renderChart() {
   document.getElementById('chart-bars').innerHTML = html;
 }
 
+function todoCountStyle(n) {
+  const c = countColor(n);
+  return 'background:' + hexToRgba(c, 0.16) + ';color:' + c + ';border:1px solid ' + hexToRgba(c, 0.35);
+}
 function renderTodoPanel() {
   const panel = document.getElementById('todo-panel');
   const body = document.getElementById('todo-panel-body');
@@ -2604,7 +3163,9 @@ function renderTodoPanel() {
   Object.values(grouped).forEach(g => {
     const p = g.project;
     html += '<div class="todo-group">';
-    html += '<div class="todo-group-header"><span class="todo-project-name">' + escapeHtml(p.name) + '</span><span class="todo-group-count">' + g.tasks.length + '</span></div>';
+    const projectColor = p.chainType ? chainColor(p.chainType) : 'var(--accent)';
+    const folderBtn = p.scriptDir ? '<button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder(\'' + escapeHtml(p.id) + '\')" title="打开脚本文件夹">打开</button>' : '';
+    html += '<div class="todo-group-header"><span class="todo-project-name" style="color:' + projectColor + '">' + escapeHtml(p.name) + '</span><span class="todo-group-count" style="' + todoCountStyle(g.tasks.length) + '">' + g.tasks.length + '</span>' + folderBtn + '</div>';
     g.tasks.forEach(t => {
       html += '<div class="todo-group-item">';
       html += '<div class="task-checkbox" onclick="toggleTask(\'' + p.id + '\',\'daily\',\'' + t.id + '\')"></div>';
@@ -2622,10 +3183,162 @@ function toggleTodoPanel() {
   panel.classList.toggle('expanded', ui.todoExpanded);
 }
 
+function markProjectDailyDone(p) {
+  if (!p || !p.dailyTasks || !p.dailyTasks.length) return;
+  let changed = false;
+  p.dailyTasks.forEach(function (t) {
+    if (!t.done) {
+      t.done = true;
+      recordCompletion(1);
+      changed = true;
+    }
+  });
+  if (changed) {
+    save();
+    render();
+  }
+}
+
+// 点「打开」后弹出的确认框：先打开文件夹，再让用户确认是否把该项目每日任务标记为完成
+function confirmMarkDailyDone(p) {
+  var hasUndone = p && p.dailyTasks && p.dailyTasks.some(function (t) { return !t.done; });
+  if (!hasUndone) return; // 没有未完成的每日任务就不打扰
+  var ov = document.createElement('div');
+  ov.className = 'modal-overlay';
+  ov.id = 'markdone-overlay';
+  ov.setAttribute('onclick', 'if(event.target===this)closeMarkDone()');
+  ov.innerHTML =
+    '<div class="modal" style="max-width:400px;">' +
+      '<div class="modal-header"><h2>标记每日任务完成？</h2>' +
+      '<button class="modal-close" onclick="closeMarkDone()">&times;</button></div>' +
+      '<div class="modal-body"><p style="margin:0;color:var(--text-2);line-height:1.6;">已打开「' + escapeHtml(p.name) + '」的脚本文件夹。<br>是否把该项目的每日任务标记为已完成？</p></div>' +
+      '<div class="modal-footer">' +
+        '<button class="btn" onclick="closeMarkDone()">取消</button>' +
+        '<button class="btn btn-accent" onclick="doConfirmMarkDone(\'' + escapeHtml(p.id) + '\')">标记完成</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(ov);
+  requestAnimationFrame(function () { ov.classList.add('active'); });
+}
+
+function closeMarkDone() {
+  var ov = document.getElementById('markdone-overlay');
+  if (ov) ov.remove();
+}
+
+function doConfirmMarkDone(projectId) {
+  closeMarkDone();
+  var p = state.projects.find(function (x) { return x.id === projectId; });
+  if (p) markProjectDailyDone(p);
+}
+
+function openProjectFolder(projectId) {
+  const p = state.projects.find(function (x) { return x.id === projectId; });
+  if (!p || !p.scriptDir) { showToast('该项目未设置脚本文件夹'); return; }
+  const dir = p.scriptDir.trim();
+  if (!dir) { showToast('该项目未设置脚本文件夹'); return; }
+  // 无论哪种模式都先把路径复制到剪贴板，作为兜底
+  copyText(dir, '文件夹路径');
+
+  // file:// 模式：先让本地小助手（server.js）直接调 explorer 打开文件夹，
+  // 页面 origin 仍是 file://，localStorage 数据完全不受影响；
+  // 小助手没开 / 被浏览器拦截时，自动回退到 file:// 链接 + 复制路径。
+  if (location.protocol === 'file:') {
+    var doFallback = function () {
+      var fileUrl = dir.replace(/\\/g, '/');
+      if (!fileUrl.startsWith('file://')) {
+        fileUrl = 'file:///' + fileUrl.replace(/^\/+/, '');
+      }
+      var a = document.createElement('a');
+      a.href = fileUrl;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () { document.body.removeChild(a); }, 0);
+      showToast('本地小助手未运行，路径已复制；已尝试在浏览器中打开目录（Chrome 会显示文件列表，Firefox 会直接打开资源管理器）');
+      confirmMarkDailyDone(p);
+    };
+    fetch('http://127.0.0.1:8731/open?path=' + encodeURIComponent(dir))
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data && data.ok) {
+          showToast('已在资源管理器中打开：' + dir);
+          confirmMarkDailyDone(p);
+        } else if (data && data.error && data.error.indexOf('不存在') !== -1) {
+          showToast('文件夹不存在，路径已复制：' + dir);
+        } else {
+          doFallback();
+        }
+      })
+      .catch(function () { doFallback(); });
+    return;
+  }
+
+  // 非 file: 环境（手机/部署版）仅复制路径
+  showToast('当前非本地打开模式，路径已复制');
+}
+
+function parseTgeDate(str) {
+  if (!str) return null;
+  const m = String(str).match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (!m) return null;
+  const d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+  if (isNaN(d.getTime())) return null;
+  return d;
+}
+function tgeDaysLeft(p) {
+  const d = parseTgeDate(p.tgeDate);
+  if (!d) return null;
+  const today = new Date(todayStr() + 'T00:00:00');
+  return Math.round((d.getTime() - today.getTime()) / 86400000);
+}
+function setReminderDays(v) {
+  const n = parseInt(v, 10);
+  ui.reminderDays = (isNaN(n) || n < 1) ? (ui.reminderDays || 14) : n;
+  const sel = document.querySelector('.reminder-select');
+  if (sel && document.activeElement !== sel) sel.value = String(ui.reminderDays);
+  renderReminders();
+  renderProjects();
+}
+function renderReminders() {
+  const panel = document.getElementById('reminder-panel');
+  const body = document.getElementById('reminder-body');
+  const badge = document.getElementById('reminder-count');
+  if (!panel || !body) return;
+  const days = ui.reminderDays || 14;
+  const sel = document.querySelector('.reminder-select');
+  if (sel && document.activeElement !== sel) sel.value = String(days);
+  const list = [];
+  state.projects.forEach(p => {
+    const left = tgeDaysLeft(p);
+    if (left === null) return;
+    if (left >= 0 && left <= days) list.push({ p: p, left: left });
+  });
+  list.sort((a, b) => a.left - b.left);
+  badge.textContent = list.length;
+  if (list.length === 0) {
+    body.innerHTML = '<div class="reminder-empty">近期（' + days + ' 天内）暂无临近 TGE / 重要日期</div>';
+    return;
+  }
+  body.innerHTML = list.map(function (item) {
+    const p = item.p;
+    const urgent = item.left <= 3;
+    const color = urgent ? '#fca5a5' : (item.left <= 7 ? '#fcd34d' : '#93c5fd');
+    return '<div class="reminder-item" onclick="openModal(\'' + p.id + '\')">' +
+      '<span class="reminder-dot" style="background:' + color + '"></span>' +
+      '<span class="reminder-name">' + escapeHtml(p.name) + '</span>' +
+      '<span class="reminder-when" style="color:' + color + '">TGE ' + escapeHtml(p.tgeDate) + ' · 剩 ' + item.left + ' 天</span>' +
+    '</div>';
+  }).join('');
+}
+
 function getFilteredProjects() {
   let list = [...state.projects];
   if (ui.filter !== 'all') {
     list = list.filter(p => p.status === ui.filter);
+  }
+  if (ui.tagFilters && ui.tagFilters.length) {
+    // 多选标签 = 同时满足（AND），用于多维度交叉筛选
+    list = list.filter(p => (p.tags || []).length && ui.tagFilters.every(f => (p.tags || []).indexOf(f) !== -1));
   }
   if (ui.search) {
     const q = ui.search.toLowerCase();
@@ -2682,16 +3395,305 @@ function renderProjects() {
   container.innerHTML = list.map(p => renderCard(p)).join('');
 }
 
-function statusLabel(s) {
-  return {
-    active: '🔥 进行中',
-    preregister: '📝 预注册',
-    notstarted: '⏸️ 项目未开始',
-    finished: '⏳ 等待 TGE发币',
-    launched: '💰 已发币',
-    ended: '🔚 已结束·未中',
-    dropped: '🚫 已放弃'
-  }[s] || s;
+function statusByKey(key) { return (state.statuses || []).find(s => s.key === key); }
+function statusLabel(s) { const st = statusByKey(s); return st ? st.label : s; }
+
+function renderFilterPills() {
+  const el = document.getElementById('filter-pills');
+  if (!el) return;
+  el.innerHTML = '<button class="pill' + (ui.filter === 'all' ? ' active' : '') + '" data-filter="all" onclick="setFilter(\'all\')">📋 全部 <span class="pill-count" id="count-all">0</span></button>'
+    + (state.statuses || []).map(s => {
+      const active = ui.filter === s.key ? ' active' : '';
+      const handle = '<span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,\'' + jsStr(s.key) + '\')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,\'' + jsStr(s.key) + '\')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>';
+      return '<button class="pill' + active + '" data-filter="' + escapeHtml(s.key) + '" onclick="setFilter(\'' + jsStr(s.key) + '\')" style="' + statusColorStyle(s.key, active) + '">' + handle + escapeHtml(s.label) + ' <span class="pill-count" id="count-' + escapeHtml(s.key) + '">0</span></button>';
+    }).join('');
+}
+let statusDragKey = null;
+function statusDragStart(e, key) {
+  statusDragKey = key;
+  try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', key); } catch (err) {}
+}
+function statusDragOver(e) { e.preventDefault(); try { e.dataTransfer.dropEffect = 'move'; } catch (err) {} }
+function statusDrop(e, key) {
+  e.preventDefault();
+  if (!statusDragKey || statusDragKey === key) { statusDragKey = null; return; }
+  const arr = state.statuses;
+  const from = arr.findIndex(function (s) { return s.key === statusDragKey; });
+  if (from === -1) { statusDragKey = null; return; }
+  const moved = arr.splice(from, 1)[0];
+  let to = arr.findIndex(function (s) { return s.key === key; });
+  if (to === -1) to = arr.length;
+  try { if ((e.clientY - e.currentTarget.getBoundingClientRect().top) > e.currentTarget.getBoundingClientRect().height / 2) to = to + 1; } catch (err) {}
+  arr.splice(to, 0, moved);
+  statusDragKey = null;
+  save();
+  render();
+  showToast('已移动状态：' + (moved.label || moved.key));
+}
+function renderStatusOptions() {
+  const sel = document.getElementById('f-status');
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = (state.statuses || []).map(s => '<option value="' + escapeHtml(s.key) + '">' + escapeHtml(s.label) + '</option>').join('');
+  if (current && (state.statuses || []).some(s => s.key === current)) sel.value = current;
+}
+function renderStatusStyles() {
+  let style = document.getElementById('status-styles');
+  if (!style) {
+    style = document.createElement('style');
+    style.id = 'status-styles';
+    document.head.appendChild(style);
+  }
+  const defaultColors = {
+    active: { bg: 'var(--green-bg)', color: 'var(--green)' },
+    preregister: { bg: 'rgba(167,139,250,0.18)', color: '#c4b5fd' },
+    notstarted: { bg: 'rgba(129,140,248,0.14)', color: '#818cf8' },
+    finished: { bg: 'var(--amber-bg)', color: 'var(--amber)' },
+    launched: { bg: 'var(--blue-bg)', color: 'var(--blue)' },
+    ended: { bg: 'rgba(156,156,182,0.14)', color: '#a1a1b5' },
+    dropped: { bg: 'var(--coral-bg)', color: 'var(--coral)' }
+  };
+  const palette = [
+    { bg: 'rgba(167,139,250,0.18)', color: '#c4b5fd' },
+    { bg: 'rgba(129,140,248,0.14)', color: '#818cf8' },
+    { bg: 'rgba(52,211,153,0.14)', color: '#34d399' },
+    { bg: 'rgba(251,191,36,0.14)', color: '#fbbf24' },
+    { bg: 'rgba(244,114,182,0.14)', color: '#f472b6' },
+    { bg: 'rgba(96,165,250,0.14)', color: '#60a5fa' },
+    { bg: 'rgba(248,113,113,0.14)', color: '#f87171' },
+    { bg: 'rgba(45,212,191,0.14)', color: '#2dd4bf' },
+    { bg: 'rgba(192,132,252,0.14)', color: '#c084fc' }
+  ];
+  let css = '';
+  (state.statuses || []).forEach((s, i) => {
+    const colors = (s.color && TAG_COLORS[s.color]) ? TAG_COLORS[s.color] : (defaultColors[s.key] || palette[i % palette.length]);
+    css += '.tag-' + s.key + ' { background: ' + colors.bg + '; color: ' + colors.fg + '; border: 1px solid ' + colors.bd + '; }';
+  });
+  style.textContent = css;
+}
+
+/* ========== 项目标签（多维度归类） ========== */
+function tagByKey(key) { return (state.tags || []).find(t => t.key === key); }
+function tagLabel(key) { const t = tagByKey(key); return t ? t.label : key; }
+function tagColorStyle(key, isActive) {
+  const t = tagByKey(key);
+  const c = (t && TAG_COLORS[t.color]) ? TAG_COLORS[t.color] : TAG_COLORS.gray;
+  return 'background:' + c.bg + ';color:' + c.fg + ';border:1px solid ' + c.bd + (isActive ? ';box-shadow:0 0 0 2px ' + c.fg + '33;font-weight:700' : '');
+}
+function statusColorStyle(key, isActive) {
+  const s = statusByKey(key);
+  const c = (s && s.color && TAG_COLORS[s.color]) ? TAG_COLORS[s.color] : TAG_COLORS.gray;
+  return 'background:' + c.bg + ';color:' + c.fg + ';border:1px solid ' + c.bd + (isActive ? ';box-shadow:0 0 0 2px ' + c.fg + '33;font-weight:700' : '');
+}
+function renderTagStyles() {
+  let style = document.getElementById('tag-styles');
+  if (!style) {
+    style = document.createElement('style');
+    style.id = 'tag-styles';
+    document.head.appendChild(style);
+  }
+  let css = '';
+  (state.tags || []).forEach(t => {
+    const c = TAG_COLORS[t.color] || TAG_COLORS.gray;
+    css += '.ptag-' + t.key + ' { background: ' + c.bg + '; color: ' + c.fg + '; border: 1px solid ' + c.bd + '; }';
+  });
+  style.textContent = css;
+}
+function renderTagFilterPills() {
+  const el = document.getElementById('tag-filter-pills');
+  if (!el) return;
+  const tags = state.tags || [];
+  let html = '';
+  tags.forEach(t => {
+    const active = (ui.tagFilters || []).indexOf(t.key) !== -1;
+    html += '<button class="pill' + (active ? ' active' : '') + '" data-tagfilter="' + escapeHtml(t.key) + '" onclick="setTagFilter(\'' + jsStr(t.key) + '\')" style="' + tagColorStyle(t.key, active) + '">' + escapeHtml(t.label) + '</button>';
+  });
+  html += '<button class="pill pill-add" type="button" onclick="addTag()" title="新增标签">+ 新标签</button>';
+  html += '<button class="pill pill-manage" type="button" onclick="openTagManager()" title="管理标签（增删/改名/换色）">⚙ 管理</button>';
+  if (ui.tagFilters && ui.tagFilters.length) {
+    html += '<button class="pill pill-clear" type="button" onclick="clearTagFilters()">清除</button>';
+  }
+  el.innerHTML = html;
+}
+function setTagFilter(key) {
+  if (!ui.tagFilters) ui.tagFilters = [];
+  const i = ui.tagFilters.indexOf(key);
+  if (i === -1) ui.tagFilters.push(key); else ui.tagFilters.splice(i, 1);
+  renderTagFilterPills();
+  renderProjects();
+}
+function clearTagFilters() {
+  ui.tagFilters = [];
+  renderTagFilterPills();
+  renderProjects();
+}
+
+/* 卡片内快捷打标浮层 */
+let tagPickerProjectId = null;
+function openTagPicker(projectId, anchorEl) {
+  closeTagPicker();
+  const p = state.projects.find(x => x.id === projectId);
+  if (!p) return;
+  tagPickerProjectId = projectId;
+  const picker = document.createElement('div');
+  picker.id = 'tag-picker';
+  picker.className = 'tag-picker';
+  document.body.appendChild(picker);
+  renderTagPicker(projectId);
+  const r = anchorEl.getBoundingClientRect();
+  const pr = picker.getBoundingClientRect();
+  let left = r.left;
+  let top = r.bottom + 6;
+  if (left + pr.width > window.innerWidth - 8) left = window.innerWidth - pr.width - 8;
+  if (left < 8) left = 8;
+  if (top + pr.height > window.innerHeight - 8) top = r.top - pr.height - 6;
+  picker.style.left = Math.max(8, left) + 'px';
+  picker.style.top = Math.max(8, top) + 'px';
+  setTimeout(() => document.addEventListener('mousedown', tagPickerOutside, true), 0);
+}
+function tagPickerOutside(e) {
+  const pk = document.getElementById('tag-picker');
+  if (pk && !pk.contains(e.target)) closeTagPicker();
+}
+function closeTagPicker() {
+  const pk = document.getElementById('tag-picker');
+  if (pk) pk.remove();
+  document.removeEventListener('mousedown', tagPickerOutside, true);
+  tagPickerProjectId = null;
+}
+function renderTagPicker(projectId) {
+  const picker = document.getElementById('tag-picker');
+  if (!picker) return;
+  const p = state.projects.find(x => x.id === projectId);
+  if (!p) { closeTagPicker(); return; }
+  const tags = state.tags || [];
+  let html = '<div class="tag-picker-head">选择标签<span class="tag-picker-close" onclick="closeTagPicker()">&times;</span></div>';
+  html += '<div class="tag-picker-body">';
+  if (tags.length === 0) html += '<div class="tag-picker-empty">还没有标签，点击下方新建</div>';
+  tags.forEach(t => {
+    const on = (p.tags || []).indexOf(t.key) !== -1;
+    html += '<button class="tag-chip' + (on ? ' on' : '') + '" type="button" onclick="toggleProjectTag(\'' + jsStr(projectId) + '\',\'' + jsStr(t.key) + '\')" style="' + tagColorStyle(t.key, on) + '">' + (on ? '✓ ' : '') + escapeHtml(t.label) + '</button>';
+  });
+  html += '</div>';
+  html += '<button class="tag-picker-add" type="button" onclick="addTag()">+ 新建标签</button>';
+  picker.innerHTML = html;
+}
+function toggleProjectTag(projectId, tagKey) {
+  const p = state.projects.find(x => x.id === projectId);
+  if (!p) return;
+  if (!Array.isArray(p.tags)) p.tags = [];
+  const i = p.tags.indexOf(tagKey);
+  if (i === -1) p.tags.push(tagKey); else p.tags.splice(i, 1);
+  save();
+  renderTagPicker(projectId);
+  renderProjects();
+  renderTagFilterPills();
+}
+function renderTagEditor() {
+  const box = document.getElementById('f-tags');
+  if (!box) return;
+  const tags = state.tags || [];
+  const sel = ui.editingTags || [];
+  if (tags.length === 0) { box.innerHTML = '<span class="tag-editor-empty">暂无标签，点 ⚙ 新建</span>'; return; }
+  box.innerHTML = tags.map(t => {
+    const on = sel.indexOf(t.key) !== -1;
+    return '<button type="button" class="tag-chip' + (on ? ' on' : '') + '" onclick="toggleEditingTag(\'' + jsStr(t.key) + '\')" style="' + tagColorStyle(t.key, on) + '">' + (on ? '✓ ' : '') + escapeHtml(t.label) + '</button>';
+  }).join('');
+}
+function toggleEditingTag(key) {
+  if (!ui.editingTags) ui.editingTags = [];
+  const i = ui.editingTags.indexOf(key);
+  if (i === -1) ui.editingTags.push(key); else ui.editingTags.splice(i, 1);
+  renderTagEditor();
+}
+function openTagManager() {
+  renderTagManagerList();
+  const o = document.getElementById('tag-overlay');
+  if (o) o.classList.add('active');
+}
+function closeTagManager() {
+  const o = document.getElementById('tag-overlay');
+  if (o) o.classList.remove('active');
+}
+function renderTagManagerList() {
+  const box = document.getElementById('tag-manager-list');
+  if (!box) return;
+  const tags = state.tags || [];
+  box.innerHTML = tags.map(t => {
+    const c = TAG_COLORS[t.color] || TAG_COLORS.gray;
+    return '<div class="tag-manager-row">' +
+      '<span class="tag-color-dot" style="background:' + c.fg + '" onclick="cycleTagColor(\'' + jsStr(t.key) + '\')" title="点击换色"></span>' +
+      '<span class="tag-manager-label">' + escapeHtml(t.label) + '</span>' +
+      '<button class="btn btn-sm" type="button" onclick="editTag(\'' + jsStr(t.key) + '\')" title="改名">✏️</button>' +
+      '<button class="btn btn-sm btn-icon-danger" type="button" onclick="deleteTag(\'' + jsStr(t.key) + '\')" title="删除">🗑</button>' +
+    '</div>';
+  }).join('');
+}
+function addTag() {
+  const label = prompt('输入标签名称（可中文 / emoji，如 女巫风险）：');
+  if (label === null) return;
+  const la = label.trim();
+  if (!la) { showToast('名称不能为空'); return; }
+  let base = la.toLowerCase().replace(/[^a-z0-9一-龥]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+  let k = base || ('t' + Date.now());
+  let i = 2;
+  while ((state.tags || []).some(t => t.key === k)) { k = base + '_' + (i++); }
+  const color = TAG_COLOR_KEYS[(state.tags ? state.tags.length : 0) % TAG_COLOR_KEYS.length];
+  if (!state.tags) state.tags = [];
+  state.tags.push({ key: k, label: la, color: color });
+  save();
+  renderTagStyles();
+  renderTagFilterPills();
+  renderTagManagerList();
+  renderTagEditor();
+  if (tagPickerProjectId) renderTagPicker(tagPickerProjectId);
+  showToast('已添加标签：' + la);
+}
+function editTag(key) {
+  const t = tagByKey(key);
+  if (!t) return;
+  const label = prompt('修改标签名称：', t.label);
+  if (label === null) return;
+  const la = label.trim();
+  if (!la) { showToast('名称不能为空'); return; }
+  t.label = la;
+  save();
+  renderTagStyles();
+  renderTagFilterPills();
+  renderTagManagerList();
+  renderTagEditor();
+  if (tagPickerProjectId) renderTagPicker(tagPickerProjectId);
+}
+function deleteTag(key) {
+  const t = tagByKey(key);
+  if (!t) return;
+  if (!state.tags || state.tags.length <= 1) { showToast('至少保留一个标签'); return; }
+  const inUse = state.projects.filter(p => (p.tags || []).indexOf(key) !== -1).length;
+  let msg = '确定删除标签「' + t.label + '」？';
+  if (inUse > 0) msg += '\n（' + inUse + ' 个项目会去掉该标签）';
+  if (!confirm(msg)) return;
+  state.projects.forEach(p => { if (p.tags) { const i = p.tags.indexOf(key); if (i !== -1) p.tags.splice(i, 1); } });
+  state.tags = state.tags.filter(x => x.key !== key);
+  if (ui.tagFilters) { const fi = ui.tagFilters.indexOf(key); if (fi !== -1) ui.tagFilters.splice(fi, 1); }
+  if (ui.editingTags) { const ei = ui.editingTags.indexOf(key); if (ei !== -1) ui.editingTags.splice(ei, 1); }
+  save();
+  renderTagStyles();
+  renderTagFilterPills();
+  renderTagManagerList();
+  renderTagEditor();
+  renderProjects();
+  if (tagPickerProjectId) renderTagPicker(tagPickerProjectId);
+  showToast('已删除标签：' + t.label);
+}
+function cycleTagColor(key) {
+  const t = tagByKey(key);
+  if (!t) return;
+  const idx = TAG_COLOR_KEYS.indexOf(t.color);
+  t.color = TAG_COLOR_KEYS[(idx + 1) % TAG_COLOR_KEYS.length];
+  save();
+  renderTagStyles();
+  renderTagManagerList();
+  if (tagPickerProjectId) renderTagPicker(tagPickerProjectId);
 }
 
 function renderCard(p) {
@@ -2699,6 +3701,8 @@ function renderCard(p) {
   const allTasks = [...(p.dailyTasks || []), ...(p.oneTimeTasks || [])];
   const doneCount = allTasks.filter(t => t.done).length;
   const priority = p.priority || 0;
+  const tgeLeft = tgeDaysLeft(p);
+  const near = tgeLeft !== null && tgeLeft >= 0 && tgeLeft <= (ui.reminderDays || 14);
 
   const socialBtns = ['twitter', 'telegram', 'discord', 'website'].map(key => {
     const val = p[key];
@@ -2774,19 +3778,30 @@ function renderCard(p) {
 
   const progressColor = progress >= 80 ? 'var(--green)' : progress >= 40 ? 'var(--amber)' : 'var(--coral)';
 
-  let html = '<div class="proj-card" data-id="' + p.id + '">';
+  let html = '<div class="proj-card' + (near ? ' card-near' : '') + '" data-id="' + p.id + '">';
   html += '<div class="card-header">';
   html += '<div class="card-title">';
   html += '<span class="priority-star p' + priority + '" onclick="togglePriority(\'' + p.id + '\')" title="点击切换优先级">' + (priority > 0 ? '\u2605' : '\u2606') + '</span>';
   html += '<span class="proj-name">' + escapeHtml(p.name) + '</span>';
-  if (p.chainType) html += '<span class="tag tag-chain">' + escapeHtml(p.chainType) + '</span>';
+  if (p.chainType) {
+    const cc = chainColor(p.chainType);
+    html += '<span class="tag tag-chain" style="background:' + hexToRgba(cc, 0.16) + ';color:' + cc + '">' + escapeHtml(p.chainType) + '</span>';
+  }
   if (p.status) html += '<span class="tag tag-' + p.status + '">' + statusLabel(p.status) + '</span>';
+  if (near) html += '<span class="near-badge">剩 ' + tgeLeft + ' 天 TGE</span>';
   html += '</div>';
   html += '<div class="card-actions">';
   html += '<button class="btn btn-icon" onclick="openModal(\'' + p.id + '\')" title="编辑">✏️</button>';
   html += '<button class="btn btn-icon btn-icon-danger" onclick="confirmDelete(\'' + p.id + '\')" title="删除">🗑</button>';
   html += '</div>';
   html += '</div>';
+
+  let tagRow = '';
+  (p.tags || []).forEach(function (tk) {
+    tagRow += '<span class="ptag ptag-' + escapeHtml(tk) + '">' + escapeHtml(tagLabel(tk)) + '</span>';
+  });
+  tagRow += '<button class="tag-add-btn" type="button" onclick="openTagPicker(\'' + p.id + '\', this)" title="添加标签">+ 标签</button>';
+  html += '<div class="card-tags">' + tagRow + '</div>';
 
   if (metaItems.length > 0) {
     html += '<div class="card-meta">' + metaItems.join('') + '</div>';
@@ -2924,10 +3939,12 @@ function populateChainTypeSelect(current) {
   state.chainTypes.forEach(ct => {
     const o = document.createElement('option');
     o.value = ct; o.textContent = ct;
+    o.style.color = chainColor(ct);
     sel.appendChild(o);
   });
   if (current && state.chainTypes.indexOf(current) !== -1) sel.value = current;
   else sel.value = state.chainTypes[0] || '';
+  sel.style.color = chainColor(sel.value);
 }
 function addChainType() {
   const name = prompt('输入新的链类型名称：');
@@ -2953,6 +3970,184 @@ function deleteChainType() {
   save();
   populateChainTypeSelect();
   showToast('已删除链类型：' + v);
+}
+function openChainTypeManager() {
+  renderChainTypeManagerList();
+  const o = document.getElementById('chain-type-overlay');
+  if (o) o.classList.add('active');
+}
+function closeChainTypeManager() {
+  const o = document.getElementById('chain-type-overlay');
+  if (o) o.classList.remove('active');
+}
+function renderChainTypeManagerList() {
+  const box = document.getElementById('chain-type-manager-list');
+  if (!box) return;
+  box.innerHTML = (state.chainTypes || []).map(function (ct) {
+    const c = chainColor(ct);
+    return '<div class="tag-manager-row">' +
+      '<span class="tag-color-dot" style="background:' + c + '" onclick="cycleChainColor(\'' + jsStr(ct) + '\')" title="点击换色"></span>' +
+      '<span class="tag-manager-label" style="color:' + c + '">' + escapeHtml(ct) + '</span>' +
+      '<button class="btn btn-sm" type="button" onclick="renameChainType(\'' + jsStr(ct) + '\')" title="改名">✏️</button>' +
+      '<button class="btn btn-sm btn-icon-danger" type="button" onclick="removeChainType(\'' + jsStr(ct) + '\')" title="删除">🗑</button>' +
+    '</div>';
+  }).join('');
+}
+function cycleChainColor(name) {
+  if (!name) return;
+  const cur = chainColor(name);
+  let idx = CHAIN_PALETTE.indexOf(cur);
+  const next = CHAIN_PALETTE[(idx + 1) % CHAIN_PALETTE.length];
+  if (!state.chainColors) state.chainColors = {};
+  state.chainColors[name] = next;
+  save();
+  renderChainTypeManagerList();
+  populateChainTypeSelect(name);
+  render();
+}
+function renameChainType(oldName) {
+  const name = prompt('修改链类型名称：', oldName);
+  if (!name) return;
+  const v = name.trim();
+  if (!v) return;
+  if (v !== oldName && state.chainTypes.indexOf(v) !== -1) { showToast('已存在：' + v); return; }
+  const idx = state.chainTypes.indexOf(oldName);
+  if (idx === -1) return;
+  state.chainTypes[idx] = v;
+  if (state.chainColors && state.chainColors[oldName]) {
+    state.chainColors[v] = state.chainColors[oldName];
+    delete state.chainColors[oldName];
+  }
+  state.projects.forEach(function (p) { if (p.chainType === oldName) p.chainType = v; });
+  save();
+  renderChainTypeManagerList();
+  populateChainTypeSelect(v);
+  render();
+  showToast('已重命名：' + oldName + ' → ' + v);
+}
+function removeChainType(name) {
+  const inUse = state.projects.filter(function (p) { return p.chainType === name; }).length;
+  var msg = '确定删除链类型：' + name + '？';
+  if (inUse > 0) msg += '\n（已有 ' + inUse + ' 个项目使用此类型，删除后这些项目将不再显示该链类型）';
+  if (!confirm(msg)) return;
+  state.chainTypes = state.chainTypes.filter(function (ct) { return ct !== name; });
+  if (state.chainColors) delete state.chainColors[name];
+  save();
+  renderChainTypeManagerList();
+  populateChainTypeSelect();
+  render();
+  showToast('已删除链类型：' + name);
+}
+function addChainTypeFromManager() {
+  const name = prompt('输入新的链类型名称：');
+  if (!name) return;
+  const v = name.trim();
+  if (!v) return;
+  if (state.chainTypes.indexOf(v) !== -1) { showToast('已存在：' + v); return; }
+  state.chainTypes.push(v);
+  save();
+  renderChainTypeManagerList();
+  populateChainTypeSelect(v);
+  showToast('已添加链类型：' + v);
+}
+function afterStatusChange() {
+  renderStatusOptions();
+  renderStatusManagerList();
+  render();
+}
+function addStatus() {
+  const label = prompt('输入状态名称（可带中文 / emoji，如 🎉 已白名单）：');
+  if (label === null) return;
+  const la = label.trim();
+  if (!la) { showToast('名称不能为空'); return; }
+  let base = la.toLowerCase().replace(/[^a-z0-9一-龥]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+  let k = base || ('s' + Date.now());
+  let i = 2;
+  while ((state.statuses || []).some(s => s.key === k)) { k = base + '_' + (i++); }
+  const done = confirm('该状态是否属于「已结束/可清理」？\n（选「确定」则批量清理已结束时会删掉这类项目）');
+  const launched = confirm('该状态是否代表「已发币」？\n（选「确定」则统计面板「已发币」计数包含它）');
+  if (!state.statuses) state.statuses = DEFAULT_STATUSES.map(s => ({ ...s }));
+  const color = TAG_COLOR_KEYS[state.statuses.length % TAG_COLOR_KEYS.length];
+  state.statuses.push({ key: k, label: la, done: done, launched: launched, color: color });
+  save();
+  afterStatusChange();
+  showToast('已添加状态：' + la);
+}
+function renameStatus(key) {
+  const st = statusByKey(key);
+  if (!st) return;
+  const label = prompt('修改状态显示名称：', st.label);
+  if (label === null) return;
+  const la = label.trim();
+  if (!la) { showToast('名称不能为空'); return; }
+  st.label = la;
+  save();
+  afterStatusChange();
+  showToast('已修改状态名称');
+}
+function removeStatus(key) {
+  const st = statusByKey(key);
+  if (!st) return;
+  if (!state.statuses || state.statuses.length <= 1) { showToast('至少保留一个状态'); return; }
+  const inUse = state.projects.filter(p => p.status === key).length;
+  const fallback = state.statuses.find(s => s.key !== key);
+  if (!fallback) return;
+  let msg = '确定删除状态「' + st.label + '」？';
+  if (inUse > 0) msg += '\n（' + inUse + ' 个项目会移到「' + fallback.label + '」）';
+  if (!confirm(msg)) return;
+  state.projects.forEach(p => { if (p.status === key) p.status = fallback.key; });
+  state.statuses = state.statuses.filter(s => s.key !== key);
+  if (ui.filter === key) ui.filter = 'all';
+  save();
+  afterStatusChange();
+  showToast('已删除状态：' + st.label);
+}
+function moveStatusDir(key, dir) {
+  const arr = state.statuses;
+  const idx = arr.findIndex(s => s.key === key);
+  if (idx === -1) return;
+  const ni = idx + dir;
+  if (ni < 0 || ni >= arr.length) { showToast(dir < 0 ? '已在最前' : '已在最后'); return; }
+  const tmp = arr[ni]; arr[ni] = arr[idx]; arr[idx] = tmp;
+  save();
+  afterStatusChange();
+}
+function editStatus() { const sel = document.getElementById('f-status'); if (sel) renameStatus(sel.value); }
+function deleteStatus() { const sel = document.getElementById('f-status'); if (sel) removeStatus(sel.value); }
+function moveStatusUp() { const sel = document.getElementById('f-status'); if (sel) moveStatusDir(sel.value, -1); }
+function moveStatusDown() { const sel = document.getElementById('f-status'); if (sel) moveStatusDir(sel.value, 1); }
+function openStatusManager() {
+  renderStatusManagerList();
+  const o = document.getElementById('status-overlay');
+  if (o) o.classList.add('active');
+}
+function closeStatusManager() {
+  const o = document.getElementById('status-overlay');
+  if (o) o.classList.remove('active');
+}
+function renderStatusManagerList() {
+  const box = document.getElementById('status-manager-list');
+  if (!box) return;
+  box.innerHTML = (state.statuses || []).map(function (s) {
+    const c = TAG_COLORS[s.color] || TAG_COLORS.gray;
+    return '<div class="tag-manager-row">' +
+      '<span class="tag-color-dot" style="background:' + c.fg + '" onclick="cycleStatusColor(\'' + jsStr(s.key) + '\')" title="点击换色"></span>' +
+      '<span class="tag-manager-label">' + escapeHtml(s.label) + '</span>' +
+      '<button class="btn btn-sm" type="button" onclick="moveStatusDir(\'' + jsStr(s.key) + '\',-1)" title="上移">⬆</button>' +
+      '<button class="btn btn-sm" type="button" onclick="moveStatusDir(\'' + jsStr(s.key) + '\',1)" title="下移">⬇</button>' +
+      '<button class="btn btn-sm" type="button" onclick="renameStatus(\'' + jsStr(s.key) + '\')" title="改名">✏️</button>' +
+      '<button class="btn btn-sm btn-icon-danger" type="button" onclick="removeStatus(\'' + jsStr(s.key) + '\')" title="删除">🗑</button>' +
+    '</div>';
+  }).join('');
+}
+function cycleStatusColor(key) {
+  const st = statusByKey(key);
+  if (!st) return;
+  const idx = TAG_COLOR_KEYS.indexOf(st.color);
+  st.color = TAG_COLOR_KEYS[(idx + 1) % TAG_COLOR_KEYS.length];
+  save();
+  renderStatusStyles();
+  renderStatusManagerList();
 }
 function populateTemplateSelects() {
   ['daily', 'onetime'].forEach(type => {
@@ -3050,6 +4245,7 @@ function confirmDelete(projectId) {
   if (!p) return;
   requireAction('delete', function () {
     if (confirm('确定删除「' + p.name + '」吗？此操作不可撤销。')) {
+      state.launchedTotal = (state.launchedTotal || 0) + launchContribution(p);
       state.projects = state.projects.filter(x => x.id !== projectId);
       save();
       render();
@@ -3072,6 +4268,7 @@ function openModalInner(projectId) {
   document.getElementById('daily-tasks-editor').innerHTML = '';
   document.getElementById('onetime-tasks-editor').innerHTML = '';
   populateChainTypeSelect();
+  renderStatusOptions();
   populateTemplateSelects();
 
   let p = null;
@@ -3083,6 +4280,7 @@ function openModalInner(projectId) {
     setFieldValue('f-website', p.website);
     setFieldValue('f-chainType', p.chainType);
     setFieldValue('f-status', p.status);
+    ui.editingTags = p.tags ? p.tags.slice() : [];
     setFieldValue('f-tokenSymbol', p.tokenSymbol);
     setFieldValue('f-priority', String(p.priority || 0));
     setFieldValue('f-tgeDate', p.tgeDate);
@@ -3108,14 +4306,16 @@ function openModalInner(projectId) {
     setFieldValue('f-airdropAmount', p.airdropAmount);
     setFieldValue('f-airdropValue', p.airdropValue);
     setFieldValue('f-notes', p.notes);
+    setFieldValue('f-scriptDir', p.scriptDir || '');
     (p.dailyTasks || []).forEach(t => addTaskEditorRow('daily', t.text));
     (p.oneTimeTasks || []).forEach(t => addTaskEditorRow('onetime', t.text));
   } else {
     title.textContent = '📝 新增项目';
+    ui.editingTags = [];
     ['f-name','f-website','f-tokenSymbol','f-tgeDate','f-startDate-y','f-startDate-m','f-startDate-d','f-twitter','f-telegram','f-discord',
      'f-fundingRound','f-fundingAmount','f-investors','f-contractAddress',
-     'f-gasCost','f-airdropToken','f-airdropAmount','f-airdropValue','f-notes'].forEach(id => setFieldValue(id, ''));
-    document.getElementById('f-status').value = 'active';
+     'f-gasCost','f-airdropToken','f-airdropAmount','f-airdropValue','f-notes','f-scriptDir'].forEach(id => setFieldValue(id, ''));
+    document.getElementById('f-status').value = (state.statuses && state.statuses[0]) ? state.statuses[0].key : 'active';
     document.getElementById('f-priority').value = '0';
   }
 
@@ -3131,6 +4331,7 @@ function openModalInner(projectId) {
   });
   renderVaultBanner();
   renderProjectWallets();
+  renderTagEditor();
   bindDateInputFormatting();
 
   // 初始化钱包视图筛选
@@ -3281,6 +4482,8 @@ function doSaveProject() {
     airdropAmount: parseFloat(getFieldValue('f-airdropAmount')) || 0,
     airdropValue: parseFloat(getFieldValue('f-airdropValue')) || 0,
     notes: getFieldValue('f-notes'),
+    scriptDir: getFieldValue('f-scriptDir'),
+    tags: (ui.editingTags || []).slice(),
     dailyTasks: dailyTasks,
     oneTimeTasks: oneTimeTasks
   };
@@ -3289,11 +4492,14 @@ function doSaveProject() {
     const p = state.projects.find(x => x.id === ui.editingId);
     if (p) {
       const oldName = p.name;
+      const beforeLaunch = launchContribution(p);
       const removedDaily = p.dailyTasks.filter(t => !dailyTasks.find(nt => nt.id === t.id));
       const removedOne = p.oneTimeTasks.filter(t => !oneTimeTasks.find(nt => nt.id === t.id));
       removedDaily.forEach(t => { if (t.done) recordCompletion(-1); });
       removedOne.forEach(t => { if (t.done) recordCompletion(-1); });
       Object.assign(p, data);
+      const afterLaunch = launchContribution(p);
+      if (afterLaunch < beforeLaunch) state.launchedTotal = (state.launchedTotal || 0) + (beforeLaunch - afterLaunch);
       if (oldName !== data.name) {
         (state.wallets || []).forEach(function (w) { if (w.project === oldName) w.project = data.name; });
       }
@@ -3307,6 +4513,7 @@ function doSaveProject() {
   }
 
   save();
+  ui.editingTags = null;
   closeModal();
   render();
 }
@@ -3348,17 +4555,19 @@ function batchMarkAllDone() {
 }
 
 function batchDeleteDone() {
-  const done = state.projects.filter(p => p.status === 'ended' || p.status === 'dropped');
+  const doneKeys = (state.statuses || []).filter(s => s.done).map(s => s.key);
+  const done = state.projects.filter(p => doneKeys.includes(p.status));
   if (done.length === 0) {
     showToast('没有已结束/已放弃的项目可清理');
     return;
   }
   if (confirm('确定删除 ' + done.length + ' 个已结束/已放弃的项目吗？')) {
     done.forEach(p => {
+      state.launchedTotal = (state.launchedTotal || 0) + launchContribution(p);
       p.dailyTasks.forEach(t => { if (t.done) recordCompletion(-1); });
       p.oneTimeTasks.forEach(t => { if (t.done) recordCompletion(-1); });
     });
-    state.projects = state.projects.filter(p => p.status !== 'ended' && p.status !== 'dropped');
+    state.projects = state.projects.filter(p => !doneKeys.includes(p.status));
     save();
     render();
     showToast('已清理 ' + done.length + ' 个已结束项目');
@@ -3417,8 +4626,17 @@ function importData(event) {
         state.wallets = data.wallets || [];
         state.vault = data.vault || null;
         state.chainTypes = (data.chainTypes && data.chainTypes.length) ? data.chainTypes : DEFAULT_CHAIN_TYPES.slice();
+        state.chainColors = data.chainColors || {};
+        state.launchedTotal = data.launchedTotal || 0;
         state.templates = (data.templates && data.templates.length) ? data.templates : DEFAULT_TEMPLATES.map(t => ({ key: t.key, name: t.name, daily: t.daily.slice(), onetime: t.onetime.slice() }));
+        state.statuses = (data.statuses && data.statuses.length) ? data.statuses : DEFAULT_STATUSES.map(s => ({ ...s }));
+        state.tags = (data.tags && data.tags.length) ? data.tags : DEFAULT_TAGS.map(t => ({ ...t }));
+        state.tools = Array.isArray(data.tools) ? data.tools : [];
+        ensureSeedTools();
+        state.toolCategories = (data.toolCategories && data.toolCategories.length) ? data.toolCategories : ['融资查询', '跨链桥', '空投查询', '数据分析', 'Gas监控', '钱包工具', 'NFT', '社交', '其他'];
+        migrateStatuses();
         migrateProjects();
+        migrateTags();
         save();
         render();
         showToast('数据已导入');
@@ -3605,6 +4823,361 @@ async function generatePagesLink() {
   }
 }
 function closeSyncModal() { document.getElementById('sync-overlay').classList.remove('active'); }
+
+/* ========== 工具箱 ========== */
+const TOOL_CATEGORIES = ['融资查询', '跨链桥', '空投查询', '数据分析', 'Gas监控', '钱包工具', 'NFT', '社交', '其他'];
+function toolCats() { return (state.toolCategories && state.toolCategories.length) ? state.toolCategories : TOOL_CATEGORIES; }
+
+/* ========== 工具箱推荐站点（首次/同步后自动补入，已存在 URL 不重复添加） ========== */
+const SEED_TOOLS = [
+  // 融资查询
+  { name: 'RootData', url: 'https://rootdata.com', category: '融资查询', note: '加密项目融资与机构数据库' },
+  { name: 'CryptoRank', url: 'https://cryptorank.io', category: '融资查询', note: '融资轮次 / ICO / 空投日历' },
+  { name: 'Messari', url: 'https://messari.io', category: '融资查询', note: '机构级研究与融资追踪' },
+  { name: 'Crunchbase', url: 'https://www.crunchbase.com', category: '融资查询', note: '创业公司融资情报' },
+  // 跨链桥
+  { name: 'ChainSpot', url: 'https://chainspot.io', category: '跨链桥', note: '跨链桥聚合比价' },
+  { name: 'LI.FI', url: 'https://li.fi', category: '跨链桥', note: '桥 + DEX 路由聚合' },
+  { name: 'Jumper', url: 'https://jumper.exchange', category: '跨链桥', note: '跨链交换聚合' },
+  { name: 'Orbiter Finance', url: 'https://orbiter.finance', category: '跨链桥', note: '快速跨 Rollup 桥' },
+  { name: 'Stargate', url: 'https://stargate.finance', category: '跨链桥', note: '全链流动性桥' },
+  // 空投查询
+  { name: 'Airdrops.io', url: 'https://airdrops.io', category: '空投查询', note: '空投列表与教程' },
+  { name: 'Layer3', url: 'https://layer3.xyz', category: '空投查询', note: '任务型空投平台' },
+  { name: 'QuestN', url: 'https://questn.com', category: '空投查询', note: '项目任务 / 活动聚合' },
+  { name: 'DappRadar', url: 'https://dappradar.com', category: '空投查询', note: 'DApp 排行与空投' },
+  { name: 'Usea', url: 'https://usea.xyz', category: '空投查询', note: '交互任务追踪' },
+  // 数据分析
+  { name: 'Dune', url: 'https://dune.com', category: '数据分析', note: '链上数据 SQL 分析' },
+  { name: 'DeFiLlama', url: 'https://defillama.com', category: '数据分析', note: 'TVL / 协议数据' },
+  { name: 'Nansen', url: 'https://nansen.ai', category: '数据分析', note: '聪明钱标签分析' },
+  { name: 'Token Terminal', url: 'https://tokenterminal.com', category: '数据分析', note: '协议财务指标' },
+  { name: 'Artemis', url: 'https://artemis.xyz', category: '数据分析', note: '项目基本面对比' },
+  // Gas监控
+  { name: 'Etherscan Gas Tracker', url: 'https://etherscan.io/gastracker', category: 'Gas监控', note: '以太坊 Gas 追踪' },
+  { name: 'Blocknative', url: 'https://www.blocknative.com', category: 'Gas监控', note: 'Gas 预测 API' },
+  { name: 'OKLink', url: 'https://www.oklink.com', category: 'Gas监控', note: '多链浏览器 + Gas' },
+  { name: 'GasNow', url: 'https://gasnow.org', category: 'Gas监控', note: '实时 Gas 价格' },
+  // 钱包工具
+  { name: 'Revoke.cash', url: 'https://revoke.cash', category: '钱包工具', note: '授权清理' },
+  { name: 'DeBank', url: 'https://debank.com', category: '钱包工具', note: '多链资产看板' },
+  { name: 'Zerion', url: 'https://zerion.io', category: '钱包工具', note: '投资组合管理' },
+  { name: 'WalletGuard', url: 'https://www.walletguard.app', category: '钱包工具', note: '防钓鱼防护' },
+  { name: 'Rabby', url: 'https://rabby.io', category: '钱包工具', note: '多链钱包' },
+  // NFT
+  { name: 'OpenSea', url: 'https://opensea.io', category: 'NFT', note: '最大 NFT 市场' },
+  { name: 'Blur', url: 'https://blur.io', category: 'NFT', note: '专业 NFT 交易' },
+  { name: 'Magic Eden', url: 'https://magiceden.io', category: 'NFT', note: '多链 NFT 市场' },
+  { name: 'DappRadar NFT', url: 'https://dappradar.com/nft', category: 'NFT', note: 'NFT 排行' },
+  { name: 'Tensor', url: 'https://tensor.trade', category: 'NFT', note: 'Solana NFT 市场' },
+  // 社交
+  { name: 'Kaito AI', url: 'https://kaito.ai', category: '社交', note: 'AI 加密社媒搜索' },
+  { name: 'CryptoPanic', url: 'https://cryptopanic.com', category: '社交', note: '加密新闻聚合' },
+  { name: 'X (Twitter)', url: 'https://x.com', category: '社交', note: '项目官方动态' },
+  { name: 'Discord', url: 'https://discord.com', category: '社交', note: '项目社区' },
+  { name: 'Telegram', url: 'https://telegram.org', category: '社交', note: '项目频道' }
+];
+
+function ensureSeedTools() {
+  if (!state.tools) state.tools = [];
+  const seen = {};
+  state.tools.forEach(function (t) { if (t && t.url) seen[t.url] = true; });
+  let added = 0;
+  SEED_TOOLS.forEach(function (s) {
+    if (seen[s.url]) return;
+    state.tools.push({
+      id: uid(),
+      name: s.name,
+      url: s.url,
+      category: s.category,
+      tags: [],
+      note: s.note || '推荐',
+      favorite: false,
+      count: 0,
+      createdAt: Date.now()
+    });
+    added++;
+  });
+  return added;
+}
+let toolSearch = '';
+let toolCategory = 'all';
+let editingToolId = null;
+
+function openToolsModal() {
+  requireAction('open', function () {
+    document.getElementById('tools-overlay').classList.add('active');
+    refreshToolCatSelect();
+    resetToolForm();
+    renderToolCats();
+    renderTools();
+  });
+}
+function closeToolsModal() {
+  document.getElementById('tools-overlay').classList.remove('active');
+}
+function refreshToolCatSelect() {
+  const sel = document.getElementById('tool-category');
+  if (!sel) return;
+  const cats = toolCats();
+  sel.innerHTML = cats.map(function (c) { return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>'; }).join('');
+  if (editingToolId) {
+    const t = (state.tools || []).find(function (x) { return x.id === editingToolId; });
+    if (t) sel.value = t.category || cats[0];
+  } else {
+    sel.value = (toolCategory !== 'all' && cats.indexOf(toolCategory) !== -1) ? toolCategory : cats[0];
+  }
+}
+function renderToolCats() {
+  const el = document.getElementById('tool-cat-pills');
+  if (!el) return;
+  const cats = ['all'].concat(toolCats());
+  el.innerHTML = cats.map(function (c) {
+    const label = c === 'all' ? '全部' : c;
+    const active = c === toolCategory ? ' active' : '';
+    return '<span class="tool-cat-pill' + active + '" onclick="setToolCategory(\'' + jsStr(c) + '\')">' + escapeHtml(label) + '</span>';
+  }).join('');
+}
+function setToolCategory(c) {
+  toolCategory = c;
+  renderToolCats();
+  renderTools();
+}
+function onToolSearch(e) {
+  toolSearch = (e.target.value || '').trim().toLowerCase();
+  renderTools();
+}
+function getFilteredTools() {
+  return (state.tools || []).filter(function (t) {
+    if (toolCategory !== 'all' && t.category !== toolCategory) return false;
+    if (toolSearch) {
+      const hay = (t.name + ' ' + (t.url || '') + ' ' + (t.tags || []).join(' ') + ' ' + (t.note || '')).toLowerCase();
+      if (hay.indexOf(toolSearch) === -1) return false;
+    }
+    return true;
+  });
+}
+function renderTools() {
+  const el = document.getElementById('tools-grid');
+  const stat = document.getElementById('tools-stat');
+  if (!el) return;
+  const list = getFilteredTools().slice().sort(function (a, b) {
+    const fa = a.favorite ? 1 : 0, fb = b.favorite ? 1 : 0;
+    if (fa !== fb) return fb - fa;
+    const ca = a.count || 0, cb = b.count || 0;
+    if (ca !== cb) return cb - ca;
+    return (b.createdAt || 0) - (a.createdAt || 0);
+  });
+  if (stat) stat.textContent = (state.tools || []).length + ' 个工具' + (toolCategory !== 'all' ? ' · ' + toolCategory : '') + (toolSearch ? ' · 搜「' + toolSearch + '」' : '');
+  if (!list.length) {
+    el.innerHTML = '<div class="tool-empty">没有匹配的工具，下面添加一个吧</div>';
+    return;
+  }
+  el.innerHTML = list.map(function (t) {
+    const tags = (t.tags || []).map(function (x) { return '<span>#' + escapeHtml(x) + '</span>'; }).join(' ');
+    const starred = t.favorite ? ' on' : '';
+    const starChar = t.favorite ? '★' : '☆';
+    return '<div class="tool-card">'
+      + '<div class="tool-card-head"><div class="tool-card-name">' + escapeHtml(t.name) + '</div>'
+      + '<button class="tool-star' + starred + '" title="星标置顶" onclick="event.stopPropagation();toggleFavorite(\'' + t.id + '\')">' + starChar + '</button>'
+      + '<span class="tool-card-cat">' + escapeHtml(t.category || '其他') + '</span></div>'
+      + '<div class="tool-card-url">' + escapeHtml(t.url || '') + '</div>'
+      + (t.note ? '<div class="tool-card-note">' + escapeHtml(t.note) + '</div>' : '')
+      + (tags ? '<div class="tool-card-tags">' + tags + '</div>' : '')
+      + '<div class="tool-card-actions">'
+      + '<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openToolUrl(\'' + t.id + '\')">打开</button>'
+      + '<button class="btn btn-sm" onclick="event.stopPropagation();copyToolUrl(\'' + t.id + '\')">复制</button>'
+      + '<button class="btn btn-sm" onclick="event.stopPropagation();editTool(\'' + t.id + '\')">编辑</button>'
+      + '<button class="btn btn-sm btn-danger" onclick="event.stopPropagation();deleteTool(\'' + t.id + '\')">删</button>'
+      + '<span class="tool-card-count">已用 ' + (t.count || 0) + ' 次</span>'
+      + '</div></div>';
+  }).join('');
+}
+function openToolUrl(id) {
+  const t = (state.tools || []).find(function (x) { return x.id === id; });
+  if (!t || !t.url) return;
+  t.count = (t.count || 0) + 1;
+  save();
+  renderTools();
+  window.open(t.url, '_blank', 'noopener');
+}
+function copyToolUrl(id) {
+  const t = (state.tools || []).find(function (x) { return x.id === id; });
+  if (!t) return;
+  const url = t.url || '';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function () { showToast('已复制链接'); }, function () { fallbackCopy(url); });
+  } else { fallbackCopy(url); }
+}
+function fallbackCopy(text) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('已复制链接');
+  } catch (e) { showToast('复制失败'); }
+}
+function toggleFavorite(id) {
+  const t = (state.tools || []).find(function (x) { return x.id === id; });
+  if (!t) return;
+  t.favorite = !t.favorite;
+  save();
+  renderTools();
+}
+function batchOpenCategory() {
+  const list = getFilteredTools();
+  if (!list.length) { showToast('当前没有可打开的工具'); return; }
+  if (!confirm('将新开 ' + list.length + ' 个标签页打开当前分类下全部链接，确定？')) return;
+  list.forEach(function (t) {
+    if (t.url) { t.count = (t.count || 0) + 1; window.open(t.url, '_blank', 'noopener'); }
+  });
+  save();
+  renderTools();
+  showToast('已打开 ' + list.length + ' 个链接');
+}
+function importBookmarks() {
+  const inp = document.getElementById('bookmark-file');
+  if (inp) inp.click();
+}
+function handleBookmarkFile(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function () {
+    try {
+      const html = reader.result;
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const anchors = Array.prototype.slice.call(doc.querySelectorAll('a[href]'));
+      const cats = toolCats();
+      const fallbackCat = cats.indexOf('其他') !== -1 ? '其他' : cats[0];
+      let added = 0;
+      if (!state.tools) state.tools = [];
+      anchors.forEach(function (a) {
+        let href = a.getAttribute('href') || '';
+        if (!/^https?:\/\//i.test(href)) return;
+        let name = (a.textContent || '').trim().replace(/\s+/g, ' ');
+        if (!name) name = href.replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+        if (state.tools.some(function (x) { return x.url === href; })) return;
+        state.tools.push({ id: uid(), name: name, url: href, category: fallbackCat, tags: [], note: '书签导入', favorite: false, count: 0, createdAt: Date.now() });
+        added++;
+      });
+      save();
+      toolCategory = 'all';
+      toolSearch = '';
+      const si = document.getElementById('tool-search');
+      if (si) si.value = '';
+      resetToolForm();
+      renderToolCats();
+      renderTools();
+      showToast('已导入 ' + added + ' 个书签' + (added ? '（重复链接已跳过）' : ''));
+    } catch (err) {
+      showToast('书签解析失败');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+function toggleCatManager() {
+  const box = document.getElementById('tool-cat-manager');
+  if (!box) return;
+  if (box.style.display === 'none') { box.style.display = 'block'; renderCatManagerList(); }
+  else { box.style.display = 'none'; }
+}
+function renderCatManagerList() {
+  const el = document.getElementById('cat-manager-list');
+  if (!el) return;
+  el.innerHTML = toolCats().map(function (c) {
+    const locked = c === '其他';
+    const del = locked ? '' : '<span class="del" title="删除" onclick="event.stopPropagation();deleteCategory(\'' + jsStr(c) + '\')">×</span>';
+    return '<span class="tool-cat-item' + (locked ? ' locked' : '') + '">' + escapeHtml(c) + del + '</span>';
+  }).join('');
+}
+function addCategory() {
+  const inp = document.getElementById('new-cat-input');
+  if (!inp) return;
+  const name = inp.value.trim();
+  if (!name) { showToast('请输入分类名称'); return; }
+  if (!state.toolCategories) state.toolCategories = TOOL_CATEGORIES.slice();
+  if (state.toolCategories.indexOf(name) !== -1) { showToast('分类已存在'); return; }
+  state.toolCategories.push(name);
+  inp.value = '';
+  save();
+  refreshToolCatSelect();
+  renderToolCats();
+  renderCatManagerList();
+  showToast('已添加分类：' + name);
+}
+function deleteCategory(c) {
+  if (c === '其他') { showToast('「其他」分类不可删除'); return; }
+  if (!confirm('删除分类「' + c + '」？该分类下的工具将移到「其他」。')) return;
+  if (!state.toolCategories) state.toolCategories = TOOL_CATEGORIES.slice();
+  state.toolCategories = state.toolCategories.filter(function (x) { return x !== c; });
+  if (!state.toolCategories.length) state.toolCategories = ['其他'];
+  (state.tools || []).forEach(function (t) { if (t.category === c) t.category = '其他'; });
+  save();
+  refreshToolCatSelect();
+  renderToolCats();
+  renderCatManagerList();
+  renderTools();
+  showToast('已删除分类：' + c);
+}
+function editTool(id) {
+  const t = (state.tools || []).find(function (x) { return x.id === id; });
+  if (!t) return;
+  editingToolId = id;
+  document.getElementById('tool-name').value = t.name || '';
+  document.getElementById('tool-url').value = t.url || '';
+  document.getElementById('tool-tags').value = (t.tags || []).join(', ');
+  document.getElementById('tool-note').value = t.note || '';
+  refreshToolCatSelect();
+  document.getElementById('tool-form-title').textContent = '编辑工具：' + (t.name || '');
+}
+function resetToolForm() {
+  editingToolId = null;
+  document.getElementById('tool-name').value = '';
+  document.getElementById('tool-url').value = '';
+  document.getElementById('tool-tags').value = '';
+  document.getElementById('tool-note').value = '';
+  refreshToolCatSelect();
+  const title = document.getElementById('tool-form-title');
+  if (title) title.textContent = '+ 添加工具';
+}
+function saveTool() {
+  const name = document.getElementById('tool-name').value.trim();
+  let url = document.getElementById('tool-url').value.trim();
+  const category = document.getElementById('tool-category').value;
+  const tags = document.getElementById('tool-tags').value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+  const note = document.getElementById('tool-note').value.trim();
+  if (!name) { showToast('请填写名称'); return; }
+  if (!url) { showToast('请填写网址'); return; }
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  requireAction('save', function () { commitTool(name, url, category, tags, note); });
+}
+function commitTool(name, url, category, tags, note) {
+  if (editingToolId) {
+    const t = (state.tools || []).find(function (x) { return x.id === editingToolId; });
+    if (t) { t.name = name; t.url = url; t.category = category; t.tags = tags; t.note = note; }
+  } else {
+    if (!state.tools) state.tools = [];
+    state.tools.push({ id: uid(), name: name, url: url, category: category, tags: tags, note: note, favorite: false, count: 0, createdAt: Date.now() });
+  }
+  save();
+  resetToolForm();
+  renderTools();
+  showToast('已保存');
+}
+function deleteTool(id) {
+  const t = (state.tools || []).find(function (x) { return x.id === id; });
+  if (!t) return;
+  requireAction('delete', function () {
+    if (!confirm('确定删除工具「' + t.name + '」？')) return;
+    state.tools = (state.tools || []).filter(function (x) { return x.id !== id; });
+    save();
+    renderTools();
+  });
+}
 async function saveGhSettings() {
   const t = document.getElementById('gh-token').value.trim();
   const g = document.getElementById('gh-gist').value.trim();
@@ -3865,9 +5438,7 @@ async function doUpload() {
   showToast('☁️ 已同步到 GitHub');
   setLastSyncHash(cheapHash(snap));
 }
-// ---------- 自动同步（每 5 秒检查，有变化才上传） ----------
-let autoSyncTimer = null;
-let autoSyncRunning = false;
+// ---------- 自动同步已移除（2026-07-25）：仅保留手动上传/下载 ----------
 let lastSyncHash = '';
 function setLastSyncHash(h) {
   lastSyncHash = h;
@@ -3877,69 +5448,6 @@ function cheapHash(s) {
   let h = 5381;
   for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
   return h.toString(36);
-}
-function startAutoSync() {
-  if (autoSyncTimer) return;
-  autoSyncTimer = setInterval(autoSyncTick, 5000);
-  setSyncStatus('🔄 自动同步已开启（每 5 秒检查，有变化即上传下载）');
-}
-function stopAutoSync() {
-  if (autoSyncTimer) { clearInterval(autoSyncTimer); autoSyncTimer = null; }
-  setSyncStatus('⏸ 自动同步已关闭');
-}
-function toggleAutoSync() {
-  const cb = document.getElementById('auto-sync');
-  state.autoSync = cb ? cb.checked : false;
-  save();
-  if (state.autoSync) startAutoSync(); else stopAutoSync();
-}
-async function autoSyncTick() {
-  if (autoSyncRunning) return;
-  if (!isVaultUnlocked()) { setSyncStatus('⏸ 自动同步暂停：保险库未解锁'); return; }
-  const token = localStorage.getItem('gh_token');
-  if (!token) { setSyncStatus('⏸ 自动同步：请先填 Token'); return; }
-  const gistId = localStorage.getItem('gh_gist');
-  if (!gistId) { setSyncStatus('⏸ 自动同步：请先手动上传一次建立 Gist'); return; }
-  autoSyncRunning = true;
-  try {
-    const snap = JSON.stringify(snapshotState());
-    const localHash = cheapHash(snap);
-    // 云端元数据哈希（存在 Gist description 里），用于快速判断是否有更新（不下载大文件）
-    const remoteHash = await getRemoteMetaHash(token, gistId);
-    if (!remoteHash) {
-      setSyncStatus('⏳ 自动同步：暂时读不到云端状态，本回合跳过');
-      return;
-    }
-    // 新设备 / 首次同步（本地没有同步基准 lastSyncHash）：
-    // 绝不能直接上传，否则空/旧数据会覆盖云端最新数据（这就是之前新手机登录把云端覆盖掉的 bug）。
-    // 正确做法：云端有数据就先下载建立基准，云端也为空才把本地作为首次数据上传。
-    if (!lastSyncHash) {
-      if (remoteHash) {
-        setSyncStatus('🔄 新设备首次同步：先下载云端数据建立基准（不会覆盖）…');
-        showToast('📥 新设备已自动从云端恢复数据');
-        await doPullAuto();
-      } else {
-        setSyncStatus('🔄 云端暂无数据：将本地作为首次数据上传…');
-        await doUpload();
-      }
-      return;
-    }
-    // 已有基准：优先保护本地工作
-    //  - 本地自上次同步基准以来没改过 → 云端有更新就下载（不会丢东西，本地本来没动）
-    //  - 本地有改动 → 一律上传，绝不被云端下载覆盖
-    if (localHash === lastSyncHash) {
-      if (remoteHash !== lastSyncHash) {
-        setSyncStatus('🔄 检测到云端更新，正在自动下载…');
-        await doPullAuto();
-      } else {
-        setSyncStatus('🔄 自动同步（双向·5 秒）· 已是最新');
-      }
-    } else {
-      setSyncStatus('🔄 检测到本地改动，正在自动上传…');
-      await doUpload();
-    }
-  } catch (e) { setSyncStatus('⏸ 自动同步错误：' + e.message); }
-  finally { autoSyncRunning = false; }
 }
 // 从 Gist description 读取同步哈希（兼容旧格式：Airdrop Vault ::hash  和新格式：Airdrop Vault ::hash::n）
 // 带超时的 fetch：避免手机弱网时请求无限挂起（之前曾导致下载卡死几分钟）
@@ -4149,7 +5657,17 @@ function applySyncedState(data) {
   state.completionHistory = data.completionHistory || {};
   state.lastDailyReset = data.lastDailyReset || null;
   state.chainTypes = (data.chainTypes && data.chainTypes.length) ? data.chainTypes : DEFAULT_CHAIN_TYPES.slice();
+  state.chainColors = data.chainColors || {};
+  state.launchedTotal = data.launchedTotal || 0;
   state.templates = (data.templates && data.templates.length) ? data.templates : DEFAULT_TEMPLATES.map(t => ({ key: t.key, name: t.name, daily: t.daily.slice(), onetime: t.onetime.slice() }));
+  state.statuses = (data.statuses && data.statuses.length) ? data.statuses : DEFAULT_STATUSES.map(s => ({ ...s }));
+  state.tags = (data.tags && data.tags.length) ? data.tags : DEFAULT_TAGS.map(t => ({ ...t }));
+  state.tools = Array.isArray(data.tools) ? data.tools : [];
+  ensureSeedTools();
+  state.toolCategories = (data.toolCategories && data.toolCategories.length) ? data.toolCategories : ['融资查询', '跨链桥', '空投查询', '数据分析', 'Gas监控', '钱包工具', 'NFT', '社交', '其他'];
+  migrateStatuses();
+  migrateProjects();
+  save();
 }
 
 /* ========== Init ========== */
@@ -4346,7 +5864,6 @@ document.addEventListener('DOMContentLoaded', function() {
   renderCurrentUrl();
   renderPagesLink();
   renderPagesStartUrl();
-  if (state.autoSync) startAutoSync();
   checkDailyReset();
   render();
 });
@@ -4356,9 +5873,53 @@ document.getElementById('modal-overlay').addEventListener('click', function(e) {
 });
 
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') { closeModal(); closeTagManager(); closeTagPicker(); closeStatusManager(); }
 });
 </script>
+
+<!-- 标签管理器 -->
+<div class="modal-overlay" id="tag-overlay">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2>🏷 标签管理</h2>
+      <button class="modal-close" onclick="closeTagManager()">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-hint">点击色块可循环切换颜色；删除标签会同步从项目上移除。</p>
+      <div id="tag-manager-list" class="tag-manager-list"></div>
+      <button class="btn btn-block btn-accent" type="button" onclick="addTag()">+ 新增标签</button>
+    </div>
+  </div>
+</div>
+
+<!-- 状态管理器 -->
+<div class="modal-overlay" id="status-overlay">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2>🎚 状态管理</h2>
+      <button class="modal-close" onclick="closeStatusManager()">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-hint">点击色块可循环切换颜色；删除状态会同步从项目上移除。</p>
+      <div id="status-manager-list" class="tag-manager-list"></div>
+      <button class="btn btn-block btn-accent" type="button" onclick="addStatus()">+ 新增状态</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="chain-type-overlay">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2>⛓ 链类型管理</h2>
+      <button class="modal-close" onclick="closeChainTypeManager()">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-hint">点击色块可循环切换颜色；改名/删除会同步更新已使用的项目。</p>
+      <div id="chain-type-manager-list" class="tag-manager-list"></div>
+      <button class="btn btn-block btn-accent" type="button" onclick="addChainTypeFromManager()">+ 新增链类型</button>
+    </div>
+  </div>
+</div>
 
 
 
