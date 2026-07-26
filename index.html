@@ -127,7 +127,7 @@ body {
 }
 .stats-group {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   grid-template-rows: auto 1fr;
   gap: 12px;
   flex: 1;
@@ -200,6 +200,7 @@ body {
   gap: 4px;
   height: 100%;
   justify-content: flex-end;
+  position: relative;
 }
 .chart-fill {
   width: 100%;
@@ -209,11 +210,38 @@ body {
   opacity: 0.7;
   transition: opacity 0.15s;
 }
+.chart-pct {
+  position: absolute;
+  bottom: calc(var(--h) + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+  line-height: 1;
+}
 .chart-bar:hover .chart-fill { opacity: 1; }
-.chart-fill.today { background: var(--green); opacity: 1; }
 .chart-label {
   font-size: 9px;
   color: var(--text-3);
+}
+.chart-divider {
+  width: 1px;
+  align-self: stretch;
+  border-left: 1px dashed var(--border-strong);
+  margin: 0 4px;
+  opacity: 0.6;
+}
+.chart-bar.onetime {
+  flex: 0 0 28px;
+}
+.chart-bar.onetime .chart-fill {
+  background: var(--green);
+  opacity: 0.85;
+}
+.chart-bar.onetime .chart-label {
+  white-space: nowrap;
 }
 
 /* ========== Today Todo Panel ========== */
@@ -237,8 +265,19 @@ body {
 .todo-panel-title {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-size: 14px;
+  font-weight: 600;
+}
+.todo-header-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
   font-weight: 600;
 }
 .todo-count-badge {
@@ -255,18 +294,29 @@ body {
 }
 .todo-panel-body {
   display: none;
-  padding: 0 18px 14px;
+  padding: 14px 18px;
   border-top: 1px solid var(--border);
 }
-.todo-panel.expanded .todo-panel-body { display: flex; flex-wrap: nowrap; gap: 12px; overflow-x: auto; padding: 14px 18px; }
+.todo-panel.expanded .todo-panel-body { display: block; }
 .todo-panel.expanded .todo-toggle::after { content: ' \25B2'; }
 .todo-panel:not(.expanded) .todo-toggle::after { content: ' \25BC'; }
+.todo-section-content {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  overflow-x: auto;
+  min-height: 0;
+}
 .todo-group {
   flex: 0 0 220px;
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  height: 130px;
+  overflow: hidden;
 }
 .todo-group-header {
   display: flex;
@@ -275,10 +325,19 @@ body {
   font-size: 12px;
   font-weight: 600;
   margin-bottom: 6px;
+  flex-shrink: 0;
 }
 .todo-project-name {
   color: var(--accent);
 }
+.todo-group-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+.todo-group-content::-webkit-scrollbar { width: 6px; }
+.todo-group-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.todo-group-content::-webkit-scrollbar-track { background: transparent; }
 .todo-group-count {
   background: var(--accent-bg);
   color: var(--accent);
@@ -1092,6 +1151,31 @@ body {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
 }
+.toast-top {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-size: 13px;
+  color: var(--text);
+  z-index: 2000;
+  opacity: 0;
+  transition: all 0.25s;
+  pointer-events: none;
+}
+.toast-top.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.refresh-icon { display: inline-block; vertical-align: middle; }
+.refresh-icon.spinning { animation: spin-refresh 1s linear infinite; }
+#tw-refresh-btn { min-height: 22px; padding-top: 3px; padding-bottom: 3px; line-height: 14px; }
+#tw-refresh-btn .refresh-label { color: #38bdf8; }
+@keyframes spin-refresh { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 /* ========== Responsive ========== */
 @media (max-width: 768px) {
@@ -1327,7 +1411,7 @@ body {
   border: 1px solid var(--border); border-radius: 8px; padding: 4px 6px;
   width: 58px; text-align: center;
 }
-.reminder-body { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; overflow-y: auto; padding-right: 2px; }
+.reminder-body { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; max-height: 37px; overflow-y: auto; padding-right: 2px; }
 .reminder-empty { font-size: 12px; color: var(--text-2); padding: 4px 0; }
 .reminder-item {
   display: flex; align-items: center; gap: 10px;
@@ -1339,6 +1423,19 @@ body {
 .reminder-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .reminder-name { font-size: 13px; flex: 1; min-width: 0; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .reminder-when { font-size: 12px; flex-shrink: 0; white-space: nowrap; }
+
+/* ========== 推特动态提醒 ========== */
+.reminder-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.twitter-panel { width: 100%; background: var(--surface); border: 1px solid rgba(139,92,246,0.35); border-radius: var(--border-radius-lg); padding: 12px 14px; display: flex; flex-direction: column; min-height: 0; }
+.twitter-count-badge { min-width: 18px; height: 18px; padding: 0 5px; display: inline-flex; align-items: center; justify-content: center; background: rgba(168,85,247,0.18); color: #a78bfa; border-radius: 9px; font-size: 11px; font-weight: 700; }
+.twitter-settings { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+.twitter-settings .reminder-select { width: 46px; }
+#twitter-body { max-height: 76px; overflow-y: auto; }
+.twitter-feed { display: flex; flex-direction: column; gap: 10px; }
+.tw-tweet-text { font-size: 11px; color: #c7c2df; max-width: 100%; white-space: nowrap; overflow: hidden; position: relative; }
+.tw-tweet-text span { display: inline-block; transform: translateX(0); }
+.tw-tweet-scroll { animation: tw-tweet-scroll 8s linear infinite; }
+@keyframes tw-tweet-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(var(--scroll-distance, 0px)); } }
 
 /* ========== 卡片 TGE 高亮（颜色按剩余天数三档：≤3红 / ≤7黄 / >7绿，待领取黄） ========== */
 .near-badge {
@@ -1366,6 +1463,7 @@ body {
     <button class="btn btn-sm" onclick="openSyncModal()">☁️ 云同步</button>
     <button class="btn btn-sm" onclick="openToolsModal()">🧰 工具箱</button>
     <button class="btn btn-sm" onclick="openProtectModal()">🔐 操作保护</button>
+    
     <button class="btn btn-primary" onclick="openModal()">➕ 新增项目</button>
   </div>
 </div>
@@ -1375,6 +1473,10 @@ body {
     <div class="stat-card">
       <div class="stat-label">📦 跟踪项目</div>
       <div class="stat-value" id="stat-projects">10</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><span id="stat-onetime-icon" style="display: inline;">✅</span>一次性任务</div>
+      <div class="stat-value" id="stat-onetime" style="color:var(--green)">13/13</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">✅ 活跃任务</div>
@@ -1389,21 +1491,40 @@ body {
       <div class="stat-value" id="stat-funding" style="color:var(--amber)">$180M</div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">📊 近15日完成趋势</div>
-      <div class="chart-bars" id="chart-bars"><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/12</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/13</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/14</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/15</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/16</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/17</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/18</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/19</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/20</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/21</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/22</div></div><div class="chart-bar"><div class="chart-fill" style="height:4%"></div><div class="chart-label">7/23</div></div><div class="chart-bar"><div class="chart-fill" style="height:100%"></div><div class="chart-label">7/24</div></div><div class="chart-bar"><div class="chart-fill" style="height:22.22222222222222%"></div><div class="chart-label">7/25</div></div><div class="chart-bar"><div class="chart-fill today" style="height:4%"></div><div class="chart-label">7/26</div></div></div>
+      <div class="chart-title">📊 近15日完成趋势（每日任务）</div>
+      <div class="chart-bars" id="chart-bars"><div class="chart-bar" style="--h:4%" title="7/13：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/13</div></div><div class="chart-bar" style="--h:4%" title="7/14：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/14</div></div><div class="chart-bar" style="--h:4%" title="7/15：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/15</div></div><div class="chart-bar" style="--h:4%" title="7/16：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/16</div></div><div class="chart-bar" style="--h:4%" title="7/17：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/17</div></div><div class="chart-bar" style="--h:4%" title="7/18：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/18</div></div><div class="chart-bar" style="--h:4%" title="7/19：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/19</div></div><div class="chart-bar" style="--h:4%" title="7/20：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/20</div></div><div class="chart-bar" style="--h:4%" title="7/21：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/21</div></div><div class="chart-bar" style="--h:4%" title="7/22：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/22</div></div><div class="chart-bar" style="--h:4%" title="7/23：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/23</div></div><div class="chart-bar" style="--h:4%" title="7/24：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/24</div></div><div class="chart-bar" style="--h:4%" title="7/25：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/25</div></div><div class="chart-bar" style="--h:57.14285714285714%" title="7/26：完成 4/7 个每日任务（57%）"><div class="chart-pct">57%</div><div class="chart-fill" style="height:57.14285714285714%;background:#7FE5D4"></div><div class="chart-label">7/26</div></div><div class="chart-bar" style="--h:4%" title="7/27：完成 0/7 个每日任务（0%）"><div class="chart-pct">0%</div><div class="chart-fill" style="height:4%;background:rgba(100,116,139,0.35)"></div><div class="chart-label">7/27</div></div><div class="chart-divider"></div><div class="chart-bar onetime" style="--h:100%" title="一次性任务：完成 13/13"><div class="chart-pct">100%</div><div class="chart-fill" style="height:100%"></div><div class="chart-label">一次性任务</div></div></div>
     </div>
   </div>
-  <div class="reminder-panel" id="reminder-panel">
-    <div class="reminder-header">
-      <div class="reminder-title">
-        <span>⏰ 近期提醒</span>
-        <span class="reminder-count-badge" id="reminder-count">1</span>
+  <div class="reminder-col">
+    <div class="reminder-panel" id="reminder-panel">
+      <div class="reminder-header">
+        <div class="reminder-title">
+          <span>⏰ 近期提醒</span>
+          <span class="reminder-count-badge" id="reminder-count">1</span>
+        </div>
+        <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-2);white-space:nowrap">
+          <input type="number" class="reminder-select" min="1" value="14" oninput="setReminderDays(this.value)"> 天内
+        </span>
       </div>
-      <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-2);white-space:nowrap">
-        <input type="number" class="reminder-select" min="1" value="14" oninput="setReminderDays(this.value)"> 天内
-      </span>
+      <div class="reminder-body" id="reminder-body"><div class="reminder-item" onclick="openModal('id_mrysmk9w_hv6dvf')"><span class="reminder-dot" style="background:#34d399"></span><span class="reminder-name">plabs</span><span class="reminder-when" style="color:#34d399">TGE 2026-8-6 · 剩 10 天</span></div></div>
     </div>
-    <div class="reminder-body" id="reminder-body"><div class="reminder-item" onclick="openModal('id_mrysmk9w_hv6dvf')"><span class="reminder-dot" style="background:#fcd34d"></span><span class="reminder-name">plabs</span><span class="reminder-when" style="color:#fcd34d">TGE 2026-7-30 · 剩 4 天</span></div></div>
+    <div class="twitter-panel" id="twitter-panel">
+      <div class="reminder-header">
+        <div class="reminder-title">
+          <span>🐦 推特动态</span>
+          <span class="twitter-count-badge" id="twitter-count">19</span>
+        </div>
+        <button class="btn btn-xs" onclick="twMarkAllRead()">全部已读</button>
+      </div>
+      <div class="twitter-settings">
+        <button class="btn btn-xs btn-primary" id="tw-notify-btn" onclick="twRequestNotify()">🔔 通知已开</button>
+        <span style="font-size:11px;color:var(--text-2)">每</span>
+        <input type="number" class="reminder-select" id="tw-interval" min="1" max="24" value="1" oninput="twSetInterval(this.value)">
+        <span style="font-size:11px;color:var(--text-2)">小时</span>
+        <button class="btn btn-xs" id="tw-refresh-btn" onclick="twPoll(true)" style="margin-left:auto;"><svg class="refresh-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"></path><polyline points="21 3 21 9 15 9"></polyline></svg><span class="refresh-label">刷新</span></button>
+      </div>
+      <div class="reminder-body" id="twitter-body"><div class="reminder-item" style="opacity:0.72;cursor:pointer;" onclick="twOpenProject('id_mryrwi2v_27rkcj')"><span class="reminder-dot" style="background:#4b4a63;"></span><div style="flex:1;min-width:0;"><div class="reminder-name">arcnova</div><div style="font-size:11px;color:#9b96b8;">最近一条 · 9小时前</div><div class="tw-tweet-text"><span class="tw-tweet-scroll" style="--scroll-distance: -1899px; animation-duration: 189.9s;">Your face could become a permanent digital film IP. ArcNova is selecting 100 native faces worldwide. Real people. Real features. Real presence. We turn them into high-fidelity digital actors that can live across films and series for years. Selected faces receive signing rewards, official credits, and ongoing revenue share. This is not casting. This is co-creating the next generation of digital film IPs. Apply now: https://arcnova.tv/en/recruitment</span></div></div></div><div class="reminder-item" style="cursor:pointer;" onclick="twOpenProject('id_mrysryzd_4avtyo')"><span class="reminder-dot" style="background:#f87171;"></span><div style="flex:1;min-width:0;"><div class="reminder-name">TermMax</div><div style="font-size:11px;color:#9b96b8;">📢 6 条新动态 · 15小时前</div><div class="tw-tweet-text"><span>PSA 10 🐬</span></div></div></div><div class="reminder-item" style="cursor:pointer;" onclick="twOpenProject('id_mrys1igh_yhpexr')"><span class="reminder-dot" style="background:#f87171;"></span><div style="flex:1;min-width:0;"><div class="reminder-name">HertzFlow</div><div style="font-size:11px;color:#9b96b8;">📢 7 条新动态 · 1天前</div><div class="tw-tweet-text"><span class="tw-tweet-scroll" style="--scroll-distance: -1689px; animation-duration: 168.9s;">HertzFlow's Amplify S1 themes just updated!🚨 3 ways to create: 1️⃣ Tutorials: trading, Pools, Vaults - share your take + referral code 2️⃣ Testnet → Mainnet: early-user upside 3️⃣ Name HertzFlow in Chinese! Which one are you starting with? Drop it below 👇 🪧Updated Creator Guide: https://docs.google.com/document/d/1v0EyVvklfY4dVTSSs92Dfp3wTftrKECwdb6I9oW1m2w/edit?usp=sharing</span></div></div></div><div class="reminder-item" style="opacity:0.72;cursor:pointer;" onclick="twOpenProject('id_mryouhvx_526yd5')"><span class="reminder-dot" style="background:#4b4a63;"></span><div style="flex:1;min-width:0;"><div class="reminder-name">doma</div><div style="font-size:11px;color:#9b96b8;">最近一条 · 2天前</div><div class="tw-tweet-text"><span class="tw-tweet-scroll" style="--scroll-distance: -238px; animation-duration: 23.8s;">Agents are the new browsers. Is your domain agent-ready? Sign up👇 https://tally.so/r/EkBO44</span></div></div></div><div class="reminder-item" style="opacity:0.72;cursor:pointer;" onclick="twOpenProject('id_mry0anh0_q0as00')"><span class="reminder-dot" style="background:#4b4a63;"></span><div style="flex:1;min-width:0;"><div class="reminder-name">out</div><div style="font-size:11px;color:#9b96b8;">最近一条 · 2天前</div><div class="tw-tweet-text"><span class="tw-tweet-scroll" style="--scroll-distance: -281px; animation-duration: 28.1s;">R to @Outcomexyz: Track all HIP4 and Outcome data as it happens 👇 https://stats.outcome.xyz/builder</span></div></div></div><div class="reminder-item" style="opacity:0.72;cursor:pointer;" onclick="twOpenProject('id_mryrqvk5_i056fo')"><span class="reminder-dot" style="background:#4b4a63;"></span><div style="flex:1;min-width:0;"><div class="reminder-name">holmesai</div><div style="font-size:11px;color:#9b96b8;">最近一条 · 3天前</div><div class="tw-tweet-text"><span>they watch the ball. we watch the liquidity.</span></div></div></div><div class="reminder-item" style="cursor:pointer;" onclick="twOpenProject('id_mrysmk9w_hv6dvf')"><span class="reminder-dot" style="background:#f87171;"></span><div style="flex:1;min-width:0;"><div class="reminder-name">plabs</div><div style="font-size:11px;color:#9b96b8;">📢 6 条新动态 · 3天前</div><div class="tw-tweet-text"><span>Image</span></div></div></div><div class="reminder-item" style="opacity:0.72;cursor:pointer;" onclick="twOpenProject('id_mryoow4e_h3u872')"><span class="reminder-dot" style="background:#4b4a63;"></span><div style="flex:1;min-width:0;"><div class="reminder-name">DxSxT Network</div><div style="font-size:11px;color:#9b96b8;">最近一条 · 4天前</div><div class="tw-tweet-text"><span class="tw-tweet-scroll" style="--scroll-distance: -1555px; animation-duration: 155.5s;">👉 Tool Spotlight: Mining Rebate 🎫 The Rebate tool cuts your opening costs every single time you crack a chest. 💎 Mining Rebate helps DST-S1 users open Chests with less resource pressure — making every pull feel more strategic 🔥💎 👉 Drop a 🎫 if you're stacking savings with us. #DxSxTNetwork #Web3Community #NFTUtility #ChestSeason #BuildTogether</span></div></div></div><div class="reminder-item" style="opacity:0.72;cursor:pointer;" onclick="twOpenProject('id_mrysy3hb_qmj0xs')"><span class="reminder-dot" style="background:#4b4a63;"></span><div style="flex:1;min-width:0;"><div class="reminder-name">Skew</div><div style="font-size:11px;color:#9b96b8;">最近一条 · 2026/7/16</div><div class="tw-tweet-text"><span class="tw-tweet-scroll" style="--scroll-distance: -445px; animation-duration: 44.5s;">Skew has raised 500k HYPE ($33M) from @HyperionDeFi to bring a new class of markets to Hyperliquid Join the waitlist: http://skew.trade</span></div></div></div><div class="reminder-item" style="opacity:0.72;cursor:pointer;" onclick="twOpenProject('id_mryshykp_xlvwx2')"><span class="reminder-dot" style="background:#4b4a63;"></span><div style="flex:1;min-width:0;"><div class="reminder-name">GIWA</div><div style="font-size:11px;color:#9b96b8;">最近一条 · 2026/7/6</div><div class="tw-tweet-text"><span class="tw-tweet-scroll" style="--scroll-distance: -1148px; animation-duration: 114.8s;">🚨 GIWA Testnet (Sepolia) Upgrade 19: Karst Hardfork is LIVE! We have officially applied Karst hardfork from the OP Stack. If you are building or running a node on the GIWA Testnet, please review the critical updates below: 🖥️ Node Operators (CRITICAL ACTION REQUIRED): op-geth</span></div></div></div></div>
+    </div>
   </div>
   <div class="dist-card" id="dist-card"><div class="dist-head"><span class="dist-title">分布</span><span class="dist-launched">已发币总价值 <b style="color:var(--green)">$0</b></span></div><div class="dist-pie-wrap"><svg viewBox="0 0 180 180"><path d="M90,90 L22.0,90.0 A68,68 0 1,1 69.0,154.7 Z" fill="#f9a8d4" stroke="#0b0b12" stroke-width="1.5"></path><text x="125.8" y="68.0" fill="#ffffff" font-size="12" font-weight="500" text-anchor="middle">80%</text><path d="M90,90 L69.0,154.7 A68,68 0 0,1 35.0,130.0 Z" fill="#fbbf24" stroke="#0b0b12" stroke-width="1.5"></path><text x="68.0" y="124.3" fill="#1f2937" font-size="10" font-weight="500" text-anchor="middle">10%</text><path d="M90,90 L35.0,130.0 A68,68 0 0,1 22.0,90.0 Z" fill="#2dd4bf" stroke="#0b0b12" stroke-width="1.5"></path><text x="54.4" y="105.6" fill="#ffffff" font-size="10" font-weight="500" text-anchor="middle">10%</text></svg></div><div class="dist-chain-line"><span class="dist-chain-name" style="color:#f9a8d4">测试网</span><span class="dist-chain-name" style="color:#fbbf24">测试网社交类</span><span class="dist-chain-name" style="color:#2dd4bf">测试网刷交易</span></div></div>
 </div>
@@ -1414,7 +1535,7 @@ body {
   <div class="search-box">
     <input type="text" id="search-input" placeholder="搜索项目名、代币、投资机构..." oninput="handleSearch(this.value)">
   </div>
-  <div class="filter-pills" id="filter-pills"><button class="pill active" data-filter="all" onclick="setFilter('all')">📋 全部 <span class="pill-count" id="count-all" style="background: rgba(6, 182, 212, 0.16); color: rgb(6, 182, 212); border: 1px solid rgba(6, 182, 212, 0.35);">10</span></button><button class="pill" data-filter="active" onclick="setFilter('active')" style="background:rgba(52,211,153,0.16);color:#6ee7b7;border:1px solid rgba(52,211,153,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'active')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'active')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>🔥 进行中 <span class="pill-count" id="count-active" style="background: rgba(59, 130, 246, 0.16); color: rgb(59, 130, 246); border: 1px solid rgba(59, 130, 246, 0.35);">6</span></button><button class="pill" data-filter="preregister" onclick="setFilter('preregister')" style="background:rgba(167,139,250,0.18);color:#c4b5fd;border:1px solid rgba(167,139,250,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'preregister')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'preregister')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>📝 预注册 <span class="pill-count" id="count-preregister" style="background: rgba(239, 68, 68, 0.16); color: rgb(239, 68, 68); border: 1px solid rgba(239, 68, 68, 0.35);">1</span></button><button class="pill" data-filter="notstarted" onclick="setFilter('notstarted')" style="background:rgba(96,165,250,0.16);color:#93c5fd;border:1px solid rgba(96,165,250,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'notstarted')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'notstarted')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>⏸️ 项目未开始 <span class="pill-count" id="count-notstarted" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button><button class="pill" data-filter="finished" onclick="setFilter('finished')" style="background:rgba(251,191,36,0.16);color:#fcd34d;border:1px solid rgba(251,191,36,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'finished')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'finished')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>⏳ 等待 TGE发币 <span class="pill-count" id="count-finished" style="background: rgba(245, 158, 11, 0.16); color: rgb(245, 158, 11); border: 1px solid rgba(245, 158, 11, 0.35);">3</span></button><button class="pill" data-filter="launched" onclick="setFilter('launched')" style="background:rgba(96,165,250,0.16);color:#93c5fd;border:1px solid rgba(96,165,250,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'launched')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'launched')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>💰 已发币 <span class="pill-count" id="count-launched" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button><button class="pill" data-filter="ended" onclick="setFilter('ended')" style="background:rgba(148,163,184,0.16);color:#cbd5e1;border:1px solid rgba(148,163,184,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'ended')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'ended')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>🔚 已结束·未中 <span class="pill-count" id="count-ended" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button><button class="pill" data-filter="dropped" onclick="setFilter('dropped')" style="background:rgba(248,113,113,0.16);color:#fca5a5;border:1px solid rgba(248,113,113,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'dropped')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'dropped')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>🚫 已放弃 <span class="pill-count" id="count-dropped" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button></div>
+  <div class="filter-pills" id="filter-pills"><button class="pill" data-filter="all" onclick="setFilter('all')">📋 全部 <span class="pill-count" id="count-all" style="background: rgba(6, 182, 212, 0.16); color: rgb(6, 182, 212); border: 1px solid rgba(6, 182, 212, 0.35);">10</span></button><button class="pill active" data-filter="active" onclick="setFilter('active')" style="background:rgba(52,211,153,0.16);color:#6ee7b7;border:1px solid rgba(52,211,153,0.5);box-shadow:0 0 0 2px #6ee7b733;font-weight:700"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'active')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'active')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>🔥 进行中 <span class="pill-count" id="count-active" style="background: rgba(59, 130, 246, 0.16); color: rgb(59, 130, 246); border: 1px solid rgba(59, 130, 246, 0.35);">6</span></button><button class="pill" data-filter="preregister" onclick="setFilter('preregister')" style="background:rgba(167,139,250,0.18);color:#c4b5fd;border:1px solid rgba(167,139,250,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'preregister')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'preregister')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>📝 预注册 <span class="pill-count" id="count-preregister" style="background: rgba(239, 68, 68, 0.16); color: rgb(239, 68, 68); border: 1px solid rgba(239, 68, 68, 0.35);">1</span></button><button class="pill" data-filter="notstarted" onclick="setFilter('notstarted')" style="background:rgba(96,165,250,0.16);color:#93c5fd;border:1px solid rgba(96,165,250,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'notstarted')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'notstarted')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>⏸️ 项目未开始 <span class="pill-count" id="count-notstarted" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button><button class="pill" data-filter="finished" onclick="setFilter('finished')" style="background:rgba(251,191,36,0.16);color:#fcd34d;border:1px solid rgba(251,191,36,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'finished')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'finished')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>⏳ 等待 TGE发币 <span class="pill-count" id="count-finished" style="background: rgba(245, 158, 11, 0.16); color: rgb(245, 158, 11); border: 1px solid rgba(245, 158, 11, 0.35);">3</span></button><button class="pill" data-filter="launched" onclick="setFilter('launched')" style="background:rgba(96,165,250,0.16);color:#93c5fd;border:1px solid rgba(96,165,250,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'launched')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'launched')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>💰 已发币 <span class="pill-count" id="count-launched" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button><button class="pill" data-filter="ended" onclick="setFilter('ended')" style="background:rgba(148,163,184,0.16);color:#cbd5e1;border:1px solid rgba(148,163,184,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'ended')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'ended')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>🔚 已结束·未中 <span class="pill-count" id="count-ended" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button><button class="pill" data-filter="dropped" onclick="setFilter('dropped')" style="background:rgba(248,113,113,0.16);color:#fca5a5;border:1px solid rgba(248,113,113,0.5)"><span class="pill-drag" draggable="true" ondragstart="statusDragStart(event,'dropped')" ondragover="statusDragOver(event)" ondrop="statusDrop(event,'dropped')" onclick="event.stopPropagation()" title="拖动排序">⋮⋮</span>🚫 已放弃 <span class="pill-count" id="count-dropped" style="background: rgba(148, 163, 184, 0.16); color: rgb(148, 163, 184); border: 1px solid rgba(148, 163, 184, 0.35);">0</span></button></div>
   <select class="sort-select" onchange="setSort(this.value)">
     <option value="created">按添加时间</option>
     <option value="start">按起始时间</option>
@@ -1439,19 +1560,23 @@ body {
     <div class="todo-panel-title">
       <span>📋 今日未完成任务</span>
       <span class="todo-count-badge" id="todo-count">7</span>
+      <span class="todo-header-pill"><span>📋 今日任务</span><span class="todo-count-badge" id="todo-count-daily">7</span></span>
+      <span class="todo-header-pill"><span>📋 一次性任务</span><span class="todo-count-badge" id="todo-count-onetime">0</span></span>
     </div>
     <span class="todo-toggle"></span>
   </div>
-  <div class="todo-panel-body" id="todo-panel-body"><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">DxSxT Network</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryoow4e_h3u872')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryoow4e_h3u872','daily','id_mryoow4e_fecwxl')"></div><span class="task-text">挖矿</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">doma</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryouhvx_526yd5')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryouhvx_526yd5','daily','id_mryouhvx_zsyqjt')"></div><span class="task-text">签到</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">holmesai</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryrqvk5_i056fo')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryrqvk5_i056fo','daily','id_mryrqvk5_6fknnk')"></div><span class="task-text">签到</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#fbbf24">arcnova</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryrwi2v_27rkcj')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')"></div><span class="task-text">签到</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#2dd4bf">HertzFlow</span><span class="todo-group-count" style="background:rgba(249,115,22,0.16);color:#f97316;border:1px solid rgba(249,115,22,0.35)">2</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mrys1igh_yhpexr')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')"></div><span class="task-text">刷交易</span></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')"></div><span class="task-text">领水</span></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">GIWA</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryshykp_xlvwx2')" title="打开脚本文件夹">打开</button></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryshykp_xlvwx2','daily','id_mryshykp_r169c8')"></div><span class="task-text">领水 转账uid</span></div></div></div>
+  <div class="todo-panel-body" id="todo-panel-body">
+    <div class="todo-section-content" id="todo-daily-list"><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">DxSxT Network</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryoow4e_h3u872')" title="打开脚本文件夹">打开</button></div><div class="todo-group-content"><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryoow4e_h3u872','daily','id_mryoow4e_fecwxl')"></div><span class="task-text">挖矿</span></div></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">doma</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryouhvx_526yd5')" title="打开脚本文件夹">打开</button></div><div class="todo-group-content"><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryouhvx_526yd5','daily','id_mryouhvx_zsyqjt')"></div><span class="task-text">签到</span></div></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">holmesai</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryrqvk5_i056fo')" title="打开脚本文件夹">打开</button></div><div class="todo-group-content"><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryrqvk5_i056fo','daily','id_mryrqvk5_6fknnk')"></div><span class="task-text">签到</span></div></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#fbbf24">arcnova</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryrwi2v_27rkcj')" title="打开脚本文件夹">打开</button></div><div class="todo-group-content"><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')"></div><span class="task-text">签到</span></div></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#2dd4bf">HertzFlow</span><span class="todo-group-count" style="background:rgba(249,115,22,0.16);color:#f97316;border:1px solid rgba(249,115,22,0.35)">2</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mrys1igh_yhpexr')" title="打开脚本文件夹">打开</button></div><div class="todo-group-content"><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')"></div><span class="task-text">刷交易</span></div><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')"></div><span class="task-text">领水</span></div></div></div><div class="todo-group"><div class="todo-group-header"><span class="todo-project-name" style="color:#f9a8d4">GIWA</span><span class="todo-group-count" style="background:rgba(239,68,68,0.16);color:#ef4444;border:1px solid rgba(239,68,68,0.35)">1</span><button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder('id_mryshykp_xlvwx2')" title="打开脚本文件夹">打开</button></div><div class="todo-group-content"><div class="todo-group-item"><div class="task-checkbox" onclick="toggleTask('id_mryshykp_xlvwx2','daily','id_mryshykp_r169c8')"></div><span class="task-text">领水 转账uid</span></div></div></div></div>
+  </div>
 </div>
 
-<div class="project-grid" id="project-grid"><div class="proj-card" data-id="id_mrysy3hb_qmj0xs"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrysy3hb_qmj0xs')" title="点击切换优先级">☆</span><span class="proj-name">Skew</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-preregister">📝 预注册</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrysy3hb_qmj0xs')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrysy3hb_qmj0xs')" title="删除">🗑</button></div></div></div><div class="card-tags"><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mrysy3hb_qmj0xs', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">📧 1000 个邮箱</span></div><div class="card-date">起始 2026-07-20 · 已撸 6 天</div><div class="social-row"><a class="social-btn" href="https://x.com/SkewTrade" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><span class="social-btn empty">🎮 DC</span><a class="social-btn" href="https://skew.trade/" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$33M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">1/1</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrysy3hb_qmj0xs','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrysy3hb_qmj0xs','onetime','id_mrysza21_ag9ajw')"></div><span class="task-text">测试网填邮箱</span><span class="task-delete" onclick="deleteTask('id_mrysy3hb_qmj0xs','onetime','id_mrysza21_ag9ajw')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrysy3hb_qmj0xs','onetime')"></div></div><div class="notes-section"><div class="notes-text">测试网邮箱填表没有开启 已填</div></div></div><div class="proj-card" data-id="id_mrysryzd_4avtyo"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrysryzd_4avtyo')" title="点击切换优先级">☆</span><span class="proj-name">TermMax</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-finished">⏳ 等待 TGE发币</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrysryzd_4avtyo')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrysryzd_4avtyo')" title="删除">🗑</button></div></div></div><div class="card-tags"><span class="ptag ptag-potential">潜在空投</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mrysryzd_4avtyo', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 100 个钱包</span></div><div class="card-date">起始 2026-03-05 · 已撸 143 天</div><div class="social-row"><a class="social-btn" href="https://x.com/TermMaxFi" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/TermMaxFi" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/dhKjNtrTeJ/" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://app-v2.termmax.ts.finance/" target="_blank" rel="noopener">🌐 Web</a></div><div class="cost-row"><div class="cost-item"><span class="info-label">Gas 花费</span><span class="info-value" style="color:var(--coral)">$10</span></div></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">1/1</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrysryzd_4avtyo','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrysryzd_4avtyo','onetime','id_mrysryzd_64gbre')"></div><span class="task-text">钱包登录注册签到</span><span class="task-delete" onclick="deleteTask('id_mrysryzd_4avtyo','onetime','id_mrysryzd_64gbre')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrysryzd_4avtyo','onetime')"></div></div><div class="notes-section"><div class="notes-text">花10刀BNBgas签到  币安钱包也做了任务</div></div></div><div class="proj-card" style="border:2px solid #fcd34d" data-id="id_mrysmk9w_hv6dvf"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrysmk9w_hv6dvf')" title="点击切换优先级">☆</span><span class="proj-name">plabs</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-finished">⏳ 等待 TGE发币</span><span class="near-badge" style="background:rgba(252,211,77,0.16);color:#fcd34d;border:1px solid rgba(252,211,77,0.5);">剩 4 天 TGE</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrysmk9w_hv6dvf')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrysmk9w_hv6dvf')" title="删除">🗑</button></div></div></div><div class="card-tags"><span class="ptag ptag-witch">女巫风险</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mrysmk9w_hv6dvf', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span>TGE 2026-7-30</span><span title="我在「我的钱包」里关联的本项目数量">💼 1463 个钱包</span></div><div class="card-date">起始 2026-07-23 · 已撸 3 天</div><div class="social-row"><a class="social-btn" href="https://x.com/_PLabs" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><span class="social-btn empty">🎮 DC</span><a class="social-btn" href="https://app.plabs.online/#/eligibilitycheck" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">1/1</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrysmk9w_hv6dvf','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrysmk9w_hv6dvf','onetime','id_mrysmk9w_n9u5p1')"></div><span class="task-text">领取代币</span><span class="task-delete" onclick="deleteTask('id_mrysmk9w_hv6dvf','onetime','id_mrysmk9w_n9u5p1')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrysmk9w_hv6dvf','onetime')"></div></div><div class="notes-section"><div class="notes-text">国人项目 代币100多万等待发</div></div></div><div class="proj-card" data-id="id_mryshykp_xlvwx2"><div class="card-header"><div class="card-title"><span class="priority-star p3" onclick="togglePriority('id_mryshykp_xlvwx2')" title="点击切换优先级">★</span><span class="proj-name">GIWA</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryshykp_xlvwx2')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryshykp_xlvwx2')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--green)">📂 昨天打开过</span></div></div><div class="card-tags"><span class="ptag ptag-high_return">高回报</span><span class="ptag ptag-interacting">交互中</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryshykp_xlvwx2', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 979 个钱包</span></div><div class="card-date">起始 2026-07-22 · 已撸 4 天</div><div class="social-row"><a class="social-btn" href="https://x.com/GIWA_by_Upbit" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><span class="social-btn empty">🎮 DC</span><a class="social-btn" href="https://sepolia-playground.giwa.io/" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$142M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">1/2</span></div><div class="progress-track"><div class="progress-fill" style="width:50%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryshykp_xlvwx2','daily','id_mryshykp_r169c8')"></div><span class="task-text">领水 转账uid</span><span class="task-delete" onclick="deleteTask('id_mryshykp_xlvwx2','daily','id_mryshykp_r169c8')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryshykp_xlvwx2','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryshykp_xlvwx2','onetime','id_mryshykp_2m8as2')"></div><span class="task-text">opeth跨链 转账 领水</span><span class="task-delete" onclick="deleteTask('id_mryshykp_xlvwx2','onetime','id_mryshykp_2m8as2')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryshykp_xlvwx2','onetime')"></div></div><div class="notes-section"><div class="notes-text">韩国交易所测试网</div></div></div><div class="proj-card" data-id="id_mrys1igh_yhpexr"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrys1igh_yhpexr')" title="点击切换优先级">☆</span><span class="proj-name">HertzFlow</span><span class="tag tag-chain" style="background:rgba(45,212,191,0.16);color:#2dd4bf">测试网刷交易</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrys1igh_yhpexr')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrys1igh_yhpexr')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--green)">📂 昨天打开过</span></div></div><div class="card-tags"><span class="ptag ptag-potential">潜在空投</span><span class="ptag ptag-interacting">交互中</span><span class="ptag ptag-witch">女巫风险</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mrys1igh_yhpexr', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 500 个钱包</span></div><div class="card-date">起始 2026-06-25 · 已撸 31 天</div><div class="social-row"><a class="social-btn" href="https://x.com/Hertzflow_xyz" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/hertzflow_xyz" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/sBQqf2H7ts" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://testnet.hertzflow.xyz/zh-Hans/trade/WTI-USD" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--coral)">1/3</span></div><div class="progress-track"><div class="progress-fill" style="width:33.33333333333333%;background:var(--coral)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/2</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')"></div><span class="task-text">刷交易</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')">×</span></li><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')"></div><span class="task-text">领水</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrys1igh_yhpexr','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrys1igh_yhpexr','onetime','id_mrys1igh_zn6tc0')"></div><span class="task-text">登录注册</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','onetime','id_mrys1igh_zn6tc0')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrys1igh_yhpexr','onetime')"></div></div><div class="notes-section"><div class="notes-text">钱包登录 领水刷交易 国人项目金标</div></div></div><div class="proj-card" data-id="id_mryrwi2v_27rkcj"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryrwi2v_27rkcj')" title="点击切换优先级">☆</span><span class="proj-name">arcnova</span><span class="tag tag-chain" style="background:rgba(251,191,36,0.16);color:#fbbf24">测试网社交类</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryrwi2v_27rkcj')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryrwi2v_27rkcj')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--text-3)">从未打开过</span></div></div><div class="card-tags"><span class="ptag ptag-potential">潜在空投</span><span class="ptag ptag-interacting">交互中</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryrwi2v_27rkcj', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">📧 234 个邮箱</span></div><div class="card-date">起始 2026-05-08 · 已撸 79 天</div><div class="social-row"><a class="social-btn" href="https://x.com/arcnova_aci" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/ArcNova_AI" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/G2BXV5MWDa" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://arcnova.tv/en/tasks" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">2/3</span></div><div class="progress-track"><div class="progress-fill" style="width:66.66666666666666%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryrwi2v_27rkcj','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_u5u8ap')"></div><span class="task-text">网站钱包登录注册邀请</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_u5u8ap')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_dpn07c')"></div><span class="task-text">手机app邮箱登录取uid完成设计任务</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_dpn07c')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryrwi2v_27rkcj','onetime')"></div></div><div class="notes-section"><div class="notes-text">网站钱包登录邀请 app邮箱登录 社交类</div></div></div><div class="proj-card" data-id="id_mryrqvk5_i056fo"><div class="card-header"><div class="card-title"><span class="priority-star p1" onclick="togglePriority('id_mryrqvk5_i056fo')" title="点击切换优先级">★</span><span class="proj-name">holmesai</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryrqvk5_i056fo')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryrqvk5_i056fo')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--green)">📂 昨天打开过</span></div></div><div class="card-tags"><span class="ptag ptag-potential">潜在空投</span><span class="ptag ptag-interacting">交互中</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryrqvk5_i056fo', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 174 个钱包</span></div><div class="card-date">起始 2026-06-05 · 已撸 51 天</div><div class="social-row"><a class="social-btn" href="https://x.com/HolmesAI_" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/HolmesAIOfficial" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/s5agSyVWRG" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://www.holmesai.xyz/" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">1/2</span></div><div class="progress-track"><div class="progress-fill" style="width:50%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryrqvk5_i056fo','daily','id_mryrqvk5_6fknnk')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryrqvk5_i056fo','daily','id_mryrqvk5_6fknnk')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryrqvk5_i056fo','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrqvk5_i056fo','onetime','id_mryrqvk5_itp6zz')"></div><span class="task-text">钱包登录注册</span><span class="task-delete" onclick="deleteTask('id_mryrqvk5_i056fo','onetime','id_mryrqvk5_itp6zz')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryrqvk5_i056fo','onetime')"></div></div><div class="notes-section"><div class="notes-text">钱包登录注册</div></div></div><div class="proj-card" data-id="id_mryouhvx_526yd5"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryouhvx_526yd5')" title="点击切换优先级">☆</span><span class="proj-name">doma</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryouhvx_526yd5')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryouhvx_526yd5')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--green)">📂 昨天打开过</span></div></div><div class="card-tags"><span class="ptag ptag-interacting">交互中</span><span class="ptag ptag-potential">潜在空投</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryouhvx_526yd5', this)" title="添加标签">+ 标签</button></div><div class="card-date">起始 2026-05-24 · 已撸 63 天</div><div class="social-row"><a class="social-btn" href="https://x.com/domaprotocol" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><a class="social-btn" href="https://discord.com/invite/doma" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://app.doma.xyz/" target="_blank" rel="noopener">🌐 Web</a></div><div class="investors">没有查</div><div class="cost-row"><div class="cost-item"><span class="info-label">Gas 花费</span><span class="info-value" style="color:var(--coral)">$1</span></div></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">2/3</span></div><div class="progress-track"><div class="progress-fill" style="width:66.66666666666666%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryouhvx_526yd5','daily','id_mryouhvx_zsyqjt')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','daily','id_mryouhvx_zsyqjt')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryouhvx_526yd5','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_0muiq0')"></div><span class="task-text">刷交易</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_0muiq0')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_s90rjl')"></div><span class="task-text">买域名</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_s90rjl')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryouhvx_526yd5','onetime')"></div></div></div><div class="proj-card" data-id="id_mryoow4e_h3u872"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryoow4e_h3u872')" title="点击切换优先级">☆</span><span class="proj-name">DxSxT Network</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryoow4e_h3u872')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryoow4e_h3u872')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--green)">📂 昨天打开过</span></div></div><div class="card-tags"><span class="ptag ptag-interacting">交互中</span><span class="ptag ptag-potential">潜在空投</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryoow4e_h3u872', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">📧 87 个邮箱</span></div><div class="card-date">起始 2026-05-04 · 已撸 83 天</div><div class="social-row"><a class="social-btn" href="https://x.com/DxSxT_Network" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/dxsxtnetworkofficial" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/Y969k9FmDK" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://dxsxt.network/" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">1/2</span></div><div class="progress-track"><div class="progress-fill" style="width:50%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryoow4e_h3u872','daily','id_mryoow4e_fecwxl')"></div><span class="task-text">挖矿</span><span class="task-delete" onclick="deleteTask('id_mryoow4e_h3u872','daily','id_mryoow4e_fecwxl')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryoow4e_h3u872','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryoow4e_h3u872','onetime','id_mryoow4e_u2rg6o')"></div><span class="task-text">邮箱注册邀请</span><span class="task-delete" onclick="deleteTask('id_mryoow4e_h3u872','onetime','id_mryoow4e_u2rg6o')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryoow4e_h3u872','onetime')"></div></div><div class="notes-section"><div class="notes-text">手机挖矿</div></div></div><div class="proj-card" data-id="id_mry0anh0_q0as00"><div class="card-header"><div class="card-title"><span class="priority-star p2" onclick="togglePriority('id_mry0anh0_q0as00')" title="点击切换优先级">★</span><span class="proj-name">out</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-finished">⏳ 等待 TGE发币</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mry0anh0_q0as00')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mry0anh0_q0as00')" title="删除">🗑</button></div></div></div><div class="card-tags"><span class="ptag ptag-high_return">高回报</span><span class="ptag ptag-potential">潜在空投</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mry0anh0_q0as00', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span>TGE 不知道</span><span title="我在「我的钱包」里关联的本项目数量">💼 2293 个钱包</span></div><div class="card-date">起始 2026-01-03 · 已撸 204 天</div><div class="social-row"><a class="social-btn" href="https://x.com/outcomexyz" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><a class="social-btn" href="https://discord.com/invite/outcome" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://outcome.xyz/zh/all" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$5M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--green)">2/2</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/0</span></div><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mry0anh0_q0as00','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_oo34rh')"></div><span class="task-text">测试网交付</span><span class="task-delete" onclick="deleteTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_oo34rh')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_z2yoal')"></div><span class="task-text">nft</span><span class="task-delete" onclick="deleteTask('id_mry0anh0_q0as00','onetime','id_mry0whfg_z2yoal')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mry0anh0_q0as00','onetime')"></div></div></div></div>
+<div class="project-grid" id="project-grid"><div class="proj-card" data-id="id_mryshykp_xlvwx2"><div class="card-header"><div class="card-title"><span class="priority-star p3" onclick="togglePriority('id_mryshykp_xlvwx2')" title="点击切换优先级">★</span><span class="proj-name">GIWA</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryshykp_xlvwx2')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryshykp_xlvwx2')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--green)">📂 今天打开过</span></div></div><div class="card-tags"><span class="ptag ptag-high_return">高回报</span><span class="ptag ptag-interacting">交互中</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryshykp_xlvwx2', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 979 个钱包</span></div><div class="card-date">起始 2026-07-22 · 已撸 5 天</div><div class="social-row"><a class="social-btn" href="https://x.com/GIWA_by_Upbit" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><span class="social-btn empty">🎮 DC</span><a class="social-btn" href="https://sepolia-playground.giwa.io/" target="_blank" rel="noopener">🌐 Web</a></div><div class="info-row"><span class="info-label">融资</span><span class="info-value">$142M</span></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">1/2</span></div><div class="progress-track"><div class="progress-fill" style="width:50%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryshykp_xlvwx2','daily','id_mryshykp_r169c8')"></div><span class="task-text">领水 转账uid</span><span class="task-delete" onclick="deleteTask('id_mryshykp_xlvwx2','daily','id_mryshykp_r169c8')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryshykp_xlvwx2','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryshykp_xlvwx2','onetime','id_mryshykp_2m8as2')"></div><span class="task-text">opeth跨链 转账 领水</span><span class="task-delete" onclick="deleteTask('id_mryshykp_xlvwx2','onetime','id_mryshykp_2m8as2')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryshykp_xlvwx2','onetime')"></div></div><div class="notes-section"><div class="notes-text">韩国交易所测试网</div></div></div><div class="proj-card" data-id="id_mrys1igh_yhpexr"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mrys1igh_yhpexr')" title="点击切换优先级">☆</span><span class="proj-name">HertzFlow</span><span class="tag tag-chain" style="background:rgba(45,212,191,0.16);color:#2dd4bf">测试网刷交易</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mrys1igh_yhpexr')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mrys1igh_yhpexr')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--green)">📂 今天打开过</span></div></div><div class="card-tags"><span class="ptag ptag-potential">潜在空投</span><span class="ptag ptag-interacting">交互中</span><span class="ptag ptag-witch">女巫风险</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mrys1igh_yhpexr', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 500 个钱包</span></div><div class="card-date">起始 2026-06-25 · 已撸 32 天</div><div class="social-row"><a class="social-btn" href="https://x.com/Hertzflow_xyz" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/hertzflow_xyz" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/sBQqf2H7ts" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://testnet.hertzflow.xyz/zh-Hans/trade/WTI-USD" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--coral)">1/3</span></div><div class="progress-track"><div class="progress-fill" style="width:33.33333333333333%;background:var(--coral)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/2</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')"></div><span class="task-text">刷交易</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_c6plfc')">×</span></li><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')"></div><span class="task-text">领水</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','daily','id_mrys1igh_2uh4kq')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mrys1igh_yhpexr','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mrys1igh_yhpexr','onetime','id_mrys1igh_zn6tc0')"></div><span class="task-text">登录注册</span><span class="task-delete" onclick="deleteTask('id_mrys1igh_yhpexr','onetime','id_mrys1igh_zn6tc0')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mrys1igh_yhpexr','onetime')"></div></div><div class="notes-section"><div class="notes-text">钱包登录 领水刷交易 国人项目金标</div></div></div><div class="proj-card" data-id="id_mryrwi2v_27rkcj"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryrwi2v_27rkcj')" title="点击切换优先级">☆</span><span class="proj-name">arcnova</span><span class="tag tag-chain" style="background:rgba(251,191,36,0.16);color:#fbbf24">测试网社交类</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryrwi2v_27rkcj')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryrwi2v_27rkcj')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--green)">📂 今天打开过</span></div></div><div class="card-tags"><span class="ptag ptag-potential">潜在空投</span><span class="ptag ptag-interacting">交互中</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryrwi2v_27rkcj', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">📧 234 个邮箱</span></div><div class="card-date">起始 2026-05-08 · 已撸 80 天</div><div class="social-row"><a class="social-btn" href="https://x.com/arcnova_aci" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/ArcNova_AI" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/G2BXV5MWDa" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://arcnova.tv/en/tasks" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">2/3</span></div><div class="progress-track"><div class="progress-fill" style="width:66.66666666666666%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','daily','id_mryrwi2v_4tbhvo')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryrwi2v_27rkcj','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_u5u8ap')"></div><span class="task-text">网站钱包登录注册邀请</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_u5u8ap')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_dpn07c')"></div><span class="task-text">手机app邮箱登录取uid完成设计任务</span><span class="task-delete" onclick="deleteTask('id_mryrwi2v_27rkcj','onetime','id_mryrwi2v_dpn07c')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryrwi2v_27rkcj','onetime')"></div></div><div class="notes-section"><div class="notes-text">网站钱包登录邀请 app邮箱登录 社交类</div></div></div><div class="proj-card" data-id="id_mryrqvk5_i056fo"><div class="card-header"><div class="card-title"><span class="priority-star p1" onclick="togglePriority('id_mryrqvk5_i056fo')" title="点击切换优先级">★</span><span class="proj-name">holmesai</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryrqvk5_i056fo')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryrqvk5_i056fo')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--green)">📂 今天打开过</span></div></div><div class="card-tags"><span class="ptag ptag-potential">潜在空投</span><span class="ptag ptag-interacting">交互中</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryrqvk5_i056fo', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">💼 174 个钱包</span></div><div class="card-date">起始 2026-06-05 · 已撸 52 天</div><div class="social-row"><a class="social-btn" href="https://x.com/HolmesAI_" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/HolmesAIOfficial" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/s5agSyVWRG" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://www.holmesai.xyz/" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">1/2</span></div><div class="progress-track"><div class="progress-fill" style="width:50%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryrqvk5_i056fo','daily','id_mryrqvk5_6fknnk')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryrqvk5_i056fo','daily','id_mryrqvk5_6fknnk')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryrqvk5_i056fo','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryrqvk5_i056fo','onetime','id_mryrqvk5_itp6zz')"></div><span class="task-text">钱包登录注册</span><span class="task-delete" onclick="deleteTask('id_mryrqvk5_i056fo','onetime','id_mryrqvk5_itp6zz')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryrqvk5_i056fo','onetime')"></div></div><div class="notes-section"><div class="notes-text">钱包登录注册</div></div></div><div class="proj-card" data-id="id_mryouhvx_526yd5"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryouhvx_526yd5')" title="点击切换优先级">☆</span><span class="proj-name">doma</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryouhvx_526yd5')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryouhvx_526yd5')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--green)">📂 今天打开过</span></div></div><div class="card-tags"><span class="ptag ptag-interacting">交互中</span><span class="ptag ptag-potential">潜在空投</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryouhvx_526yd5', this)" title="添加标签">+ 标签</button></div><div class="card-date">起始 2026-05-24 · 已撸 64 天</div><div class="social-row"><a class="social-btn" href="https://x.com/domaprotocol" target="_blank" rel="noopener">🐦 X</a><span class="social-btn empty">✈️ TG</span><a class="social-btn" href="https://discord.com/invite/doma" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://app.doma.xyz/" target="_blank" rel="noopener">🌐 Web</a></div><div class="investors">没有查</div><div class="cost-row"><div class="cost-item"><span class="info-label">Gas 花费</span><span class="info-value" style="color:var(--coral)">$1</span></div></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">2/3</span></div><div class="progress-track"><div class="progress-fill" style="width:66.66666666666666%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryouhvx_526yd5','daily','id_mryouhvx_zsyqjt')"></div><span class="task-text">签到</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','daily','id_mryouhvx_zsyqjt')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryouhvx_526yd5','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">2/2</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_0muiq0')"></div><span class="task-text">刷交易</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_0muiq0')">×</span></li><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_s90rjl')"></div><span class="task-text">买域名</span><span class="task-delete" onclick="deleteTask('id_mryouhvx_526yd5','onetime','id_mryouhvx_s90rjl')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryouhvx_526yd5','onetime')"></div></div></div><div class="proj-card" data-id="id_mryoow4e_h3u872"><div class="card-header"><div class="card-title"><span class="priority-star p0" onclick="togglePriority('id_mryoow4e_h3u872')" title="点击切换优先级">☆</span><span class="proj-name">DxSxT Network</span><span class="tag tag-chain" style="background:rgba(249,168,212,0.16);color:#f9a8d4">测试网</span><span class="tag tag-active">🔥 进行中</span></div><div class="card-actions-col"><div class="card-actions"><button class="btn btn-icon" onclick="openModal('id_mryoow4e_h3u872')" title="编辑">✏️</button><button class="btn btn-icon btn-icon-danger" onclick="confirmDelete('id_mryoow4e_h3u872')" title="删除">🗑</button></div><span class="opened-ago" style="color:var(--green)">📂 今天打开过</span></div></div><div class="card-tags"><span class="ptag ptag-interacting">交互中</span><span class="ptag ptag-potential">潜在空投</span><button class="tag-add-btn" type="button" onclick="openTagPicker('id_mryoow4e_h3u872', this)" title="添加标签">+ 标签</button></div><div class="card-meta"><span title="我在「我的钱包」里关联的本项目数量">📧 87 个邮箱</span></div><div class="card-date">起始 2026-05-04 · 已撸 84 天</div><div class="social-row"><a class="social-btn" href="https://x.com/DxSxT_Network" target="_blank" rel="noopener">🐦 X</a><a class="social-btn" href="https://t.me/dxsxtnetworkofficial" target="_blank" rel="noopener">✈️ TG</a><a class="social-btn" href="https://discord.com/invite/Y969k9FmDK" target="_blank" rel="noopener">🎮 DC</a><a class="social-btn" href="https://dxsxt.network/" target="_blank" rel="noopener">🌐 Web</a></div><div class="progress-section"><div class="progress-header"><span class="progress-label">任务进度</span><span class="progress-count" style="color:var(--amber)">1/2</span></div><div class="progress-track"><div class="progress-fill" style="width:50%;background:var(--amber)"></div></div></div><div class="task-section"><div class="task-section-title">每日任务 <span class="task-badge">0/1</span></div><ul class="task-list"><li class="task-item"><div class="task-checkbox" onclick="toggleTask('id_mryoow4e_h3u872','daily','id_mryoow4e_fecwxl')"></div><span class="task-text">挖矿</span><span class="task-delete" onclick="deleteTask('id_mryoow4e_h3u872','daily','id_mryoow4e_fecwxl')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加每日任务..." onkeypress="handleAddTask(event,'id_mryoow4e_h3u872','daily')"></div></div><div class="task-section"><div class="task-section-title">一次性任务 <span class="task-badge">1/1</span></div><ul class="task-list"><li class="task-item done"><div class="task-checkbox done" onclick="toggleTask('id_mryoow4e_h3u872','onetime','id_mryoow4e_u2rg6o')"></div><span class="task-text">邮箱注册邀请</span><span class="task-delete" onclick="deleteTask('id_mryoow4e_h3u872','onetime','id_mryoow4e_u2rg6o')">×</span></li></ul><div class="add-task-inline"><input type="text" placeholder="添加一次性任务..." onkeypress="handleAddTask(event,'id_mryoow4e_h3u872','onetime')"></div></div><div class="notes-section"><div class="notes-text">手机挖矿</div></div></div></div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <h2 id="modal-title">📝 新增项目</h2>
+      <h2 id="modal-title">📝 编辑项目</h2>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
 
@@ -1469,7 +1594,7 @@ body {
         <div class="form-field">
           <label>链类型</label>
           <div class="inline-field">
-            <select id="f-chainType" onchange="this.style.color=chainColor(this.value)"></select>
+            <select id="f-chainType" onchange="this.style.color=chainColor(this.value)" style="color: rgb(249, 168, 212);"><option value="测试网" style="color: rgb(249, 168, 212);">测试网</option><option value="测试网社交类" style="color: rgb(251, 191, 36);">测试网社交类</option><option value="测试网刷交易" style="color: rgb(45, 212, 191);">测试网刷交易</option></select>
             <button class="btn btn-sm" type="button" onclick="addChainType()" title="新增链类型">➕</button>
             <button class="btn btn-sm" type="button" onclick="deleteChainType()" title="删除当前链类型">🗑</button>
             <button class="btn btn-sm" type="button" onclick="openChainTypeManager()" title="管理链类型（换色/改名/删除）">⚙</button>
@@ -1478,7 +1603,7 @@ body {
         <div class="form-field">
           <label>状态</label>
           <div class="inline-field">
-            <select id="f-status"></select>
+            <select id="f-status"><option value="active">🔥 进行中</option><option value="preregister">📝 预注册</option><option value="notstarted">⏸️ 项目未开始</option><option value="finished">⏳ 等待 TGE发币</option><option value="launched">💰 已发币</option><option value="ended">🔚 已结束·未中</option><option value="dropped">🚫 已放弃</option></select>
             <button class="btn btn-sm" type="button" onclick="addStatus()" title="新增状态">➕</button>
             <button class="btn btn-sm" type="button" onclick="editStatus()" title="修改当前状态名称">✏️</button>
             <button class="btn btn-sm" type="button" onclick="deleteStatus()" title="删除当前状态">🗑</button>
@@ -1490,7 +1615,7 @@ body {
         <div class="form-field">
           <label>标签</label>
           <div class="inline-field">
-            <div id="f-tags" class="tag-editor"></div>
+            <div id="f-tags" class="tag-editor"><button type="button" class="tag-chip" onclick="toggleEditingTag('witch')" style="background:rgba(248,113,113,0.16);color:#fca5a5;border:1px solid rgba(248,113,113,0.5)">女巫风险</button><button type="button" class="tag-chip" onclick="toggleEditingTag('heavy')" style="background:rgba(251,191,36,0.16);color:#fcd34d;border:1px solid rgba(251,191,36,0.5)">重仓</button><button type="button" class="tag-chip on" onclick="toggleEditingTag('interacting')" style="background:rgba(96,165,250,0.16);color:#93c5fd;border:1px solid rgba(96,165,250,0.5);box-shadow:0 0 0 2px #93c5fd33;font-weight:700">✓ 交互中</button><button type="button" class="tag-chip on" onclick="toggleEditingTag('high_return')" style="background:rgba(52,211,153,0.16);color:#6ee7b7;border:1px solid rgba(52,211,153,0.5);box-shadow:0 0 0 2px #6ee7b733;font-weight:700">✓ 高回报</button><button type="button" class="tag-chip" onclick="toggleEditingTag('potential')" style="background:rgba(167,139,250,0.18);color:#c4b5fd;border:1px solid rgba(167,139,250,0.5)">潜在空投</button></div>
             <button class="btn btn-sm" type="button" onclick="openTagManager()" title="管理标签">⚙</button>
           </div>
         </div>
@@ -1618,7 +1743,7 @@ body {
           <option value="wallet" selected="">👛 钱包</option>
           <option value="email">📧 邮箱</option>
         </select>
-        <span class="wallet-list-count" id="proj-wallet-count">0 个</span>
+        <span class="wallet-list-count" id="proj-wallet-count">979 个钱包</span>
       </div>
       <div id="proj-wallet-list" class="proj-wallet-list"></div>
       <details class="wallet-add-details" id="proj-wallet-bulk-details">
@@ -1668,13 +1793,11 @@ user2@example.com----anotherpass"></textarea>
       <div class="form-section-title">
         <span>每日任务 (每天自动重置)</span>
         <div class="template-bar">
-          <select class="template-select" id="tpl-select-daily" onchange="applyTemplate(this.value, 'daily'); this.value=''">
-            <option value="">套用模板...</option>
-          </select>
+          <select class="template-select" id="tpl-select-daily" onchange="applyTemplate(this.value, 'daily'); this.value=''"><option value="">套用模板...</option><option value="dex">DEX 交互</option><option value="lending">借贷协议</option><option value="testnet">测试网</option><option value="bridge">跨链桥</option><option value="nft">NFT 项目</option></select>
           <button class="btn btn-sm" type="button" onclick="openTemplateModal()" title="管理任务模板">✎ 管理</button>
         </div>
       </div>
-      <div class="task-editor" id="daily-tasks-editor"></div>
+      <div class="task-editor" id="daily-tasks-editor"><div class="task-editor-row"><input type="text" placeholder="任务描述..." value="领水 转账uid"><button class="btn btn-icon" onclick="this.parentElement.remove()">×</button></div></div>
       <button class="btn btn-sm" style="margin-top:6px" onclick="addTaskEditorRow('daily')">➕ 添加任务</button>
     </div>
 
@@ -1682,13 +1805,11 @@ user2@example.com----anotherpass"></textarea>
       <div class="form-section-title">
         <span>一次性任务</span>
         <div class="template-bar">
-          <select class="template-select" id="tpl-select-onetime" onchange="applyTemplate(this.value, 'onetime'); this.value=''">
-            <option value="">套用模板...</option>
-          </select>
+          <select class="template-select" id="tpl-select-onetime" onchange="applyTemplate(this.value, 'onetime'); this.value=''"><option value="">套用模板...</option><option value="dex">DEX 交互</option><option value="lending">借贷协议</option><option value="testnet">测试网</option><option value="bridge">跨链桥</option><option value="nft">NFT 项目</option></select>
           <button class="btn btn-sm" type="button" onclick="openTemplateModal()" title="管理任务模板">✎ 管理</button>
         </div>
       </div>
-      <div class="task-editor" id="onetime-tasks-editor"></div>
+      <div class="task-editor" id="onetime-tasks-editor"><div class="task-editor-row"><input type="text" placeholder="任务描述..." value="opeth跨链 转账 领水"><button class="btn btn-icon" onclick="this.parentElement.remove()">×</button></div></div>
       <button class="btn btn-sm" style="margin-top:6px" onclick="addTaskEditorRow('onetime')">➕ 添加任务</button>
     </div>
 
@@ -1729,7 +1850,7 @@ user2@example.com----anotherpass"></textarea>
       <button class="btn btn-primary" onclick="syncPush()">🔄 上传到 GitHub</button>
       <button class="btn btn-sm" onclick="syncPull()">📥 从 GitHub 下载</button>
     </div>
-    <div class="sync-status" id="sync-status">🔐 正在用主密码整体加密并上传…</div>
+    <div class="sync-status" id="sync-status">✅ 已从 GitHub 同步（6830 个钱包）</div>
     <div class="icon-setting">
       <div class="icon-setting-title">📱 手机App图标和名字（添加到主屏幕时显示）</div>
       <div class="icon-preview-row">
@@ -1904,7 +2025,8 @@ user2@example.com----anotherpass"></textarea>
   </div>
 </div>
 
-<div class="toast" id="toast">🔓 已解锁</div>
+<div class="toast" id="toast">☁️ 已从 GitHub 同步</div>
+<div class="toast-top" id="tw-toast-top" style="color: rgb(248, 113, 113);">🔴 发现 12 条新动态</div>
 
 <script>
 const STORAGE_KEY = 'airdrop_tracker_v2';
@@ -1958,6 +2080,7 @@ let state = {
   wallets: [],
   vault: null,
   completionHistory: {},
+  activeHistory: {},
   lastDailyReset: null,
   chainTypes: DEFAULT_CHAIN_TYPES.slice(),
   chainColors: {},
@@ -1984,7 +2107,9 @@ let ui = {
   projectWalletBatchDelete: false,
   projectWalletFilter: 'wallet',
   tagFilters: [],
-  reminderDays: 14
+  reminderDays: 14,
+  twitterNotify: false,
+  twitterInterval: 1
 };
 
 /* ========== Storage ========== */
@@ -1995,6 +2120,7 @@ function load() {
       const data = JSON.parse(raw);
       state.projects = data.projects || [];
       state.completionHistory = data.completionHistory || {};
+      state.activeHistory = data.activeHistory || {};
       state.lastDailyReset = data.lastDailyReset || null;
       state.wallets = data.wallets || [];
       state.vault = data.vault || null;
@@ -2082,6 +2208,7 @@ function migrateProjects() {
 
 function save() {
   try {
+    recordActiveSnapshot();
     // 永远不要把内存中的明文解密缓存(_dec)写进 localStorage
     const data = JSON.stringify(state, function (k, v) { return k === '_dec' ? undefined : v; });
     localStorage.setItem(STORAGE_KEY, data);
@@ -2134,6 +2261,7 @@ function seedSampleData() {
     }
   ];
   state.completionHistory = {};
+  state.activeHistory = {};
   state.lastDailyReset = todayStr();
   save();
 }
@@ -2910,20 +3038,35 @@ function checkDailyReset() {
   }
 }
 
-/* ========== Completion History ========== */
+/* ========== Completion History (daily tasks only) ========== */
 function recordCompletion(delta) {
   const today = todayStr();
   if (!state.completionHistory[today]) state.completionHistory[today] = 0;
   state.completionHistory[today] = Math.max(0, state.completionHistory[today] + delta);
 }
 
+/* 记录「今天还剩多少活跃任务」快照——每次数据变动(save)时更新，趋势柱与活跃任务同步 */
+function recordActiveSnapshot() {
+  try {
+    if (!state.activeHistory) state.activeHistory = {};
+    let remaining = 0;
+    (state.projects || []).forEach(function (p) {
+      (p.dailyTasks || []).forEach(function (t) { if (!t.done) remaining++; });
+      (p.oneTimeTasks || []).forEach(function (t) { if (!t.done) remaining++; });
+    });
+    state.activeHistory[todayStr()] = remaining;
+  } catch (e) { /* 快照失败不影响保存 */ }
+}
+
 function getChartData() {
   const days = [];
+  const ch = state.completionHistory || {};
   for (let i = 14; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     const dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-    const count = state.completionHistory[dateStr] || 0;
+    /* 完成趋势：当天完成的每日任务数；一次性任务不再计入，避免 setup 日把柱子顶歪 */
+    const count = (ch[dateStr] !== undefined) ? ch[dateStr] : 0;
     days.push({ date: dateStr, count, label: String(d.getMonth() + 1) + '/' + String(d.getDate()) });
   }
   return days;
@@ -2939,9 +3082,11 @@ function calcStats() {
   let projectsDoneToday = 0;
   let projectsWithDaily = 0;
   let launchedCount = 0;
+  let oneTimeTotal = 0;
+  let oneTimeDone = 0;
   state.projects.forEach(p => {
     p.dailyTasks.forEach(t => { if (!t.done) activeTasks++; });
-    p.oneTimeTasks.forEach(t => { if (!t.done) activeTasks++; });
+    p.oneTimeTasks.forEach(t => { oneTimeTotal++; if (t.done) oneTimeDone++; });
     if (p.fundingAmount) totalFunding += parseFloat(p.fundingAmount) || 0;
     if (p.gasCost) totalGas += parseFloat(p.gasCost) || 0;
     if (p.airdropValue) totalAirdrop += parseFloat(p.airdropValue) || 0;
@@ -2961,7 +3106,9 @@ function calcStats() {
     gas: totalGas,
     airdrop: totalAirdrop,
     net: totalAirdrop - totalGas,
-    launched: launchedCount
+    launched: launchedCount,
+    oneTimeTotal: oneTimeTotal,
+    oneTimeDone: oneTimeDone
   };
 }
 
@@ -2977,6 +3124,7 @@ function render() {
   renderChart();
   renderTodoPanel();
   renderReminders();
+  twRenderPanel();
   renderProjects();
   updateFilterCounts();
 }
@@ -3001,6 +3149,11 @@ function updateFilterCounts() {
 function renderStats() {
   const s = calcStats();
   document.getElementById('stat-projects').textContent = s.projects;
+  document.getElementById('stat-onetime').textContent = s.oneTimeDone + '/' + s.oneTimeTotal;
+  const otIcon = document.getElementById('stat-onetime-icon');
+  if (otIcon) {
+    otIcon.style.display = (s.oneTimeTotal > 0 && s.oneTimeDone === s.oneTimeTotal) ? 'inline' : 'none';
+  }
   document.getElementById('stat-active').textContent = s.active;
   document.getElementById('stat-done').textContent = s.done;
   document.getElementById('stat-funding').textContent = formatFunding(s.funding);
@@ -3112,18 +3265,57 @@ function renderInfoBar() {
   bar.innerHTML = html;
 }
 
+function chartTierColor(pct) {
+  /* 10 档，按任务量占比（相对 15 日最大值）从低到高对应 10 色 */
+  if (pct <= 10) return '#B8A5E8';  /* 0~10% 浅紫 */
+  if (pct <= 20) return '#F5E78C';  /* 10~20% 浅黄 */
+  if (pct <= 30) return '#F5A75E';  /* 20~30% 橙色 */
+  if (pct <= 40) return '#6B8FF7';  /* 30~40% 中蓝 */
+  if (pct <= 50) return '#9CA3AF';  /* 40~50% 灰色 */
+  if (pct <= 60) return '#7FE5D4';  /* 50~60% 浅青 */
+  if (pct <= 70) return '#FA9B8A';  /* 60~70% 浅珊瑚 */
+  if (pct <= 80) return '#FDD58D';  /* 70~80% 浅黄 */
+  if (pct <= 90) return '#7FE599';  /* 80~90% 浅绿 */
+  return '#6ECBFF';                 /* 90~100% 浅蓝（最高） */
+}
+function formatChartPct(n) {
+  if (!n) return '0%';
+  const s = n.toFixed(2).replace(/\.?0+$/, '');
+  return s + '%';
+}
+function getDailyTotal() {
+  /* 当前所有项目的每日任务总数，用作「当天完成率」的分母（实时计算，无需存历史快照） */
+  let total = 0;
+  state.projects.forEach(p => { total += (p.dailyTasks || []).length; });
+  return total;
+}
 function renderChart() {
   const data = getChartData();
-  const maxCount = Math.max(...data.map(d => d.count), 1);
-  const today = todayStr();
-  const html = data.map(d => {
-    const h = (d.count / maxCount) * 100;
-    const isToday = d.date === today;
-    return '<div class="chart-bar">' +
-      '<div class="chart-fill' + (isToday ? ' today' : '') + '" style="height:' + Math.max(h, 4) + '%"></div>' +
+  const dailyTotal = getDailyTotal();
+  let html = data.map(d => {
+    /* 柱子高度、颜色、顶部数字三统一：均按「当天完成率」= 当天完成数 ÷ 当日总每日任务数 */
+    const rate = dailyTotal > 0 ? Math.min(100, (d.count / dailyTotal) * 100) : 0;
+    const color = d.count === 0 ? 'rgba(100,116,139,0.35)' : chartTierColor(rate);
+    const safeH = Math.max(rate, 4);
+    const pctText = dailyTotal > 0 ? Math.round(rate) + '%' : '—';
+    return '<div class="chart-bar" style="--h:' + safeH + '%" title="' + d.label + '：完成 ' + d.count + '/' + dailyTotal + ' 个每日任务（' + pctText + '）">' +
+      '<div class="chart-pct">' + pctText + '</div>' +
+      '<div class="chart-fill" style="height:' + safeH + '%;background:' + color + '"></div>' +
       '<div class="chart-label">' + d.label + '</div>' +
     '</div>';
   }).join('');
+
+  /* 右侧一次性任务总进度柱 */
+  const ot = calcStats();
+  const otPct = ot.oneTimeTotal > 0 ? (ot.oneTimeDone / ot.oneTimeTotal) * 100 : 0;
+  const otSafeH = Math.max(otPct, 4);
+  html += '<div class="chart-divider"></div>' +
+    '<div class="chart-bar onetime" style="--h:' + otSafeH + '%" title="一次性任务：完成 ' + ot.oneTimeDone + '/' + ot.oneTimeTotal + '">' +
+      '<div class="chart-pct">' + Math.round(otPct) + '%</div>' +
+      '<div class="chart-fill" style="height:' + otSafeH + '%"></div>' +
+      '<div class="chart-label">一次性任务</div>' +
+    '</div>';
+
   document.getElementById('chart-bars').innerHTML = html;
 }
 
@@ -3131,50 +3323,59 @@ function todoCountStyle(n) {
   const c = countColor(n);
   return 'background:' + hexToRgba(c, 0.16) + ';color:' + c + ';border:1px solid ' + hexToRgba(c, 0.35);
 }
-function renderTodoPanel() {
-  const panel = document.getElementById('todo-panel');
-  const body = document.getElementById('todo-panel-body');
-  const countBadge = document.getElementById('todo-count');
-
-  if (ui.todoExpanded) panel.classList.add('expanded');
-  else panel.classList.remove('expanded');
-
-  const incomplete = [];
-  state.projects.forEach(p => {
-    p.dailyTasks.forEach(t => {
-      if (!t.done) incomplete.push({ project: p, task: t });
-    });
-  });
-
-  countBadge.textContent = incomplete.length;
-
-  if (incomplete.length === 0) {
-    body.innerHTML = '<div class="todo-empty">今日所有每日任务已完成</div>';
-    return;
+function renderTodoGroups(items) {
+  if (items.length === 0) {
+    return '<div class="todo-empty">今日所有未完成任务已完成</div>';
   }
-
   const grouped = {};
-  incomplete.forEach(item => {
+  items.forEach(item => {
     if (!grouped[item.project.id]) grouped[item.project.id] = { project: item.project, tasks: [] };
-    grouped[item.project.id].tasks.push(item.task);
+    grouped[item.project.id].tasks.push(item);
   });
-
   let html = '';
   Object.values(grouped).forEach(g => {
     const p = g.project;
     html += '<div class="todo-group">';
     const projectColor = p.chainType ? chainColor(p.chainType) : 'var(--accent)';
-    const folderBtn = p.scriptDir ? '<button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder(\'' + escapeHtml(p.id) + '\')" title="打开脚本文件夹">打开</button>' : '';
+    const folderBtn = p.scriptDir
+      ? '<button type="button" class="btn btn-sm" style="margin-left:auto;" onclick="event.stopPropagation();openProjectFolder(\'' + escapeHtml(p.id) + '\')" title="打开脚本文件夹">打开</button>'
+      : '';
     html += '<div class="todo-group-header"><span class="todo-project-name" style="color:' + projectColor + '">' + escapeHtml(p.name) + '</span><span class="todo-group-count" style="' + todoCountStyle(g.tasks.length) + '">' + g.tasks.length + '</span>' + folderBtn + '</div>';
-    g.tasks.forEach(t => {
+    html += '<div class="todo-group-content">';
+    g.tasks.forEach(item => {
+      const t = item.task;
       html += '<div class="todo-group-item">';
-      html += '<div class="task-checkbox" onclick="toggleTask(\'' + p.id + '\',\'daily\',\'' + t.id + '\')"></div>';
+      html += '<div class="task-checkbox" onclick="toggleTask(\'' + p.id + '\',\'' + item.type + '\',\'' + t.id + '\')"></div>';
       html += '<span class="task-text">' + escapeHtml(t.text) + '</span>';
       html += '</div>';
     });
     html += '</div>';
+    html += '</div>';
   });
-  body.innerHTML = html;
+  return html;
+}
+function renderTodoPanel() {
+  const panel = document.getElementById('todo-panel');
+  const list = document.getElementById('todo-daily-list');
+  const dailyBadge = document.getElementById('todo-count-daily');
+  const onetimeBadge = document.getElementById('todo-count-onetime');
+  const totalBadge = document.getElementById('todo-count');
+
+  if (ui.todoExpanded) panel.classList.add('expanded');
+  else panel.classList.remove('expanded');
+
+  const items = [];
+  let dailyCount = 0;
+  let onetimeCount = 0;
+  state.projects.forEach(p => {
+    (p.dailyTasks || []).forEach(t => { if (t && !t.done) { items.push({ project: p, task: t, type: 'daily' }); dailyCount++; } });
+    (p.oneTimeTasks || []).forEach(t => { if (t && !t.done) { items.push({ project: p, task: t, type: 'oneTime' }); onetimeCount++; } });
+  });
+
+  totalBadge.textContent = dailyCount + onetimeCount;
+  dailyBadge.textContent = dailyCount;
+  onetimeBadge.textContent = onetimeCount;
+  list.innerHTML = renderTodoGroups(items);
 }
 
 function toggleTodoPanel() {
@@ -3263,50 +3464,45 @@ function openProjectFolder(projectId) {
   if (!p || !p.scriptDir) { showToast('该项目未设置脚本文件夹'); return; }
   const dir = p.scriptDir.trim();
   if (!dir) { showToast('该项目未设置脚本文件夹'); return; }
+
   // 记录「打开」操作时间（详情卡据此显示「X 天前打开过」）
   p.lastOpenedAt = Date.now();
   save();
   render();
-  // 无论哪种模式都先把路径复制到剪贴板，作为兜底
   copyText(dir, '文件夹路径');
 
-  // file:// 模式：先让本地小助手（server.js）直接调 explorer 打开文件夹，
-  // 页面 origin 仍是 file://，localStorage 数据完全不受影响；
-  // 小助手没开 / 被浏览器拦截时，自动回退到 file:// 链接 + 复制路径。
   if (location.protocol === 'file:') {
-    var doFallback = function () {
-      var fileUrl = dir.replace(/\\/g, '/');
-      if (!fileUrl.startsWith('file://')) {
-        fileUrl = 'file:///' + fileUrl.replace(/^\/+/, '');
-      }
-      var a = document.createElement('a');
-      a.href = fileUrl;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function () { document.body.removeChild(a); }, 0);
-      showToast('本地小助手未运行，路径已复制；已尝试在浏览器中打开目录（Chrome 会显示文件列表，Firefox 会直接打开资源管理器）');
+    var helperUrl = 'http://127.0.0.1:8765/open?path=' + encodeURIComponent(dir) + '&hidden=1&_=' + Date.now();
+
+    // 隐藏方案：用 Image 发起 GET 请求触发本地助手；不打开浏览器小白框，也不依赖 CORS 读取响应。
+    try {
+      var img = new Image();
+      img.onload = img.onerror = function () { img.onload = img.onerror = null; };
+      img.src = helperUrl;
+      showToast('已请求资源管理器打开：' + dir);
+      setTimeout(function () { confirmMarkDailyDone(p); }, 350);
+      return;
+    } catch (e) {}
+
+    // 极端兜底：隐藏 iframe，也不会显示小白框。
+    try {
+      var frame = document.createElement('iframe');
+      frame.style.display = 'none';
+      frame.src = helperUrl;
+      document.body.appendChild(frame);
+      setTimeout(function () { try { frame.remove(); } catch (e) {} }, 1500);
+      showToast('已请求资源管理器打开：' + dir);
       confirmMarkDailyDone(p);
-    };
-    fetch('http://127.0.0.1:8731/open?path=' + encodeURIComponent(dir))
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        if (data && data.ok) {
-          showToast('已在资源管理器中打开：' + dir);
-          confirmMarkDailyDone(p);
-        } else if (data && data.error && data.error.indexOf('不存在') !== -1) {
-          showToast('文件夹不存在，路径已复制：' + dir);
-        } else {
-          doFallback();
-        }
-      })
-      .catch(function () { doFallback(); });
+      return;
+    } catch (e) {}
+
+    showToast('本地助手未响应，路径已复制：' + dir);
     return;
   }
 
-  // 非 file: 环境（手机/部署版）仅复制路径
   showToast('当前非本地打开模式，路径已复制');
+  confirmMarkDailyDone(p);
 }
-
 const TGE_CLAIM_DAYS = 15; // TGE 过后「待领取」显示窗口（天），覆盖常见 7–15 天领取期
 
 function parseTgeDate(str) {
@@ -3732,6 +3928,15 @@ function cycleTagColor(key) {
   if (tagPickerProjectId) renderTagPicker(tagPickerProjectId);
 }
 
+function twitterProfileUrl(raw) {
+  if (!raw) return null;
+  var s = String(raw).trim();
+  var m = s.match(/(?:https?:\/\/)?(?:www\.)?(?:twitter\.com|x\.com)\/([A-Za-z0-9_]+)/i);
+  if (m) return 'https://twitter.com/' + m[1];
+  m = s.match(/^@?([A-Za-z0-9_]+)$/);
+  if (m) return 'https://twitter.com/' + m[1];
+  return null;
+}
 function renderCard(p) {
   const progress = calcProgress(p);
   const allTasks = [...(p.dailyTasks || []), ...(p.oneTimeTasks || [])];
@@ -3931,12 +4136,12 @@ function toggleTask(projectId, taskType, taskId) {
   const wasDone = t.done;
   t.done = !t.done;
   if (!wasDone && t.done) {
-    recordCompletion(1);
+    if (taskType === 'daily') recordCompletion(1);
     // 勾选完成也视为「碰过这个项目」，与「打开」共用同一时间轴，
     // 详情卡据此显示同样的「X 天前打开过」。
     if (p.scriptDir) p.lastOpenedAt = Date.now();
   } else if (wasDone && !t.done) {
-    recordCompletion(-1);
+    if (taskType === 'daily') recordCompletion(-1);
   }
   save();
   render();
@@ -3949,7 +4154,7 @@ function deleteTask(projectId, taskType, taskId) {
   const idx = tasks.findIndex(x => x.id === taskId);
   if (idx === -1) return;
   const t = tasks[idx];
-  if (t.done) recordCompletion(-1);
+  if (t.done && taskType === 'daily') recordCompletion(-1);
   tasks.splice(idx, 1);
   save();
   render();
@@ -4555,7 +4760,7 @@ function doSaveProject() {
       const removedDaily = p.dailyTasks.filter(t => !dailyTasks.find(nt => nt.id === t.id));
       const removedOne = p.oneTimeTasks.filter(t => !oneTimeTasks.find(nt => nt.id === t.id));
       removedDaily.forEach(t => { if (t.done) recordCompletion(-1); });
-      removedOne.forEach(t => { if (t.done) recordCompletion(-1); });
+      /* 一次性任务删除不再影响每日完成趋势 */
       Object.assign(p, data);
       const afterLaunch = launchContribution(p);
       if (afterLaunch < beforeLaunch) state.launchedTotal = (state.launchedTotal || 0) + (beforeLaunch - afterLaunch);
@@ -4624,7 +4829,7 @@ function batchDeleteDone() {
     done.forEach(p => {
       state.launchedTotal = (state.launchedTotal || 0) + launchContribution(p);
       p.dailyTasks.forEach(t => { if (t.done) recordCompletion(-1); });
-      p.oneTimeTasks.forEach(t => { if (t.done) recordCompletion(-1); });
+      /* 删除已结束项目时，一次性任务完成数不影响每日趋势 */
     });
     state.projects = state.projects.filter(p => !doneKeys.includes(p.status));
     save();
@@ -4681,6 +4886,7 @@ function importData(event) {
       if (confirm('导入将覆盖当前数据，确定继续吗？')) {
         state.projects = data.projects;
         state.completionHistory = data.completionHistory || {};
+        state.activeHistory = data.activeHistory || {};
         state.lastDailyReset = data.lastDailyReset || null;
         state.wallets = data.wallets || [];
         state.vault = data.vault || null;
@@ -5065,10 +5271,10 @@ function copyToolUrl(id) {
   if (!t) return;
   const url = t.url || '';
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(url).then(function () { showToast('已复制链接'); }, function () { fallbackCopy(url); });
-  } else { fallbackCopy(url); }
+    navigator.clipboard.writeText(url).then(function () { showToast('已复制链接'); }, function () { fallbackCopyToolUrl(url); });
+  } else { fallbackCopyToolUrl(url); }
 }
-function fallbackCopy(text) {
+function fallbackCopyToolUrl(text) {
   try {
     const ta = document.createElement('textarea');
     ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
@@ -5714,6 +5920,7 @@ function applySyncedState(data) {
   state.wallets = data.wallets || [];
   state.vault = data.vault || null;
   state.completionHistory = data.completionHistory || {};
+  state.activeHistory = data.activeHistory || {};
   state.lastDailyReset = data.lastDailyReset || null;
   state.chainTypes = (data.chainTypes && data.chainTypes.length) ? data.chainTypes : DEFAULT_CHAIN_TYPES.slice();
   state.chainColors = data.chainColors || {};
@@ -5917,6 +6124,541 @@ function saveAppearanceToFile() {
   }
 }
 
+/* ========== 推特动态提醒 ========== */
+let twState = {};
+let twPollTimer = null;
+let twPollBusy = false;
+let twLastDiagnosis = null;
+const TW_STATE_KEY = 'tw_state_v1';
+const TW_FETCH_TIMEOUT_MS = 5500;
+const TW_ACCOUNT_DELAY_MS = 2500;
+let twRateLimitedUntil = 0;
+let twManualRefreshNow = false;
+
+function twHandleOf(p) {
+  if (!p || !p.twitter) return null;
+  const u = twitterProfileUrl(p.twitter);
+  if (!u) return null;
+  const m = u.match(/twitter\.com\/([A-Za-z0-9_]+)/i);
+  return m ? m[1] : null;
+}
+
+function loadTwState() {
+  try { twState = JSON.parse(localStorage.getItem(TW_STATE_KEY) || '{}') || {}; } catch (e) { twState = {}; }
+  try {
+    ui.twitterNotify = localStorage.getItem('tw_notify') === '1';
+    const iv = parseInt(localStorage.getItem('tw_interval_hours') || '', 10);
+    if (!isNaN(iv) && iv >= 1) ui.twitterInterval = iv;
+  } catch (e) {}
+}
+
+function saveTwState() {
+  try { localStorage.setItem(TW_STATE_KEY, JSON.stringify(twState)); } catch (e) {}
+}
+
+function twProjects() {
+  return (state.projects || []).map(function (p) {
+    const h = twHandleOf(p);
+    return h ? { id: p.id, name: p.name, handle: h } : null;
+  }).filter(Boolean);
+}
+
+function twNitterHosts() {
+  return ['nitter.net', 'xcancel.com', 'nitter.cz'];
+}
+function twCorsProxies() {
+  return [
+    { name: 'allorigins', url: 'https://api.allorigins.win/raw?url=' },
+    { name: 'corsproxy', url: 'https://corsproxy.io/?url=' }
+  ];
+}
+
+function twSleep(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+
+function twShortError(msg) {
+  msg = String(msg || '').replace(/^RATE_LIMIT:\s*/, '').replace(/\s+/g, ' ').trim();
+  if (!msg) return '\u68c0\u6d4b\u5931\u8d25';
+  return msg.length > 26 ? msg.slice(0, 26) + '\u2026' : msg;
+}
+
+async function twFetchRaw(handle) {
+  const sources = [];
+  // Prefer local proxy. Start: ??????.bat . It avoids rss2json rate limits and browser CORS.
+  sources.push({ name: 'local-proxy', url: 'http://127.0.0.1:8765/twitter?handle=' + encodeURIComponent(handle) + (twManualRefreshNow ? '&force=1' : ''), type: 'rss2json' });
+  // Fallback: rss2json+nitter.net. Public CORS proxies are mostly 403/timeout.
+  const hosts = twNitterHosts();
+  const primary = 'nitter.net';
+  const orderedHosts = [primary].concat(hosts.filter(function (h) { return h !== primary; }));
+  // Do NOT add cache-busting here: rss2json rate-limits unique URLs heavily.
+  // One request per account is much safer than trying 3 mirrors every refresh.
+  const rss = 'https://nitter.net/' + encodeURIComponent(handle) + '/rss';
+  sources.push({ name: 'rss2json+nitter.net', url: 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rss), type: 'rss2json' });
+  const enableProxyFallback = false;
+  if (enableProxyFallback) {
+    for (const host of hosts) {
+      const rss = 'https://' + host + '/' + encodeURIComponent(handle) + '/rss';
+      for (const proxy of twCorsProxies()) {
+        sources.push({ name: proxy.name + '+' + host, url: proxy.url + encodeURIComponent(rss), type: 'xml' });
+      }
+    }
+    const syndicationTarget = 'https://cdn.syndication.twimg.com/timeline/profile?screen_name=' + encodeURIComponent(handle) + '&with_replies=false';
+    for (const proxy of twCorsProxies()) {
+      sources.push({ name: proxy.name + '+syndication', url: proxy.url + encodeURIComponent(syndicationTarget), type: 'syndication' });
+    }
+  }
+
+  const diagnosis = [];
+  let lastErr = null;
+  for (const src of sources) {
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(function () { ctrl.abort(); }, TW_FETCH_TIMEOUT_MS);
+      const r = await fetch(src.url, { signal: ctrl.signal });
+      clearTimeout(to);
+      if (!r.ok) {
+        diagnosis.push(src.name + ': HTTP ' + r.status);
+        throw new Error('HTTP ' + r.status);
+      }
+      const txt = await r.text();
+      if (!txt || !txt.trim()) {
+        diagnosis.push(src.name + ': empty body');
+        throw new Error('empty body');
+      }
+      let tweets = null;
+      if (src.type === 'rss2json') {
+        const json = JSON.parse(txt);
+        if (json.status === 'ok' && Array.isArray(json.items)) {
+          tweets = twParseRss2Json(json, handle) || [];
+        } else if (json.message) {
+          diagnosis.push(src.name + ': ' + String(json.message).slice(0, 60));
+          throw new Error(json.message);
+        }
+      } else if (src.type === 'xml') {
+        tweets = twParseRssXml(txt, handle);
+      } else {
+        const json = JSON.parse(txt);
+        tweets = twParseSyndication(json, handle);
+      }
+      if (Array.isArray(tweets)) {
+        twLastDiagnosis = { handle: handle, ok: src.name, time: Date.now(), log: diagnosis };
+        return tweets;
+      }
+      diagnosis.push(src.name + ': no tweets');
+      throw new Error('no tweets');
+    } catch (e) {
+      lastErr = e;
+      if (e && e.name === 'AbortError') diagnosis.push(src.name + ': timeout');
+      else if (e && e.message && e.message.indexOf('Failed to fetch') > -1) diagnosis.push(src.name + ': network');
+    }
+  }
+  twLastDiagnosis = { handle: handle, ok: null, time: Date.now(), log: diagnosis };
+  const friendly = twHumanError(lastErr, diagnosis);
+  throw new Error(friendly);
+}
+
+function twHumanError(err, diagnosis) {
+  const msg = String(err && err.message ? err.message : err || '');
+  const allMsg = (msg + ' ' + (diagnosis || []).join(' '));
+  if (allMsg.indexOf('403') > -1) {
+    if (diagnosis.some(function (d) { return d.indexOf('corsproxy') > -1 && d.indexOf('403') > -1; })) {
+      return 'CORS 代理拒绝请求（数据源受限）';
+    }
+    return '数据源返回 403，可能被拦截';
+  }
+  if (allMsg.indexOf('429') > -1 || allMsg.indexOf('rate') > -1 || allMsg.indexOf('too many') > -1 || allMsg.indexOf('API key') > -1 || allMsg.indexOf('very short period') > -1) {
+    return '接口限流，请稍后再试';
+  }
+  if (allMsg.indexOf('empty body') > -1 || allMsg.indexOf('no tweets') > -1) {
+    return '该账号暂无缓存推文';
+  }
+  if (allMsg.indexOf('timeout') > -1 || allMsg.indexOf('AbortError') > -1) {
+    return '请求超时';
+  }
+  if (allMsg.indexOf('network') > -1 || allMsg.indexOf('Failed to fetch') > -1) {
+    return '网络错误';
+  }
+  if (diagnosis.length && diagnosis.every(function (d) { return d.indexOf('empty body') > -1 || d.indexOf('no tweets') > -1 || d.indexOf('Cloudflare') > -1 || d.indexOf('blocked') > -1; })) {
+    return '该账号暂无公开动态或数据源未缓存';
+  }
+  return msg || '数据源全部不可用';
+}
+
+function twParseRss2Json(json, handle) {
+  try {
+    const items = (json && json.items) || [];
+    const out = [];
+    for (const item of items) {
+      const id = String(item.guid || '');
+      const text = String(item.title || '').replace(/\s+/g, ' ').trim();
+      const createdAt = String(item.pubDate || '');
+      const link = String(item.link || '');
+      if (!id || !text) continue;
+      if (text.indexOf('RSS reader not yet whitelisted') > -1) continue;
+      let url = link;
+      if (!url) url = 'https://twitter.com/' + handle + '/status/' + id;
+      else {
+        url = url.replace(/nitter\.net|xcancel\.com|nitter\.cz/g, 'twitter.com');
+      }
+      out.push({ id: id, text: text, createdAt: createdAt, url: url });
+    }
+    const seen = {};
+    const uniq = out.filter(function (t) { if (seen[t.id]) return false; seen[t.id] = 1; return true; });
+    uniq.sort(function (a, b) { return twIdNum(b.id) - twIdNum(a.id); });
+    return uniq.slice(0, 12);
+  } catch (e) { return null; }
+}
+
+function twParseRssXml(xmlText, handle) {
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xmlText, 'application/xml');
+    const parseErr = doc.querySelector('parsererror');
+    if (parseErr) return null;
+    const items = doc.querySelectorAll('item');
+    if (!items.length) {
+      const channelTitle = doc.querySelector('channel > title');
+      const t = channelTitle ? channelTitle.textContent : '';
+      if (t && t.indexOf('whitelisted') > -1) return null;
+    }
+    const out = [];
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      const id = (item.querySelector('guid') ? item.querySelector('guid').textContent : '') || '';
+      const text = (item.querySelector('title') ? item.querySelector('title').textContent : '') || '';
+      const createdAt = (item.querySelector('pubDate') ? item.querySelector('pubDate').textContent : '') || '';
+      const link = (item.querySelector('link') ? item.querySelector('link').textContent : '') || '';
+      if (!id && !text) continue;
+      if (text.indexOf('RSS reader not yet whitelisted') > -1) continue;
+      let url = link;
+      if (!url) url = 'https://twitter.com/' + handle + '/status/' + id;
+      else url = url.replace(/nitter\.net|xcancel\.com|nitter\.cz/g, 'twitter.com');
+      out.push({ id: id, text: text.replace(/\s+/g, ' ').trim(), createdAt: createdAt, url: url });
+    }
+    const seen = {};
+    const uniq = out.filter(function (t) { if (seen[t.id]) return false; seen[t.id] = 1; return true; });
+    uniq.sort(function (a, b) { return twIdNum(b.id) - twIdNum(a.id); });
+    return uniq.slice(0, 12);
+  } catch (e) { return null; }
+}
+
+function twParseSyndication(json, handle) {
+  try {
+    const out = [];
+    const instr = (json && json.timeline && json.timeline.instructions) || [];
+    for (const ins of instr) {
+      const entries = ins.entries || [];
+      for (const entry of entries) {
+        const c = entry.content || {};
+        let legacy = null;
+        if (c.itemContent && c.itemContent.tweet_results && c.itemContent.tweet_results.result && c.itemContent.tweet_results.result.legacy) {
+          legacy = c.itemContent.tweet_results.result.legacy;
+        } else if (c.items && c.items.length) {
+          const it = c.items[0].item || {};
+          if (it.tweet_results && it.tweet_results.result && it.tweet_results.result.legacy) legacy = it.tweet_results.result.legacy;
+        }
+        if (!legacy || !legacy.id_str) continue;
+        if (legacy.retweeted_status_result) continue;
+        out.push({
+          id: legacy.id_str,
+          text: (legacy.full_text || '').replace(/\s+/g, ' ').trim(),
+          createdAt: legacy.created_at,
+          url: 'https://twitter.com/' + handle + '/status/' + legacy.id_str
+        });
+      }
+    }
+    const seen = {};
+    const uniq = out.filter(function (t) { if (seen[t.id]) return false; seen[t.id] = 1; return true; });
+    uniq.sort(function (a, b) { return (b.id < a.id ? -1 : b.id > a.id ? 1 : 0); });
+    return uniq.slice(0, 12);
+  } catch (e) { return null; }
+}
+
+function twIdNum(id) { return Number(String(id).replace(/\D/g, '')) || 0; }
+
+function twTimeAgo(createdAt) {
+  try {
+    const d = new Date(createdAt);
+    if (isNaN(d.getTime())) return '';
+    const s = Math.floor((Date.now() - d.getTime()) / 1000);
+    if (s < 60) return '刚刚';
+    if (s < 3600) return Math.floor(s / 60) + '分钟前';
+    if (s < 86400) return Math.floor(s / 3600) + '小时前';
+    if (s < 86400 * 7) return Math.floor(s / 86400) + '天前';
+    return d.toLocaleDateString('zh-CN');
+  } catch (e) { return ''; }
+}
+
+async function twPoll(manual) {
+  if (manual) { twSetRefreshStatus('\uD83D\uDD04 \u5237\u65b0\u4e2d\u2026'); twSetRefreshSpinning(true); }
+  const list = twProjects();
+  if (!list.length) { twRenderPanel(); twSetRefreshStatus(''); twSetRefreshSpinning(false); return; }
+  if (twPollBusy) {
+    if (manual) { twSetRefreshStatus('\u23f3 \u4e0a\u6b21\u5237\u65b0\u8fd8\u6ca1\u7ed3\u675f'); twSetRefreshSpinning(false); }
+    return;
+  }
+  twPollBusy = true;
+  twManualRefreshNow = !!manual;
+  let anyNew = false;
+  let newCount = 0;
+  let failCount = 0;
+  try {
+    for (let idx = 0; idx < list.length; idx++) {
+      const proj = list[idx];
+      if (manual) twSetRefreshStatus('\uD83D\uDD04 \u5237\u65b0\u4e2d\u2026 ' + (idx + 1) + '/' + list.length);
+      const st = twState[proj.handle] || (twState[proj.handle] = { handle: proj.handle, tweets: [], lastSeenId: '', lastCheckedAt: 0, error: null });
+      try {
+        const raw = await twFetchRaw(proj.handle);
+        st.tweets = (raw || []).map(function (t) { return { id: t.id, text: t.text || '', createdAt: t.createdAt, url: t.url }; });
+        st.error = null;
+        st.lastCheckedAt = Date.now();
+        if (st.lastSeenId && !st.seen && st.tweets.length) {
+          const had = twIdNum(st.lastSeenId);
+          st.seen = st.tweets.filter(function (t) { return twIdNum(t.id) <= had; }).map(function (t) { return t.id; });
+        }
+        const seenSet = {};
+        (st.seen || []).forEach(function (id) { seenSet[id] = 1; });
+        const notifiedSet = {};
+        (st.notified || []).forEach(function (id) { notifiedSet[id] = 1; });
+        let freshNew = [];
+        for (const t of st.tweets) {
+          if (!seenSet[t.id] && !notifiedSet[t.id]) freshNew.push(t.id);
+        }
+        if (freshNew.length > 0) {
+          anyNew = true;
+          newCount += freshNew.length;
+          if (ui.twitterNotify) twNotify(proj.name);
+          st.notified = (st.notified || []).concat(freshNew);
+        }
+      } catch (e) {
+        failCount++;
+        st.error = String(e.message || e);
+        if (st.error.indexOf('RATE_LIMIT') > -1 || st.error.indexOf('429') > -1) {
+          twRateLimitedUntil = Date.now() + 30 * 60000;
+          saveTwState();
+          break;
+        }
+      }
+      saveTwState();
+      if (idx < list.length - 1) await twSleep(TW_ACCOUNT_DELAY_MS);
+    }
+  } finally {
+    twManualRefreshNow = false;
+    twPollBusy = false;
+  }
+  twRenderPanel();
+  if (manual) {
+    if (anyNew) twSetRefreshStatus('\uD83D\uDD34 \u53d1\u73b0 ' + newCount + ' \u6761\u65b0\u52a8\u6001', true);
+    else if (failCount > 0) twSetRefreshStatus('\u26a0\ufe0f ' + failCount + ' \u4e2a\u8d26\u53f7\u66f4\u65b0\u5931\u8d25\uff0c\u5df2\u663e\u793a\u7f13\u5b58', true);
+    else twSetRefreshStatus('\u2705 \u5df2\u5237\u65b0\uff08\u6682\u65e0\u65b0\u63a8\u6587\uff09', false);
+    twSetRefreshSpinning(false);
+  }
+}
+
+let twSpinStart = 0;
+function twSetRefreshSpinning(on) {
+  const btn = document.getElementById('tw-refresh-btn');
+  if (!btn) return;
+  const icon = btn.querySelector('.refresh-icon');
+  if (!icon) return;
+  if (on) {
+    twSpinStart = Date.now();
+    icon.classList.add('spinning');
+  } else {
+    const elapsed = Date.now() - twSpinStart;
+    const MIN = 700;
+    if (elapsed >= MIN) icon.classList.remove('spinning');
+    else setTimeout(function () { icon.classList.remove('spinning'); }, MIN - elapsed);
+  }
+}
+
+function twSetRefreshStatus(msg, isRed) {
+  const el = document.getElementById('tw-toast-top');
+  if (!el) return;
+  if (el._timer) clearTimeout(el._timer);
+  if (!msg) { el.classList.remove('show'); return; }
+  el.textContent = msg;
+  el.style.color = isRed ? '#f87171' : 'var(--text)';
+  el.classList.add('show');
+  el._timer = setTimeout(function () { el.classList.remove('show'); }, 5000);
+}
+
+function twUnreadCount(st) {
+  if (!st || !st.tweets) return 0;
+  if (st.seen) {
+    const s = {};
+    st.seen.forEach(function (id) { s[id] = 1; });
+    let n = 0;
+    for (const t of st.tweets) if (!s[t.id]) n++;
+    return n;
+  }
+  if (st.tweets.length === 0) return 0;
+  const had = twIdNum(st.lastSeenId);
+  if (had === 0) return st.tweets.length; // 新项目：已有推文全部算未读
+  return st.tweets.filter(function (t) { return twIdNum(t.id) > had; }).length;
+}
+
+function twTotalUnread() {
+  return twProjects().reduce(function (sum, p) { return sum + twUnreadCount(twState[p.handle]); }, 0);
+}
+
+function twRenderPanel() {
+  const body = document.getElementById('twitter-body');
+  const badge = document.getElementById('twitter-count');
+  const hbtn = document.getElementById('tw-header-count');
+  const hwrap = document.getElementById('tw-header-btn');
+  if (!body) return;
+  const all = twProjects();
+  if (!all.length) {
+    body.innerHTML = '<div class="reminder-empty">在「项目管理」给项目填上推特账号，这里会常驻显示它的动态状态</div>';
+    if (badge) badge.textContent = '0';
+    if (hbtn) hbtn.textContent = '0';
+    if (hwrap) hwrap.style.display = 'none';
+    return;
+  }
+  const list = all.map(function (p) { return { p: p, st: twState[p.handle] || null }; });
+  list.sort(function (a, b) {
+    const ta = (a.st && a.st.tweets && a.st.tweets[0]) ? twIdNum(a.st.tweets[0].id) : 0;
+    const tb = (b.st && b.st.tweets && b.st.tweets[0]) ? twIdNum(b.st.tweets[0].id) : 0;
+    return tb - ta;
+  });
+  const total = twTotalUnread();
+  if (badge) badge.textContent = total;
+  if (hbtn) hbtn.textContent = total;
+  if (hwrap) hwrap.style.display = total > 0 ? '' : 'none';
+  let html = '';
+  for (const item of list) {
+    const p = item.p, st = item.st;
+    const hasData = !!(st && st.tweets && st.tweets.length);
+    const latest = hasData ? st.tweets[0] : null;
+    const unread = hasData ? twUnreadCount(st) : 0;
+    let dot, label;
+    if (st && st.error) { dot = '#f59e0b'; label = hasData ? '\u66f4\u65b0\u5931\u8d25\uff0c\u663e\u793a\u7f13\u5b58' : '\u6293\u53d6\u5931\u8d25'; }
+    else if (unread > 0) { dot = '#f87171'; label = '\uD83D\uDCE2 ' + unread + ' \u6761\u65b0\u52a8\u6001'; }
+    else if (hasData) { dot = '#4b4a63'; label = '\u6700\u8fd1\u4e00\u6761'; }
+    else { dot = '#4b4a63'; label = '\u6682\u672a\u83b7\u53d6'; }
+    const when = latest ? (twTimeAgo(latest.createdAt) + (st && st.error ? ' ? ' + twShortError(st.error) : '')) : (st && st.error ? twShortError(st.error) : '\u2014');
+    const dim = unread === 0 ? 'opacity:0.72;' : '';
+    const tip = st && st.error ? (' title="' + escapeHtml(st.error) + '"') : '';
+    html += '<div class="reminder-item"' + tip + ' style="' + dim + 'cursor:pointer;" onclick="twOpenProject(\'' + p.id + '\')">'
+      + '<span class="reminder-dot" style="background:' + dot + ';"></span>'
+      + '<div style="flex:1;min-width:0;">'
+      + '<div class="reminder-name">' + escapeHtml(p.name) + '</div>'
+      + '<div style="font-size:11px;color:#9b96b8;">' + label + ' · ' + when + '</div>'
+      + (latest && latest.text ? '<div class="tw-tweet-text"><span>' + escapeHtml(latest.text) + '</span></div>' : '')
+      + '</div></div>';
+  }
+  body.innerHTML = html;
+  requestAnimationFrame(twInitMarquee);
+}
+
+function twInitMarquee() {
+  document.querySelectorAll('.tw-tweet-text').forEach(function (el) {
+    const span = el.querySelector('span');
+    if (!span) return;
+    if (span.scrollWidth > el.clientWidth) {
+      const distance = el.clientWidth - span.scrollWidth;
+      span.style.setProperty('--scroll-distance', distance + 'px');
+      span.style.animationDuration = Math.max(10, Math.abs(distance) / 10) + 's';
+      span.classList.add('tw-tweet-scroll');
+    }
+  });
+}
+
+function twOpenProject(id) {
+  const p = state.projects.find(function (x) { return x.id === id; });
+  if (!p) return;
+  const handle = twHandleOf(p);
+  const st = handle ? twState[handle] : null;
+  if (st) {
+    st.seen = (st.tweets || []).map(function (t) { return t.id; });
+    st.notified = [];
+    saveTwState();
+  }
+  twRenderPanel();
+  var latest = st && st.tweets && st.tweets[0] ? st.tweets[0] : null;
+  var url = latest && latest.url ? latest.url : (handle ? ('https://twitter.com/' + handle) : (p.twitter || ''));
+  if (url) window.open(url, '_blank', 'noopener');
+}
+
+function twMarkAllRead() {
+  twProjects().forEach(function (p) {
+    const st = twState[p.handle];
+    if (st) {
+      st.seen = (st.tweets || []).map(function (t) { return t.id; });
+      st.notified = [];
+    }
+  });
+  saveTwState();
+  twRenderPanel();
+  showToast('已全部标记为已读');
+}
+
+function twRequestNotify() {
+  if (!('Notification' in window)) { showToast('当前浏览器不支持桌面通知'); return; }
+  if (ui.twitterNotify) {
+    ui.twitterNotify = false;
+    localStorage.setItem('tw_notify', '0');
+    twUpdateNotifyBtn();
+    showToast('桌面通知已关闭');
+    return;
+  }
+  Notification.requestPermission().then(function (perm) {
+    ui.twitterNotify = (perm === 'granted');
+    localStorage.setItem('tw_notify', ui.twitterNotify ? '1' : '0');
+    twUpdateNotifyBtn();
+    if (ui.twitterNotify) { showToast('桌面通知已开启'); twTestNotify(); }
+    else showToast('未授权桌面通知');
+  });
+}
+
+function twTestNotify() {
+  if (!ui.twitterNotify) return;
+  try { new Notification('🐦 推特动态提醒', { body: '这是一条测试通知：项目方发新推时会这样提醒你' }); } catch (e) {}
+}
+
+function twNotify(name) {
+  if (!ui.twitterNotify) return;
+  try { new Notification('🐦 ' + name + ' 发新推了', { body: '点开面板即可跳转查看最新动态' }); } catch (e) {}
+}
+
+function twUpdateNotifyBtn() {
+  const btn = document.getElementById('tw-notify-btn');
+  if (!btn) return;
+  if (ui.twitterNotify) { btn.textContent = '🔔 通知已开'; btn.classList.add('btn-primary'); }
+  else { btn.textContent = '🔔 开启通知'; btn.classList.remove('btn-primary'); }
+}
+
+function twSetInterval(v) {
+  const n = parseInt(v, 10);
+  if (isNaN(n) || n < 1) return;
+  ui.twitterInterval = n;
+  localStorage.setItem('tw_interval_hours', String(n));
+  twStartPolling();
+}
+
+function twStartPolling() {
+  if (twPollTimer) clearInterval(twPollTimer);
+  const ms = Math.max(1, ui.twitterInterval || 1) * 3600000;
+  twPollTimer = setInterval(function () { if (!document.hidden) twPoll(false); }, ms);
+}
+
+function twFocusPanel() {
+  const el = document.getElementById('twitter-panel');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function initTwitter() {
+  loadTwState();
+  const ivEl = document.getElementById('tw-interval');
+  if (ivEl) ivEl.value = String(ui.twitterInterval || 5);
+  twUpdateNotifyBtn();
+  twRenderPanel();
+  setTimeout(function () { twPoll(false); }, 5000);
+  twStartPolling();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   load();
   applyAppIcon();
@@ -5925,6 +6667,7 @@ document.addEventListener('DOMContentLoaded', function() {
   renderPagesStartUrl();
   checkDailyReset();
   render();
+  initTwitter();
 });
 
 document.getElementById('modal-overlay').addEventListener('click', function(e) {
@@ -5979,6 +6722,7 @@ document.addEventListener('keydown', function(e) {
     </div>
   </div>
 </div>
+
 
 
 
